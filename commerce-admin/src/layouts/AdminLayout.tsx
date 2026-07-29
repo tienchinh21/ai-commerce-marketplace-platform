@@ -1,45 +1,214 @@
-import { Layout, Menu, Typography, Button } from 'antd';
+import { ReactNode } from 'react';
+import { Layout, Menu, Typography, Button, Avatar, Dropdown, Space, Tag, Input, Badge } from 'antd';
+import {
+  DashboardOutlined,
+  AppstoreOutlined,
+  ShopOutlined,
+  UserOutlined,
+  ShoppingOutlined,
+  CommentOutlined,
+  CloudUploadOutlined,
+  SearchOutlined,
+  RobotOutlined,
+  BarChartOutlined,
+  SafetyCertificateOutlined,
+  LogoutOutlined,
+  BellOutlined,
+  GlobalOutlined,
+  ThunderboltFilled,
+} from '@ant-design/icons';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../modules/auth/auth.store';
 import { adminRoutes } from '../routes/route-permissions';
 
 const { Header, Sider, Content } = Layout;
 
+const iconMap: Record<string, ReactNode> = {
+  '/': <DashboardOutlined />,
+  '/categories': <AppstoreOutlined />,
+  '/products': <ShoppingOutlined />,
+  '/sellers': <ShopOutlined />,
+  '/buyers': <UserOutlined />,
+  '/reviews': <CommentOutlined />,
+  '/ingestion': <CloudUploadOutlined />,
+  '/ai-search': <SearchOutlined />,
+  '/review-intelligence': <BarChartOutlined />,
+  '/analyst-chat': <RobotOutlined />,
+  '/users-permissions': <SafetyCertificateOutlined />,
+};
+
 export function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const auth = useAuth();
 
-  const visibleItems = adminRoutes
-    .filter((item) => !item.permission || auth.hasPermission(item.permission))
-    .map((item) => ({ key: item.path, label: item.label }));
+  const visibleRoutes = adminRoutes.filter(
+    (item) => !item.permission || auth.hasPermission(item.permission),
+  );
+
+  // Group menu items logically
+  const menuGroups: Record<string, typeof visibleRoutes> = {};
+  for (const route of visibleRoutes) {
+    const groupName = route.group ?? 'Khác';
+    if (!menuGroups[groupName]) {
+      menuGroups[groupName] = [];
+    }
+    menuGroups[groupName].push(route);
+  }
+
+  const menuItems = Object.entries(menuGroups).map(([groupName, routes]) => ({
+    key: `group-${groupName}`,
+    label: <span style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{groupName}</span>,
+    type: 'group' as const,
+    children: routes.map((item) => ({
+      key: item.path,
+      icon: iconMap[item.path],
+      label: item.label,
+    })),
+  }));
 
   function handleLogout() {
     auth.clearSession();
     navigate('/login');
   }
 
+  const userMenu = {
+    items: [
+      {
+        key: 'profile',
+        icon: <UserOutlined />,
+        label: 'Hồ sơ người dùng',
+      },
+      {
+        key: 'settings',
+        icon: <GlobalOutlined />,
+        label: 'Cấu hình hệ thống',
+      },
+      {
+        type: 'divider' as const,
+      },
+      {
+        key: 'logout',
+        icon: <LogoutOutlined />,
+        danger: true,
+        label: 'Đăng xuất',
+        onClick: handleLogout,
+      },
+    ],
+  };
+
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider width={248}>
-        <div style={{ color: '#fff', padding: 16, fontWeight: 700, fontSize: 16 }}>Commerce Admin</div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={visibleItems}
-          onClick={(item) => navigate(item.key)}
-        />
-      </Sider>
-      <Layout>
-        <Header style={{ background: '#fff', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #f0f0f0' }}>
-          <Typography.Text type="secondary">AI Commerce Marketplace Platform</Typography.Text>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <Typography.Text strong>{auth.user?.displayName ?? 'Admin'}</Typography.Text>
-            <Button size="small" onClick={handleLogout}>Đăng xuất</Button>
+    <Layout style={{ minHeight: '100vh', background: '#f8fafc' }}>
+      <Sider
+        width={260}
+        style={{
+          background: '#0f172a',
+          boxShadow: '4px 0 24px 0 rgba(0,0,0,0.08)',
+          zIndex: 10,
+        }}
+      >
+        {/* Brand Header */}
+        <div
+          style={{
+            height: 64,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            padding: '0 20px',
+            borderBottom: '1px solid #1e293b',
+            background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
+          }}
+        >
+          <div
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 8,
+              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              display: 'grid',
+              placeItems: 'center',
+              color: '#fff',
+              fontWeight: 800,
+              fontSize: 18,
+              boxShadow: '0 0 12px rgba(99, 102, 241, 0.5)',
+            }}
+          >
+            <ThunderboltFilled />
           </div>
+          <div>
+            <div style={{ color: '#f8fafc', fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
+              OKZ Commerce
+            </div>
+            <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 500 }}>
+              AI Admin Platform
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation Menu */}
+        <div style={{ padding: '12px 8px' }}>
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            items={menuItems}
+            onClick={(item) => navigate(item.key)}
+            style={{ background: 'transparent', borderRight: 0 }}
+          />
+        </div>
+      </Sider>
+
+      <Layout>
+        {/* Top Navbar Header */}
+        <Header
+          style={{
+            background: '#ffffff',
+            padding: '0 28px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: 64,
+            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.05)',
+            borderBottom: '1px solid #e2e8f0',
+          }}
+        >
+          <Space size={16}>
+            <Input
+              prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
+              placeholder="Tìm kiếm danh mục, sản phẩm, dữ liệu..."
+              style={{ width: 320, borderRadius: 8, background: '#f8fafc' }}
+              variant="filled"
+            />
+            <Tag color="purple" style={{ borderRadius: 12, fontWeight: 600, padding: '2px 10px' }}>
+              Phase 1 Admin Mode
+            </Tag>
+          </Space>
+
+          <Space size={20}>
+            <Badge count={3} size="small" offset={[-2, 4]}>
+              <Button type="text" shape="circle" icon={<BellOutlined style={{ fontSize: 18, color: '#64748b' }} />} />
+            </Badge>
+
+            <Dropdown menu={userMenu} placement="bottomRight" trigger={['click']}>
+              <Space style={{ cursor: 'pointer', padding: '4px 8px', borderRadius: 8 }}>
+                <Avatar style={{ backgroundColor: '#4f46e5', fontWeight: 600 }}>
+                  {(auth.user?.displayName ?? 'Admin')[0].toUpperCase()}
+                </Avatar>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: '#0f172a', lineHeight: 1.2 }}>
+                    {auth.user?.displayName ?? 'Quản trị viên'}
+                  </div>
+                  <div style={{ fontSize: 11, color: '#64748b' }}>
+                    {auth.user?.email ?? 'admin@okz.vn'}
+                  </div>
+                </div>
+              </Space>
+            </Dropdown>
+          </Space>
         </Header>
-        <Content style={{ padding: 24, background: '#f5f5f5' }}>
+
+        {/* Content Area */}
+        <Content style={{ padding: '28px', background: '#f8fafc', minHeight: 'calc(100vh - 64px)' }}>
           <Outlet />
         </Content>
       </Layout>
