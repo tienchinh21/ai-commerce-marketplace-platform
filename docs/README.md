@@ -5,6 +5,7 @@ Thư mục này chứa tài liệu thiết kế cho hệ thống marketplace adm
 ## Tài liệu chính
 
 - `superpowers/specs/2026-07-29-ai-commerce-marketplace-platform-design.md`: spec tổng hợp quyết định brainstorm.
+- `superpowers/plans/2026-07-29-cms-base-implementation-plan.md`: implementation plan riêng cho base CMS.
 
 ## Tài liệu chuyên đề
 
