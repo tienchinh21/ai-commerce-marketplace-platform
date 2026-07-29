@@ -117,11 +117,25 @@ analytics
 Core-service sở hữu:
 
 ```txt
-users
+users             (admin/internal users — người vận hành CMS)
+external_users    (tài khoản bên ngoài: seller/buyer tự đăng ký)
 permissions
 user_permissions
 sessions hoặc token metadata nếu cần
 ```
+
+Hai bảng users tách biệt vì:
+
+- `users`: dành cho admin, staff, moderator — có permission system phức tạp, roles, departments.
+- `external_users`: dành cho seller/buyer đăng ký qua seller portal hoặc buyer app. Không cần permission system.
+- Tách riêng tránh phải JOIN lọc role mỗi lần query admin users.
+- Mỗi bên mở rộng độc lập, không ảnh hưởng nhau.
+
+`sellers` và `buyers` có `user_id` FK nullable tới `external_users`:
+
+- Phase 1: admin import seller/buyer → `user_id` = NULL.
+- Phase 2: seller/buyer tự đăng ký tài khoản → tạo `external_users` record → gán `user_id`.
+- 1 external_user có 0 hoặc 1 buyer record, và 0 hoặc 1 seller record. Có thể có cả hai (vừa mua vừa bán).
 
 Auth dùng permission-based model theo resource/action. Ví dụ:
 

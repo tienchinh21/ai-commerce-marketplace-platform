@@ -5,9 +5,10 @@ Phase 1 dùng permission-based auth theo resource/action.
 ## Tables
 
 ```txt
-users
+users             (admin/internal users)
+external_users    (external users, không dùng permission system)
 permissions
-user_permissions
+user_permissions  (chỉ gắn với users, không gắn với external_users)
 ```
 
 ## Permission Examples

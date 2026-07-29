@@ -26,6 +26,18 @@ Core-service cần cung cấp:
 - Permission list của current user.
 - Permission-based authorization theo resource/action.
 
+Phân biệt hai loại users:
+
+- `identity.users`: admin/internal users (người vận hành CMS). Có permission system, roles, departments.
+- `identity.external_users`: tài khoản người dùng bên ngoài. Seller/buyer tự đăng ký qua seller portal hoặc buyer app ở phase sau. Phase 1 bảng này tồn tại sẵn nhưng admin import data thì `user_id` trong sellers/buyers để NULL.
+
+Tách `external_users` riêng khỏi `users` vì:
+
+- Admin users có permission system, roles, departments phức tạp, external users thì không.
+- Tránh phải JOIN lọc role mỗi lần query admin users khi số lượng external users lớn.
+- Mỗi bên mở rộng độc lập, không ảnh hưởng nhau.
+- 1 external_user có 0 hoặc 1 buyer record, và 0 hoặc 1 seller record. Có thể có cả hai (vừa mua vừa bán).
+
 Permission codes phase 1:
 
 ```txt
@@ -55,7 +67,8 @@ Core-service cần quản lý sellers:
 - create seller;
 - update seller;
 - get seller detail;
-- seller status.
+- seller status;
+- `user_id` FK nullable tới `identity.external_users` (phase 1 để NULL, phase 2 gán khi seller tự đăng ký).
 
 ### Buyer Management
 
@@ -65,7 +78,8 @@ Core-service cần quản lý buyers/customers:
 - create buyer;
 - update buyer;
 - get buyer detail;
-- buyer status.
+- buyer status;
+- `user_id` FK nullable tới `identity.external_users` (phase 1 để NULL, phase 2 gán khi buyer tự đăng ký).
 
 ### Category And Attribute Management
 
@@ -155,9 +169,9 @@ AI Platform sẽ ưu tiên query analytics views trước khi query bảng core 
 Core-service sở hữu các schema logic:
 
 ```txt
-identity
-marketplace
-ingestion
+identity    (users, permissions, user_permissions, external_users)
+marketplace (sellers, buyers, categories, category_attributes, products, product_variants, product_images, reviews, orders, order_items)
+ingestion   (data_sources, sync_runs, raw_snapshots, source_products, source_reviews)
 analytics
 ```
 
@@ -189,10 +203,11 @@ Core-service được xem là đủ để Admin và AI bắt đầu tích hợp 
 ```txt
 1. Admin login được và lấy được permissions.
 2. Admin CRUD được category, category attributes, sellers, buyers, products và reviews.
-3. Admin import được product/review dataset qua source/import flow.
-4. Database có realistic dataset để AI index.
-5. Analytics views/API đủ cho text-to-SQL analyst.
-6. AI Platform có read-only access an toàn vào dữ liệu cần thiết.
+3. `external_users` table tồn tại, sellers và buyers có `user_id` FK nullable.
+4. Admin import được product/review dataset qua source/import flow.
+5. Database có realistic dataset để AI index.
+6. Analytics views/API đủ cho text-to-SQL analyst.
+7. AI Platform có read-only access an toàn vào dữ liệu cần thiết.
 ```
 
 ## 6. Reference Docs
