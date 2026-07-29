@@ -23,3 +23,4 @@ Thư mục này chứa tài liệu thiết kế cho hệ thống marketplace adm
 - `api-contracts/core-api.md`: draft API contract của core-service.
 - `api-contracts/ai-api.md`: draft API contract của AI platform.
 - `infra/local-docker.md`: thiết kế Docker local/full system.
+- `core-service/implementation-brief.md`: brief riêng cho backend Java owner.
