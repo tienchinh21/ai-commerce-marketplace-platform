@@ -35,61 +35,32 @@ export function LoginPage() {
         minHeight: '100vh',
         display: 'grid',
         placeItems: 'center',
-        background: 'radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0f172a 60%, #020617 100%)',
+        background: '#0f172a',
         position: 'relative',
-        overflow: 'hidden',
       }}
     >
-      {/* Decorative Glow Elements */}
-      <div
-        style={{
-          position: 'absolute',
-          width: 500,
-          height: 500,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(0,0,0,0) 70%)',
-          top: '-10%',
-          left: '20%',
-          pointerEvents: 'none',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          width: 400,
-          height: 400,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(168,85,247,0.12) 0%, rgba(0,0,0,0) 70%)',
-          bottom: '-10%',
-          right: '20%',
-          pointerEvents: 'none',
-        }}
-      />
-
       <Card
         style={{
-          width: 420,
-          borderRadius: 16,
-          background: 'rgba(15, 23, 42, 0.75)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-          padding: '12px 8px',
+          width: 400,
+          borderRadius: 12,
+          background: '#1e293b',
+          border: '1px solid #334155',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+          padding: '8px',
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div
             style={{
-              width: 52,
-              height: 52,
-              borderRadius: 14,
-              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              width: 48,
+              height: 48,
+              borderRadius: 10,
+              background: '#2563eb',
               display: 'grid',
               placeItems: 'center',
               color: '#fff',
-              fontSize: 26,
-              margin: '0 auto 16px',
-              boxShadow: '0 0 20px rgba(99, 102, 241, 0.6)',
+              fontSize: 24,
+              margin: '0 auto 12px',
             }}
           >
             <ThunderboltFilled />
@@ -116,7 +87,7 @@ export function LoginPage() {
             <Input
               prefix={<MailOutlined style={{ color: '#64748b' }} />}
               placeholder="admin@example.com"
-              style={{ background: '#1e293b', borderColor: '#334155', color: '#f8fafc' }}
+              style={{ background: '#0f172a', borderColor: '#334155', color: '#f8fafc' }}
             />
           </Form.Item>
 
@@ -128,7 +99,7 @@ export function LoginPage() {
             <Input.Password
               prefix={<LockOutlined style={{ color: '#64748b' }} />}
               placeholder="••••••••"
-              style={{ background: '#1e293b', borderColor: '#334155', color: '#f8fafc' }}
+              style={{ background: '#0f172a', borderColor: '#334155', color: '#f8fafc' }}
             />
           </Form.Item>
 
@@ -136,7 +107,7 @@ export function LoginPage() {
             <Checkbox style={{ color: '#94a3b8', fontSize: 13 }} defaultChecked>
               Ghi nhớ đăng nhập
             </Checkbox>
-            <a style={{ color: '#818cf8', fontSize: 13 }}>Quên mật khẩu?</a>
+            <a style={{ color: '#38bdf8', fontSize: 13 }}>Quên mật khẩu?</a>
           </div>
 
           <Button
@@ -145,20 +116,19 @@ export function LoginPage() {
             loading={loading}
             block
             style={{
-              height: 46,
+              height: 44,
               fontSize: 15,
               fontWeight: 600,
-              borderRadius: 10,
-              background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+              borderRadius: 8,
+              background: '#2563eb',
               border: 0,
-              boxShadow: '0 4px 14px 0 rgba(99, 102, 241, 0.4)',
             }}
           >
             Đăng nhập hệ thống
           </Button>
         </Form>
 
-        <div style={{ marginTop: 28, textAlign: 'center', borderTop: '1px solid #1e293b', paddingTop: 16 }}>
+        <div style={{ marginTop: 24, textAlign: 'center', borderTop: '1px solid #334155', paddingTop: 14 }}>
           <Space style={{ color: '#64748b', fontSize: 12 }}>
             <SafetyCertificateOutlined /> Bảo mật theo chuẩn RBAC Permission
           </Space>

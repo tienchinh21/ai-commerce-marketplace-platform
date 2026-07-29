@@ -24,7 +24,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
       theme={{
         algorithm: theme.defaultAlgorithm,
         token: {
-          colorPrimary: '#4f46e5', // Indigo-600 premium primary
+          colorPrimary: '#2563eb', // Blue-600 corporate clean primary
           borderRadius: 8,
           fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
           colorBgContainer: '#ffffff',
@@ -34,7 +34,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
           Menu: {
             darkItemBg: '#0f172a',
             darkSubMenuItemBg: '#020617',
-            darkItemSelectedBg: '#4f46e5',
+            darkItemSelectedBg: '#2563eb',
             darkItemSelectedColor: '#ffffff',
             darkItemHoverBg: '#1e293b',
           },

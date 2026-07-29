@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { useState, ReactNode } from 'react';
 import { Layout, Menu, Typography, Button, Avatar, Dropdown, Space, Tag, Input, Badge } from 'antd';
 import {
   DashboardOutlined,
@@ -16,6 +16,8 @@ import {
   BellOutlined,
   GlobalOutlined,
   ThunderboltFilled,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
 } from '@ant-design/icons';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../modules/auth/auth.store';
@@ -38,6 +40,7 @@ const iconMap: Record<string, ReactNode> = {
 };
 
 export function AdminLayout() {
+  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const auth = useAuth();
@@ -46,7 +49,6 @@ export function AdminLayout() {
     (item) => !item.permission || auth.hasPermission(item.permission),
   );
 
-  // Group menu items logically
   const menuGroups: Record<string, typeof visibleRoutes> = {};
   for (const route of visibleRoutes) {
     const groupName = route.group ?? 'Khác';
@@ -58,7 +60,11 @@ export function AdminLayout() {
 
   const menuItems = Object.entries(menuGroups).map(([groupName, routes]) => ({
     key: `group-${groupName}`,
-    label: <span style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{groupName}</span>,
+    label: !collapsed ? (
+      <span style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        {groupName}
+      </span>
+    ) : null,
     type: 'group' as const,
     children: routes.map((item) => ({
       key: item.path,
@@ -100,7 +106,12 @@ export function AdminLayout() {
   return (
     <Layout style={{ minHeight: '100vh', background: '#f8fafc' }}>
       <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        trigger={null}
         width={260}
+        collapsedWidth={80}
         style={{
           background: '#0f172a',
           boxShadow: '4px 0 24px 0 rgba(0,0,0,0.08)',
@@ -113,36 +124,39 @@ export function AdminLayout() {
             height: 64,
             display: 'flex',
             alignItems: 'center',
+            justifyContent: collapsed ? 'center' : 'flex-start',
             gap: 12,
-            padding: '0 20px',
+            padding: collapsed ? '0' : '0 20px',
             borderBottom: '1px solid #1e293b',
-            background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)',
+            background: '#0f172a',
           }}
         >
           <div
             style={{
-              width: 34,
-              height: 34,
+              width: 36,
+              height: 36,
               borderRadius: 8,
-              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              background: '#2563eb',
               display: 'grid',
               placeItems: 'center',
               color: '#fff',
               fontWeight: 800,
               fontSize: 18,
-              boxShadow: '0 0 12px rgba(99, 102, 241, 0.5)',
+              flexShrink: 0,
             }}
           >
             <ThunderboltFilled />
           </div>
-          <div>
-            <div style={{ color: '#f8fafc', fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
-              OKZ Commerce
+          {!collapsed && (
+            <div>
+              <div style={{ color: '#f8fafc', fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
+                OKZ Commerce
+              </div>
+              <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 500 }}>
+                AI Admin Platform
+              </div>
             </div>
-            <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 500 }}>
-              AI Admin Platform
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Navigation Menu */}
@@ -163,7 +177,7 @@ export function AdminLayout() {
         <Header
           style={{
             background: '#ffffff',
-            padding: '0 28px',
+            padding: '0 24px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -173,13 +187,19 @@ export function AdminLayout() {
           }}
         >
           <Space size={16}>
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined style={{ fontSize: 18 }} /> : <MenuFoldOutlined style={{ fontSize: 18 }} />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{ width: 38, height: 38 }}
+            />
             <Input
               prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
               placeholder="Tìm kiếm danh mục, sản phẩm, dữ liệu..."
-              style={{ width: 320, borderRadius: 8, background: '#f8fafc' }}
+              style={{ width: 300, borderRadius: 8, background: '#f8fafc' }}
               variant="filled"
             />
-            <Tag color="purple" style={{ borderRadius: 12, fontWeight: 600, padding: '2px 10px' }}>
+            <Tag color="blue" style={{ borderRadius: 12, fontWeight: 600, padding: '2px 10px' }}>
               Phase 1 Admin Mode
             </Tag>
           </Space>
@@ -191,7 +211,7 @@ export function AdminLayout() {
 
             <Dropdown menu={userMenu} placement="bottomRight" trigger={['click']}>
               <Space style={{ cursor: 'pointer', padding: '4px 8px', borderRadius: 8 }}>
-                <Avatar style={{ backgroundColor: '#4f46e5', fontWeight: 600 }}>
+                <Avatar style={{ backgroundColor: '#2563eb', fontWeight: 600 }}>
                   {(auth.user?.displayName ?? 'Admin')[0].toUpperCase()}
                 </Avatar>
                 <div style={{ textAlign: 'left' }}>
@@ -208,7 +228,7 @@ export function AdminLayout() {
         </Header>
 
         {/* Content Area */}
-        <Content style={{ padding: '28px', background: '#f8fafc', minHeight: 'calc(100vh - 64px)' }}>
+        <Content style={{ padding: '24px', background: '#f8fafc', minHeight: 'calc(100vh - 64px)' }}>
           <Outlet />
         </Content>
       </Layout>
