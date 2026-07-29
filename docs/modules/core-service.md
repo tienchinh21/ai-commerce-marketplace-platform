@@ -24,6 +24,7 @@ Core-service dùng Java Spring Boot và là service sở hữu dữ liệu marke
 users
 permissions
 user_permissions
+external_users
 
 sellers
 buyers

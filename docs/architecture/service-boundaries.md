@@ -28,11 +28,18 @@ Trách nhiệm:
 Core-service sở hữu schema:
 
 ```txt
-identity
-marketplace
-ingestion
+identity    (users, external_users, permissions, user_permissions)
+marketplace (sellers, buyers, categories, category_attributes, products,
+             product_variants, product_images, reviews, orders, order_items)
+ingestion   (data_sources, sync_runs, raw_snapshots, source_products, source_reviews)
 analytics
 ```
+
+Lưu ý về identity:
+
+- `identity.users`: admin/internal users (người vận hành CMS).
+- `identity.external_users`: tài khoản bên ngoài (seller/buyer tự đăng ký).
+- `sellers.user_id` và `buyers.user_id` là FK nullable tới `external_users`.
 
 ## commerce-ai-platform
 

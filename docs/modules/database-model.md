@@ -14,7 +14,7 @@ analytics
 
 ## identity.users
 
-Lưu admin/internal users phase 1.
+Lưu admin/internal users (người vận hành CMS). Không dùng cho seller hay buyer.
 
 Field chính:
 
@@ -27,6 +27,34 @@ status
 created_at
 updated_at
 ```
+
+## identity.external_users
+
+Lưu tài khoản người dùng bên ngoài (seller/buyer tự đăng ký qua seller portal hoặc buyer app). Tách riêng khỏi `identity.users` vì:
+
+- Admin users có permission system, roles, departments riêng.
+- External users không cần các khái niệm đó.
+- Tránh phải JOIN lọc role mỗi lần query admin users.
+- Mỗi bên mở rộng độc lập, không ảnh hưởng nhau.
+
+Field chính:
+
+```txt
+id
+email
+password_hash
+display_name
+phone
+status
+created_at
+updated_at
+```
+
+Quan hệ:
+
+- 1 external_user có 0 hoặc 1 `marketplace.buyers` record (có thể chưa có buyer profile, nhưng nếu có thì chỉ 1).
+- 1 external_user có 0 hoặc 1 `marketplace.sellers` record (có thể chưa mở shop, nhưng nếu có thì chỉ 1).
+- Một người có thể vừa có buyer record vừa có seller record (vừa mua vừa bán).
 
 ## identity.permissions
 
@@ -71,6 +99,7 @@ Field chính:
 
 ```txt
 id
+user_id
 name
 slug
 status
@@ -80,6 +109,8 @@ created_at
 updated_at
 ```
 
+`user_id` là FK nullable tới `identity.external_users`. Phase 1 admin import seller thì `user_id` để NULL. Phase 2 khi có seller portal, seller tự đăng ký tài khoản → tạo `external_users` record → `seller.user_id` được gán.
+
 ## marketplace.buyers
 
 Buyer/customer tồn tại để phục vụ review/order/analytics.
@@ -88,6 +119,7 @@ Field chính:
 
 ```txt
 id
+user_id
 email
 display_name
 phone
@@ -96,6 +128,8 @@ metadata_json
 created_at
 updated_at
 ```
+
+`user_id` là FK nullable tới `identity.external_users`. Phase 1 admin import buyer thì `user_id` để NULL. Phase 2 khi có buyer app, buyer tự đăng ký → tạo `external_users` record → `buyer.user_id` được gán.
 
 ## marketplace.categories
 
