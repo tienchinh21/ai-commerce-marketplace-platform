@@ -22,8 +22,17 @@ This repo is owned by the Java backend engineer. This planning workspace documen
 
 ## Reference Docs
 
+- Start here: `../docs/core-service/implementation-brief.md`
 - `../docs/modules/core-service.md`
 - `../docs/modules/database-model.md`
 - `../docs/api-contracts/core-api.md`
-- `../docs/core-service/implementation-brief.md`
 
+## Docs Update Rule
+
+If the Java owner needs to update requirements, update only:
+
+```txt
+../docs/core-service/implementation-brief.md
+```
+
+For large schema/API/scope changes, write them under `Requested Spec Changes` in that file. The docs owner will sync other docs after review.

@@ -205,3 +205,57 @@ Core-service được xem là đủ để Admin và AI bắt đầu tích hợp 
 - `docs/architecture/service-boundaries.md`
 - `docs/architecture/data-flow.md`
 
+## 7. Update Rule For Java Owner
+
+Backend Java owner chỉ cần update file này khi thấy phần core-service thiếu, sai hoặc cần làm rõ:
+
+```txt
+docs/core-service/implementation-brief.md
+```
+
+Không cần sửa nhiều docs khác trong cùng một PR.
+
+Nếu thay đổi chỉ là làm rõ trách nhiệm core-service, sửa trực tiếp section liên quan trong file này.
+
+Nếu thay đổi ảnh hưởng lớn tới schema, API contract, service boundary hoặc phase scope, ghi rõ vào section `Requested Spec Changes` bên dưới. Sau khi PR được review, docs owner sẽ đồng bộ các file liên quan như:
+
+```txt
+docs/modules/database-model.md
+docs/api-contracts/core-api.md
+docs/modules/core-service.md
+docs/architecture/data-flow.md
+```
+
+Quy ước branch:
+
+```txt
+docs/core-service-brief-update
+```
+
+Quy ước commit:
+
+```txt
+docs(core): update implementation brief
+```
+
+## 8. Requested Spec Changes
+
+Ghi các đề xuất thay đổi lớn ở đây theo format:
+
+```md
+### <ngày> - <tiêu đề ngắn>
+
+Lý do:
+- ...
+
+Đề xuất thay đổi:
+- ...
+
+Ảnh hưởng dự kiến:
+- Schema:
+- API:
+- Admin:
+- AI Platform:
+```
+
+Nếu chưa có thay đổi lớn, giữ section này trống.
