@@ -117,7 +117,7 @@ commerce-admin/
 - Consumes: existing `commerce-admin/README.md` and docs in `docs/modules/admin-cms.md`.
 - Produces: a buildable React/Vite app and env contract consumed by later tasks.
 
-- [ ] **Step 1: Replace README with base setup instructions**
+- [x] **Step 1: Replace README with base setup instructions**
 
 Update `commerce-admin/README.md`:
 
@@ -163,7 +163,7 @@ npm run lint
 - `commerce-ai-platform`
 ````
 
-- [ ] **Step 2: Create package.json**
+- [x] **Step 2: Create package.json**
 
 Create `commerce-admin/package.json`:
 
@@ -212,7 +212,7 @@ Create `commerce-admin/package.json`:
 }
 ```
 
-- [ ] **Step 3: Create TypeScript and Vite config**
+- [x] **Step 3: Create TypeScript and Vite config**
 
 Create `commerce-admin/tsconfig.json`:
 
@@ -292,7 +292,7 @@ Create `commerce-admin/vitest.setup.ts`:
 import '@testing-library/jest-dom/vitest';
 ```
 
-- [ ] **Step 4: Create HTML and env files**
+- [x] **Step 4: Create HTML and env files**
 
 Create `commerce-admin/index.html`:
 
@@ -329,7 +329,7 @@ export const env = {
 };
 ```
 
-- [ ] **Step 5: Create app provider and entrypoint**
+- [x] **Step 5: Create app provider and entrypoint**
 
 Create `commerce-admin/src/app/AppProviders.tsx`:
 
@@ -384,7 +384,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 ```
 
-- [ ] **Step 6: Create Dockerfile**
+- [x] **Step 6: Create Dockerfile**
 
 Create `commerce-admin/Dockerfile`:
 
@@ -405,7 +405,7 @@ COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
 ```
 
-- [ ] **Step 7: Install and verify**
+- [x] **Step 7: Install and verify**
 
 Run:
 
@@ -422,7 +422,7 @@ Expected:
 Build succeeds and Vitest exits successfully.
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 Run:
 
@@ -448,7 +448,7 @@ git add commerce-admin
 - Consumes: env values from `shared/config/env.ts`.
 - Produces: `coreApi`, `aiApi`, `setAuthToken`, `AuthProvider`, `useAuth`, `login`, `fetchCurrentUser`.
 
-- [ ] **Step 1: Create HTTP clients**
+- [x] **Step 1: Create HTTP clients**
 
 Create `commerce-admin/src/shared/api/http-client.ts`:
 
@@ -470,7 +470,7 @@ export function setAuthToken(token: string | null) {
 }
 ```
 
-- [ ] **Step 2: Create mock adapter**
+- [x] **Step 2: Create mock adapter**
 
 Create `commerce-admin/src/shared/api/mock-adapter.ts`:
 
@@ -516,7 +516,7 @@ export function installMockApi() {
 }
 ```
 
-- [ ] **Step 3: Define auth types**
+- [x] **Step 3: Define auth types**
 
 Create `commerce-admin/src/modules/auth/auth.types.ts`:
 
@@ -552,7 +552,7 @@ export interface LoginResponse {
 }
 ```
 
-- [ ] **Step 4: Create auth API**
+- [x] **Step 4: Create auth API**
 
 Create `commerce-admin/src/modules/auth/auth.api.ts`:
 
@@ -571,7 +571,7 @@ export async function fetchCurrentUser(): Promise<CurrentUser> {
 }
 ```
 
-- [ ] **Step 5: Write auth store test first**
+- [x] **Step 5: Write auth store test first**
 
 Create `commerce-admin/src/modules/auth/auth.store.test.tsx`:
 
@@ -636,7 +636,7 @@ Expected:
 FAIL because auth.store.tsx does not exist.
 ```
 
-- [ ] **Step 6: Implement auth store**
+- [x] **Step 6: Implement auth store**
 
 Create `commerce-admin/src/modules/auth/auth.store.tsx`:
 
@@ -692,7 +692,7 @@ export function useAuth() {
 }
 ```
 
-- [ ] **Step 7: Register AuthProvider and mock adapter**
+- [x] **Step 7: Register AuthProvider and mock adapter**
 
 Modify `commerce-admin/src/app/AppProviders.tsx`:
 
@@ -728,7 +728,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
 }
 ```
 
-- [ ] **Step 8: Verify**
+- [x] **Step 8: Verify**
 
 Run:
 
@@ -744,7 +744,7 @@ Expected:
 Auth tests pass and build succeeds.
 ```
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 Run:
 
@@ -770,7 +770,7 @@ git add commerce-admin
 - Consumes: `useAuth`, `login`, `PermissionCode`.
 - Produces: protected routing, login page and permission-based sidebar.
 
-- [ ] **Step 1: Create route permission config**
+- [x] **Step 1: Create route permission config**
 
 Create `commerce-admin/src/routes/route-permissions.ts`:
 
@@ -798,7 +798,7 @@ export const adminRoutes: AdminRouteConfig[] = [
 ];
 ```
 
-- [ ] **Step 2: Create PermissionGate**
+- [x] **Step 2: Create PermissionGate**
 
 Create `commerce-admin/src/shared/auth/PermissionGate.tsx`:
 
@@ -818,7 +818,7 @@ export function PermissionGate({ permission, children }: { permission: Permissio
 }
 ```
 
-- [ ] **Step 3: Create login page**
+- [x] **Step 3: Create login page**
 
 Create `commerce-admin/src/modules/auth/LoginPage.tsx`:
 
@@ -868,7 +868,7 @@ export function LoginPage() {
 }
 ```
 
-- [ ] **Step 4: Create admin layout**
+- [x] **Step 4: Create admin layout**
 
 Create `commerce-admin/src/layouts/AdminLayout.tsx`:
 
@@ -915,7 +915,7 @@ export function AdminLayout() {
 }
 ```
 
-- [ ] **Step 5: Create dashboard page**
+- [x] **Step 5: Create dashboard page**
 
 Create `commerce-admin/src/modules/dashboard/DashboardPage.tsx`:
 
@@ -937,7 +937,7 @@ export function DashboardPage() {
 }
 ```
 
-- [ ] **Step 6: Create routes**
+- [x] **Step 6: Create routes**
 
 Create `commerce-admin/src/routes/AppRoutes.tsx`:
 
@@ -985,7 +985,7 @@ export function AppRoutes() {
 }
 ```
 
-- [ ] **Step 7: Wire AppRoutes**
+- [x] **Step 7: Wire AppRoutes**
 
 Modify `commerce-admin/src/app/App.tsx`:
 
@@ -997,7 +997,7 @@ export function App() {
 }
 ```
 
-- [ ] **Step 8: Verify**
+- [x] **Step 8: Verify**
 
 Run:
 
@@ -1013,7 +1013,7 @@ Expected:
 Build and tests pass.
 ```
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 Run:
 
@@ -1049,7 +1049,7 @@ git add commerce-admin
 - Consumes: `coreApi`, `DataPageHeader`, route setup.
 - Produces: visible CMS page skeletons and one real category API contract sample.
 
-- [ ] **Step 1: Create shared data components**
+- [x] **Step 1: Create shared data components**
 
 Create `commerce-admin/src/shared/components/DataPageHeader.tsx`:
 
@@ -1113,7 +1113,7 @@ export interface PageResponse<T> {
 }
 ```
 
-- [ ] **Step 2: Create category types and API**
+- [x] **Step 2: Create category types and API**
 
 Create `commerce-admin/src/modules/categories/category.types.ts`:
 
@@ -1158,7 +1158,7 @@ export async function fetchCategoryAttributes(categoryId: string): Promise<Categ
 }
 ```
 
-- [ ] **Step 3: Create categories page**
+- [x] **Step 3: Create categories page**
 
 Create `commerce-admin/src/modules/categories/CategoriesPage.tsx`:
 
@@ -1191,7 +1191,7 @@ export function CategoriesPage() {
 }
 ```
 
-- [ ] **Step 4: Create placeholder pages**
+- [x] **Step 4: Create placeholder pages**
 
 Create each file with the matching component and text:
 
@@ -1355,7 +1355,7 @@ export function UsersPermissionsPage() {
 }
 ```
 
-- [ ] **Step 5: Wire pages into routes**
+- [x] **Step 5: Wire pages into routes**
 
 Modify `commerce-admin/src/routes/AppRoutes.tsx` to import pages and replace placeholders:
 
@@ -1389,7 +1389,7 @@ Routes:
 <Route path="/users-permissions" element={<UsersPermissionsPage />} />
 ```
 
-- [ ] **Step 6: Verify**
+- [x] **Step 6: Verify**
 
 Run:
 
@@ -1405,7 +1405,7 @@ Expected:
 Build and tests pass.
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 Run:
 
@@ -1426,7 +1426,7 @@ git add commerce-admin
 - Consumes: Tasks 1-4.
 - Produces: final manual verification checklist for CMS base.
 
-- [ ] **Step 1: Create verification checklist**
+- [x] **Step 1: Create verification checklist**
 
 Create `docs/verification/cms-base-checklist.md`:
 
@@ -1435,42 +1435,42 @@ Create `docs/verification/cms-base-checklist.md`:
 
 ## Build And Tests
 
-- [ ] `cd commerce-admin && npm install` completes.
-- [ ] `cd commerce-admin && npm run build` passes.
-- [ ] `cd commerce-admin && npm run test` passes.
+- [x] `cd commerce-admin && npm install` completes.
+- [x] `cd commerce-admin && npm run build` passes.
+- [x] `cd commerce-admin && npm run test` passes.
 
 ## App Shell
 
-- [ ] Login page renders at `/login`.
-- [ ] Mock login works when `VITE_USE_MOCK_API=true`.
-- [ ] Protected routes redirect to `/login` when no token exists.
-- [ ] Admin layout renders sidebar, header and content area after login.
-- [ ] Permission-based menu hides routes without permissions.
+- [x] Login page renders at `/login`.
+- [x] Mock login works when `VITE_USE_MOCK_API=true`.
+- [x] Protected routes redirect to `/login` when no token exists.
+- [x] Admin layout renders sidebar, header and content area after login.
+- [x] Permission-based menu hides routes without permissions.
 
 ## Pages
 
-- [ ] Dashboard page renders.
-- [ ] Categories page renders and calls `/categories`.
-- [ ] Sellers page renders.
-- [ ] Buyers page renders.
-- [ ] Products page renders.
-- [ ] Product detail route exists.
-- [ ] Reviews page renders.
-- [ ] Data Sources page renders.
-- [ ] AI Search page renders.
-- [ ] Review Intelligence page renders.
-- [ ] AI Analyst page renders.
-- [ ] Users & Permissions page renders.
+- [x] Dashboard page renders.
+- [x] Categories page renders and calls `/categories`.
+- [x] Sellers page renders.
+- [x] Buyers page renders.
+- [x] Products page renders.
+- [x] Product detail route exists.
+- [x] Reviews page renders.
+- [x] Data Sources page renders.
+- [x] AI Search page renders.
+- [x] Review Intelligence page renders.
+- [x] AI Analyst page renders.
+- [x] Users & Permissions page renders.
 
 ## Boundaries
 
-- [ ] Admin does not query database directly.
-- [ ] Admin does not implement marketplace business rules.
-- [ ] Core Java code is not scaffolded or modified by this CMS base work.
-- [ ] AI Platform code is not scaffolded or modified by this CMS base work.
+- [x] Admin does not query database directly.
+- [x] Admin does not implement marketplace business rules.
+- [x] Core Java code is not scaffolded or modified by this CMS base work.
+- [x] AI Platform code is not scaffolded or modified by this CMS base work.
 ````
 
-- [ ] **Step 2: Run final verification commands**
+- [x] **Step 2: Run final verification commands**
 
 Run:
 
@@ -1486,7 +1486,7 @@ Expected:
 Build and tests pass.
 ```
 
-- [ ] **Step 3: Commit verification docs**
+- [x] **Step 3: Commit verification docs**
 
 Run:
 
@@ -1495,7 +1495,7 @@ git add docs/verification/cms-base-checklist.md
  git commit -m "docs(admin): add cms base verification checklist"
 ```
 
-- [ ] **Step 4: Push branch**
+- [x] **Step 4: Push branch**
 
 Run:
 
