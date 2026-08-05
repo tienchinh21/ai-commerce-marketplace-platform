@@ -7,7 +7,7 @@ import {
   Put,
   Post,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { UsersPermissionsService } from './users-permissions.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { User } from '../auth/user.entity';
@@ -15,6 +15,7 @@ import { Permission } from '../auth/permission.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SetPermissionsDto } from './dto/set-permissions.dto';
 
+@ApiBearerAuth()
 @Controller('cms')
 export class UsersPermissionsController {
   constructor(

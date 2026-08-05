@@ -1,9 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { AnalyticsService } from './analytics.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { AnalyticsResponseDto } from './dto/analytics-response.dto';
 
+@ApiBearerAuth()
 @Controller('cms/analytics')
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Request } from '@nestjs/common';
-import { ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { Public } from './public.decorator';
 import {
@@ -20,12 +20,14 @@ export class AuthController {
     return this.authService.login(body.email, body.password);
   }
 
+  @ApiBearerAuth()
   @ApiOkResponse({ type: MeResponseDto })
   @Get('me')
   me(@Request() request: { user: { id: string } }) {
     return this.authService.me(request.user.id);
   }
 
+  @ApiBearerAuth()
   @ApiOkResponse({ type: MePermissionsResponseDto })
   @Get('me/permissions')
   async mePermissions(@Request() request: { user: { id: string } }) {

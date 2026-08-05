@@ -8,7 +8,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { IngestionService } from './ingestion.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
@@ -20,6 +20,7 @@ import { UpdateDataSourceDto } from './dto/update-data-source.dto';
 import { ImportProductsDto } from './dto/import-products.dto';
 import { ImportReviewsDto } from './dto/import-reviews.dto';
 
+@ApiBearerAuth()
 @Controller('cms')
 export class IngestionController {
   constructor(private readonly ingestionService: IngestionService) {}

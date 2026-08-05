@@ -7,13 +7,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
 import { Order } from './order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 
+@ApiBearerAuth()
 @Controller('cms/orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}

@@ -8,7 +8,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { Category } from './category.entity';
@@ -18,6 +18,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CreateAttributeDto } from './dto/create-attribute.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
 
+@ApiBearerAuth()
 @Controller('cms/categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
