@@ -17,8 +17,11 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { Permissions } from '../auth/permissions.decorator';
+import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
+import { Order } from './order.entity';
 
 class OrderItemDto {
   @IsString() productId: string;
@@ -44,6 +47,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Permissions('product:read')
+  @ApiOkResponse({ type: () => PaginatedResponseDto<Order> })
   @Get()
   list(
     @Query('buyerId') buyerId?: string,
@@ -62,12 +66,14 @@ export class OrdersController {
   }
 
   @Permissions('product:read')
+  @ApiOkResponse({ type: Order })
   @Get(':id')
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.ordersService.get(id);
   }
 
   @Permissions('product:write')
+  @ApiCreatedResponse({ type: Order })
   @Post()
   create(@Body() body: CreateOrderDto) {
     return this.ordersService.create(body);

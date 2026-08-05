@@ -9,8 +9,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { Permissions } from '../auth/permissions.decorator';
+import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
+import { Review } from './review.entity';
 
 class CreateReviewDto {
   @IsString() productId: string;
@@ -35,6 +38,7 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Permissions('review:read')
+  @ApiOkResponse({ type: () => PaginatedResponseDto<Review> })
   @Get()
   list(
     @Query('productId') productId?: string,
@@ -57,18 +61,21 @@ export class ReviewsController {
   }
 
   @Permissions('review:moderate')
+  @ApiCreatedResponse({ type: Review })
   @Post()
   create(@Body() body: CreateReviewDto) {
     return this.reviewsService.create(body);
   }
 
   @Permissions('review:read')
+  @ApiOkResponse({ type: Review })
   @Get(':id')
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.reviewsService.get(id);
   }
 
   @Permissions('review:moderate')
+  @ApiOkResponse({ type: Review })
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,

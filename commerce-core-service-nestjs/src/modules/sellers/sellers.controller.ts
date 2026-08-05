@@ -9,8 +9,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { IsOptional, IsString } from 'class-validator';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { SellersService } from './sellers.service';
 import { Permissions } from '../auth/permissions.decorator';
+import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
+import { Seller } from './seller.entity';
 
 class CreateSellerDto {
   @IsString() name: string;
@@ -33,6 +36,7 @@ export class SellersController {
   constructor(private readonly sellersService: SellersService) {}
 
   @Permissions('seller:read')
+  @ApiOkResponse({ type: () => PaginatedResponseDto<Seller> })
   @Get()
   list(
     @Query('search') search?: string,
@@ -49,18 +53,21 @@ export class SellersController {
   }
 
   @Permissions('seller:write')
+  @ApiCreatedResponse({ type: Seller })
   @Post()
   create(@Body() body: CreateSellerDto) {
     return this.sellersService.create(body);
   }
 
   @Permissions('seller:read')
+  @ApiOkResponse({ type: Seller })
   @Get(':id')
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.sellersService.get(id);
   }
 
   @Permissions('seller:write')
+  @ApiOkResponse({ type: Seller })
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,

@@ -19,8 +19,14 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { Permissions } from '../auth/permissions.decorator';
+import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
+import { Product } from './product.entity';
+import { ProductVariant } from './product-variant.entity';
+import { ProductImage } from './product-image.entity';
+import { ProductDetailResponseDto } from './dto/product-detail-response.dto';
 
 class CreateProductDto {
   @IsString() sellerId: string;
@@ -75,6 +81,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Permissions('product:read')
+  @ApiOkResponse({ type: () => PaginatedResponseDto<Product> })
   @Get()
   list(
     @Query('search') search?: string,
@@ -95,18 +102,21 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
+  @ApiCreatedResponse({ type: Product })
   @Post()
   create(@Body() body: CreateProductDto) {
     return this.productsService.create(body);
   }
 
   @Permissions('product:read')
+  @ApiOkResponse({ type: ProductDetailResponseDto })
   @Get(':id')
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.getDetail(id);
   }
 
   @Permissions('product:write')
+  @ApiOkResponse({ type: Product })
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -116,18 +126,21 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
+  @ApiOkResponse()
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
   }
 
   @Permissions('product:read')
+  @ApiOkResponse({ type: [ProductVariant] })
   @Get(':id/variants')
   listVariants(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.listVariants(id);
   }
 
   @Permissions('product:write')
+  @ApiCreatedResponse({ type: ProductVariant })
   @Post(':id/variants')
   createVariant(
     @Param('id', ParseUUIDPipe) id: string,
@@ -137,6 +150,7 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
+  @ApiCreatedResponse({ type: [ProductImage] })
   @Post(':id/images')
   addImages(
     @Param('id', ParseUUIDPipe) id: string,
