@@ -28,7 +28,7 @@ class UpdateSellerDto {
   @IsOptional() metadataJson?: Record<string, unknown>;
 }
 
-@Controller('sellers')
+@Controller('cms/sellers')
 export class SellersController {
   constructor(private readonly sellersService: SellersService) {}
 

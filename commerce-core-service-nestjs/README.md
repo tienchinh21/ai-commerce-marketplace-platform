@@ -30,7 +30,7 @@ npm run start:dev
 curl http://localhost:8080/api/health
 
 # Login (seeded automatically on first boot)
-curl -X POST http://localhost:8080/api/auth/login \
+curl -X POST http://localhost:8080/api/cms/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@example.com","password":"admin123"}'
 ```
@@ -40,20 +40,20 @@ curl -X POST http://localhost:8080/api/auth/login \
 - Admin user: `admin@example.com` / `admin123` with all 16 permissions
 - 5 categories with attributes, 10 sellers, 25 products, 30 buyers, ~87 reviews
 
-## API Groups (prefix `/api`)
+## CMS API Groups (prefix `/api/cms`)
 
-- `POST /auth/login`, `GET /auth/me`, `GET /auth/me/permissions`
-- `GET/POST /users`, `GET /permissions`, `PUT /users/:id/permissions`
-- `GET/POST /categories`, `GET/PATCH/DELETE /categories/:id`, attributes endpoints
-- `GET/POST /sellers`, `GET/PATCH /sellers/:id`
-- `GET/POST /buyers`, `GET/PATCH /buyers/:id`
-- `GET/POST /products`, `GET/PATCH/DELETE /products/:id`, variants, images
-- `GET/POST /reviews`, `GET/PATCH /reviews/:id`
-- `GET/POST /orders`, `GET /orders/:id`
-- `GET/POST /data-sources`, `GET /sync-runs`, `GET /raw-snapshots`, `POST /imports/products|reviews`
-- `GET /analytics/product-performance|review-sentiment|seller-performance|category-summary`
+- `POST /cms/auth/login`, `GET /cms/auth/me`, `GET /cms/auth/me/permissions`
+- `GET/POST /cms/users`, `GET /cms/permissions`, `PUT /cms/users/:id/permissions`
+- `GET/POST /cms/categories`, `GET/PATCH/DELETE /cms/categories/:id`, attributes endpoints
+- `GET/POST /cms/sellers`, `GET/PATCH /cms/sellers/:id`
+- `GET/POST /cms/buyers`, `GET/PATCH /cms/buyers/:id`
+- `GET/POST /cms/products`, `GET/PATCH/DELETE /cms/products/:id`, variants, images
+- `GET/POST /cms/reviews`, `GET/PATCH /cms/reviews/:id`
+- `GET/POST /cms/orders`, `GET /cms/orders/:id`
+- `GET/POST /cms/data-sources`, `GET /cms/sync-runs`, `GET /cms/raw-snapshots`, `POST /cms/imports/products|reviews`
+- `GET /cms/analytics/product-performance|review-sentiment|seller-performance|category-summary`
 
-All endpoints except `/auth/login` and `/health` require `Authorization: Bearer <token>`. Permissions are enforced server-side via `@Permissions('resource:action')`.
+All endpoints except `/cms/auth/login` and `/health` require `Authorization: Bearer <token>`. Permissions are enforced server-side via `@Permissions('resource:action')`.
 
 ## Env (`.env`)
 

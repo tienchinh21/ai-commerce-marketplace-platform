@@ -30,7 +30,7 @@ class UpdateReviewDto {
   @IsOptional() @IsString() status?: string;
 }
 
-@Controller('reviews')
+@Controller('cms/reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 

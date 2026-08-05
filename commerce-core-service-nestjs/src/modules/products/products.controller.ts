@@ -70,7 +70,7 @@ class AddImagesDto {
   images: AddImageDto[];
 }
 
-@Controller('products')
+@Controller('cms/products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 

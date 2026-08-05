@@ -2,7 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
 import { Permissions } from '../auth/permissions.decorator';
 
-@Controller('analytics')
+@Controller('cms/analytics')
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 

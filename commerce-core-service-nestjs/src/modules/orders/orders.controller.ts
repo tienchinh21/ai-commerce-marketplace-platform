@@ -39,7 +39,7 @@ class CreateOrderDto {
   items: OrderItemDto[];
 }
 
-@Controller('orders')
+@Controller('cms/orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 

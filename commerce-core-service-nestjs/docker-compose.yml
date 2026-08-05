@@ -1,0 +1,48 @@
+# Docker Compose cho BE (commerce-core-service-nestjs) - basic setup
+# Chỉ chạy PostgreSQL + core service, chưa bao gồm Redis/MinIO/AI Platform.
+#
+# Dev (default):  docker compose up -d --build
+# Prod:           ENV_FILE=.env.production HOST_DB_PORT=5433 docker compose up -d --build
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: commerce-postgres${POSTGRES_SUFFIX:-}
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-commerce}
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-commerce}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  core-service:
+    build: .
+    container_name: commerce-core-service-nestjs${POSTGRES_SUFFIX:-}
+    environment:
+      PORT: 8080
+      NODE_ENV: ${NODE_ENV:-development}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-commerce}
+      DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-true}
+      DB_SEED: ${DB_SEED:-true}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-8h}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+    ports:
+      - '8080:8080'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

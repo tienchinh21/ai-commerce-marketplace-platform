@@ -1,0 +1,15 @@
+# Docker Compose cho production: chỉ chạy core service, kết nối đến PostgreSQL bên ngoài.
+# DB prod: db.xjanua.me:5432 / ecommerc-ai
+
+services:
+  core-service:
+    build: .
+    container_name: commerce-core-service-nestjs
+    env_file:
+      - .env.production
+    environment:
+      # Đảm bảo luôn chạy ở production mode
+      NODE_ENV: production
+    ports:
+      - '8080:8080'
+    restart: unless-stopped

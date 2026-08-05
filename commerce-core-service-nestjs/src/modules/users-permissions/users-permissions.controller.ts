@@ -23,7 +23,7 @@ class SetPermissionsDto {
   @IsArray() @IsString({ each: true }) codes: string[];
 }
 
-@Controller()
+@Controller('cms')
 export class UsersPermissionsController {
   constructor(
     private readonly usersPermissionsService: UsersPermissionsService,

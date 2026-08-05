@@ -46,7 +46,7 @@ class UpdateAttributeDto {
   @IsOptional() optionsJson?: Record<string, unknown>;
 }
 
-@Controller('categories')
+@Controller('cms/categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 

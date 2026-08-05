@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Client } from 'pg';
 import { AppModule } from './app.module';
 import { loadEnv } from './shared/config/env';
@@ -48,8 +49,18 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
+  const config = new DocumentBuilder()
+    .setTitle('Commerce Core CMS API')
+    .setDescription('AI Commerce Marketplace Core CMS API (admin/internal routes under /api/cms)')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
   await app.listen(env.port);
 
   console.log(`Core service listening on http://localhost:${env.port}`);
+  console.log(`Swagger docs at http://localhost:${env.port}/api/docs`);
 }
 void bootstrap();

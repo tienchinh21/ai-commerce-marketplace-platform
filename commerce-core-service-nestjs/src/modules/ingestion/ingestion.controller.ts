@@ -76,7 +76,7 @@ class ImportReviewsDto {
   items: ImportReviewItemDto[];
 }
 
-@Controller()
+@Controller('cms')
 export class IngestionController {
   constructor(private readonly ingestionService: IngestionService) {}
 
