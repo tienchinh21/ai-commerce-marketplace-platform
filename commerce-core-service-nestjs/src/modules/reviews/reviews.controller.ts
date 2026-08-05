@@ -8,30 +8,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
 import { Review } from './review.entity';
-
-class CreateReviewDto {
-  @IsString() productId: string;
-  @IsOptional() @IsString() buyerId?: string;
-  @IsOptional() @IsString() sellerId?: string;
-  @IsInt() @Min(1) @Max(5) rating: number;
-  @IsOptional() @IsString() title?: string;
-  @IsOptional() @IsString() content?: string;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() @IsString() sourceType?: string;
-}
-
-class UpdateReviewDto {
-  @IsOptional() @IsInt() @Min(1) @Max(5) rating?: number;
-  @IsOptional() @IsString() title?: string;
-  @IsOptional() @IsString() content?: string;
-  @IsOptional() @IsString() status?: string;
-}
+import { CreateReviewDto } from './dto/create-review.dto';
+import { UpdateReviewDto } from './dto/update-review.dto';
 
 @Controller('cms/reviews')
 export class ReviewsController {

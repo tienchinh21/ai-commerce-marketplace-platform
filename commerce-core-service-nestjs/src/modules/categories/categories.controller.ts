@@ -8,46 +8,15 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { Category } from './category.entity';
 import { CategoryAttribute } from './category-attribute.entity';
-
-class CreateCategoryDto {
-  @IsOptional() @IsString() parentId?: string;
-  @IsString() name: string;
-  @IsOptional() @IsString() slug?: string;
-  @IsOptional() @IsString() status?: string;
-}
-
-class UpdateCategoryDto {
-  @IsOptional() @IsString() name?: string;
-  @IsOptional() @IsString() slug?: string;
-  @IsOptional() @IsString() status?: string;
-}
-
-class CreateAttributeDto {
-  @IsString() code: string;
-  @IsString() label: string;
-  @IsString() dataType: string;
-  @IsOptional() @IsBoolean() isFilterable?: boolean;
-  @IsOptional() @IsBoolean() isSearchable?: boolean;
-  @IsOptional() @IsBoolean() isRequired?: boolean;
-  @IsOptional() @IsString() unit?: string;
-  @IsOptional() optionsJson?: Record<string, unknown>;
-}
-
-class UpdateAttributeDto {
-  @IsOptional() @IsString() label?: string;
-  @IsOptional() @IsString() dataType?: string;
-  @IsOptional() @IsBoolean() isFilterable?: boolean;
-  @IsOptional() @IsBoolean() isSearchable?: boolean;
-  @IsOptional() @IsBoolean() isRequired?: boolean;
-  @IsOptional() @IsString() unit?: string;
-  @IsOptional() optionsJson?: Record<string, unknown>;
-}
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateAttributeDto } from './dto/create-attribute.dto';
+import { UpdateAttributeDto } from './dto/update-attribute.dto';
 
 @Controller('cms/categories')
 export class CategoriesController {

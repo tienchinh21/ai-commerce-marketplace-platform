@@ -9,16 +9,6 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import {
-  IsArray,
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-  ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { Permissions } from '../auth/permissions.decorator';
@@ -27,54 +17,10 @@ import { Product } from './product.entity';
 import { ProductVariant } from './product-variant.entity';
 import { ProductImage } from './product-image.entity';
 import { ProductDetailResponseDto } from './dto/product-detail-response.dto';
-
-class CreateProductDto {
-  @IsString() sellerId: string;
-  @IsString() categoryId: string;
-  @IsString() title: string;
-  @IsOptional() @IsString() slug?: string;
-  @IsOptional() @IsString() brand?: string;
-  @IsOptional() @IsString() description?: string;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() @IsNumber() priceMin?: number;
-  @IsOptional() @IsNumber() priceMax?: number;
-  @IsOptional() specsJson?: Record<string, unknown>;
-}
-
-class UpdateProductDto {
-  @IsOptional() @IsString() sellerId?: string;
-  @IsOptional() @IsString() categoryId?: string;
-  @IsOptional() @IsString() title?: string;
-  @IsOptional() @IsString() slug?: string;
-  @IsOptional() @IsString() brand?: string;
-  @IsOptional() @IsString() description?: string;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() @IsNumber() priceMin?: number;
-  @IsOptional() @IsNumber() priceMax?: number;
-  @IsOptional() specsJson?: Record<string, unknown>;
-}
-
-class CreateVariantDto {
-  @IsString() sku: string;
-  @IsOptional() @IsString() title?: string;
-  @IsNumber() price: number;
-  @IsOptional() @IsInt() @Min(0) stockQuantity?: number;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() specsJson?: Record<string, unknown>;
-}
-
-class AddImageDto {
-  @IsString() url: string;
-  @IsOptional() @IsInt() sortOrder?: number;
-  @IsOptional() @IsString() altText?: string;
-}
-
-class AddImagesDto {
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => AddImageDto)
-  images: AddImageDto[];
-}
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateVariantDto } from './dto/create-variant.dto';
+import { AddImagesDto } from './dto/add-images.dto';
 
 @Controller('cms/products')
 export class ProductsController {

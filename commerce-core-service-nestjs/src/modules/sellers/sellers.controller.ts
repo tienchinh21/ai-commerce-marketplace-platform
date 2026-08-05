@@ -8,28 +8,13 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { IsOptional, IsString } from 'class-validator';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { SellersService } from './sellers.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
 import { Seller } from './seller.entity';
-
-class CreateSellerDto {
-  @IsString() name: string;
-  @IsOptional() @IsString() slug?: string;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() @IsString() userId?: string;
-  @IsOptional() metadataJson?: Record<string, unknown>;
-}
-
-class UpdateSellerDto {
-  @IsOptional() @IsString() name?: string;
-  @IsOptional() @IsString() slug?: string;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() @IsString() userId?: string;
-  @IsOptional() metadataJson?: Record<string, unknown>;
-}
+import { CreateSellerDto } from './dto/create-seller.dto';
+import { UpdateSellerDto } from './dto/update-seller.dto';
 
 @Controller('cms/sellers')
 export class SellersController {

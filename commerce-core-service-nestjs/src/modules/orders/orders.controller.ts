@@ -7,40 +7,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min,
-  ValidateNested,
-} from 'class-validator';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
 import { Order } from './order.entity';
-
-class OrderItemDto {
-  @IsString() productId: string;
-  @IsOptional() @IsString() variantId?: string;
-  @IsInt() @Min(1) quantity: number;
-  @IsNumber() unitPrice: number;
-}
-
-class CreateOrderDto {
-  @IsString() buyerId: string;
-  @IsString() sellerId: string;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() @IsString() paymentStatus?: string;
-  @IsOptional() @IsString() currency?: string;
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => OrderItemDto)
-  items: OrderItemDto[];
-}
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Controller('cms/orders')
 export class OrdersController {

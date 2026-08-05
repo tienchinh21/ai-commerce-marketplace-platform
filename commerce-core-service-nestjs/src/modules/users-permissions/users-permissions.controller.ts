@@ -7,24 +7,13 @@ import {
   Put,
   Post,
 } from '@nestjs/common';
-import { IsArray, IsEmail, IsOptional, IsString } from 'class-validator';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { UsersPermissionsService } from './users-permissions.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { User } from '../auth/user.entity';
 import { Permission } from '../auth/permission.entity';
-
-class CreateUserDto {
-  @IsEmail() email: string;
-  @IsString() password: string;
-  @IsString() displayName: string;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() @IsArray() @IsString({ each: true }) permissionCodes?: string[];
-}
-
-class SetPermissionsDto {
-  @IsArray() @IsString({ each: true }) codes: string[];
-}
+import { CreateUserDto } from './dto/create-user.dto';
+import { SetPermissionsDto } from './dto/set-permissions.dto';
 
 @Controller('cms')
 export class UsersPermissionsController {

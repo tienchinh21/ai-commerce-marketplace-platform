@@ -8,16 +8,6 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { Type } from 'class-transformer';
-import {
-  IsArray,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Max,
-  Min,
-  ValidateNested,
-} from 'class-validator';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { IngestionService } from './ingestion.service';
 import { Permissions } from '../auth/permissions.decorator';
@@ -25,61 +15,10 @@ import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
 import { DataSourceEntity } from './data-source.entity';
 import { SyncRun } from './sync-run.entity';
 import { RawSnapshot } from './raw-snapshot.entity';
-
-class CreateDataSourceDto {
-  @IsString() name: string;
-  @IsOptional() @IsString() type?: string;
-  @IsOptional() @IsString() baseUrl?: string;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() configJson?: Record<string, unknown>;
-}
-
-class UpdateDataSourceDto {
-  @IsOptional() @IsString() name?: string;
-  @IsOptional() @IsString() type?: string;
-  @IsOptional() @IsString() baseUrl?: string;
-  @IsOptional() @IsString() status?: string;
-  @IsOptional() configJson?: Record<string, unknown>;
-}
-
-class ImportProductItemDto {
-  @IsString() sourceProductId: string;
-  @IsString() title: string;
-  @IsString() sellerId: string;
-  @IsString() categoryId: string;
-  @IsOptional() @IsNumber() @Min(0) priceMin?: number;
-  @IsOptional() @IsNumber() @Min(0) priceMax?: number;
-  @IsOptional() @IsString() brand?: string;
-  @IsOptional() @IsString() description?: string;
-  @IsOptional() specs?: Record<string, unknown>;
-}
-
-class ImportProductsDto {
-  @IsString() dataSourceId: string;
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ImportProductItemDto)
-  items: ImportProductItemDto[];
-}
-
-class ImportReviewItemDto {
-  @IsString() sourceReviewId: string;
-  @IsString() sourceProductId: string;
-  @IsString() productId: string;
-  @IsOptional() @IsString() buyerId?: string;
-  @IsOptional() @IsString() sellerId?: string;
-  @IsNumber() @Min(1) @Max(5) rating: number;
-  @IsOptional() @IsString() title?: string;
-  @IsOptional() @IsString() content?: string;
-}
-
-class ImportReviewsDto {
-  @IsString() dataSourceId: string;
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ImportReviewItemDto)
-  items: ImportReviewItemDto[];
-}
+import { CreateDataSourceDto } from './dto/create-data-source.dto';
+import { UpdateDataSourceDto } from './dto/update-data-source.dto';
+import { ImportProductsDto } from './dto/import-products.dto';
+import { ImportReviewsDto } from './dto/import-reviews.dto';
 
 @Controller('cms')
 export class IngestionController {
