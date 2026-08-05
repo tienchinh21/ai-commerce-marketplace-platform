@@ -14,13 +14,13 @@ export class Seller {
   @Column({ name: 'user_id', type: 'uuid', nullable: true })
   userId: string | null;
 
-  @Column({ type: 'varchar',  length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'varchar',  length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   slug: string;
 
-  @Column({ type: 'varchar',  length: 32, default: 'ACTIVE' })
+  @Column({ type: 'varchar', length: 32, default: 'ACTIVE' })
   status: string;
 
   @Column({

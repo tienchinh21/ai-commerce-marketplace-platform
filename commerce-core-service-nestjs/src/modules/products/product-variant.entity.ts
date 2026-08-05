@@ -22,10 +22,10 @@ export class ProductVariant {
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
-  @Column({ type: 'varchar',  length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   sku: string;
 
-  @Column({ type: 'varchar',  length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   title: string | null;
 
   @Column({ type: 'numeric', precision: 14, scale: 2 })
@@ -34,7 +34,7 @@ export class ProductVariant {
   @Column({ name: 'stock_quantity', type: 'int', default: 0 })
   stockQuantity: number;
 
-  @Column({ type: 'varchar',  length: 32, default: 'ACTIVE' })
+  @Column({ type: 'varchar', length: 32, default: 'ACTIVE' })
   status: string;
 
   @Column({ name: 'specs_json', type: 'jsonb', default: () => "'{}'::jsonb" })

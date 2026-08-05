@@ -25,10 +25,15 @@ export class SourceReview {
   @Column({ name: 'canonical_review_id', type: 'uuid', nullable: true })
   canonicalReviewId: string | null;
 
-  @Column({ type: 'varchar',  name: 'source_review_id', length: 255 })
+  @Column({ type: 'varchar', name: 'source_review_id', length: 255 })
   sourceReviewId: string;
 
-  @Column({ type: 'varchar',  name: 'source_product_id', length: 255, nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'source_product_id',
+    length: 255,
+    nullable: true,
+  })
   sourceProductId: string | null;
 
   @Column({ name: 'raw_data_json', type: 'jsonb', nullable: true })
@@ -37,7 +42,12 @@ export class SourceReview {
   @Column({ name: 'normalized_data_json', type: 'jsonb', nullable: true })
   normalizedDataJson: Record<string, unknown> | null;
 
-  @Column({ type: 'varchar',  name: 'mapping_status', length: 32, default: 'PENDING' })
+  @Column({
+    type: 'varchar',
+    name: 'mapping_status',
+    length: 32,
+    default: 'PENDING',
+  })
   mappingStatus: string;
 
   @CreateDateColumn({ name: 'created_at' })

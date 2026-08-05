@@ -19,11 +19,13 @@ import { RawSnapshot } from '../../modules/ingestion/raw-snapshot.entity';
 import { SourceProduct } from '../../modules/ingestion/source-product.entity';
 import { SourceReview } from '../../modules/ingestion/source-review.entity';
 import { User } from '../../modules/auth/user.entity';
+import { ExternalUser } from '../../modules/auth/external-user.entity';
 import { Permission } from '../../modules/auth/permission.entity';
 import { UserPermission } from '../../modules/auth/user-permission.entity';
 
 const entities = [
   User,
+  ExternalUser,
   Permission,
   UserPermission,
   Seller,

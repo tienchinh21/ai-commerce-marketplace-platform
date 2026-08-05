@@ -25,13 +25,16 @@ async function ensureSchemas(env: ReturnType<typeof loadEnv>): Promise<void> {
        CREATE SCHEMA IF NOT EXISTS analytics;
        CREATE SCHEMA IF NOT EXISTS ai;`,
     );
-    console.log('Schemas ready: identity, marketplace, ingestion, analytics, ai');
+
+    console.log(
+      'Schemas ready: identity, marketplace, ingestion, analytics, ai',
+    );
   } finally {
     await client.end();
   }
 }
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const env = loadEnv();
   await ensureSchemas(env);
   const app = await NestFactory.create(AppModule);
@@ -46,6 +49,7 @@ async function bootstrap() {
   );
 
   await app.listen(env.port);
+
   console.log(`Core service listening on http://localhost:${env.port}`);
 }
 void bootstrap();

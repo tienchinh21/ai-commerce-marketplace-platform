@@ -18,19 +18,34 @@ export class RawSnapshot {
   @Column({ name: 'sync_run_id', type: 'uuid', nullable: true })
   syncRunId: string | null;
 
-  @Column({ type: 'varchar',  name: 'content_type', length: 64, default: 'application/json' })
+  @Column({
+    type: 'varchar',
+    name: 'content_type',
+    length: 64,
+    default: 'application/json',
+  })
   contentType: string;
 
-  @Column({ type: 'varchar',  name: 'content_hash', length: 64, nullable: true })
+  @Column({ type: 'varchar', name: 'content_hash', length: 64, nullable: true })
   contentHash: string | null;
 
   @Column({ name: 'raw_json', type: 'jsonb', nullable: true })
   rawJson: Record<string, unknown> | null;
 
-  @Column({ type: 'varchar',  name: 'object_storage_key', length: 500, nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'object_storage_key',
+    length: 500,
+    nullable: true,
+  })
   objectStorageKey: string | null;
 
-  @Column({ type: 'varchar',  name: 'parse_status', length: 32, default: 'PENDING' })
+  @Column({
+    type: 'varchar',
+    name: 'parse_status',
+    length: 32,
+    default: 'PENDING',
+  })
   parseStatus: string;
 
   @Column({ name: 'error_message', type: 'text', nullable: true })

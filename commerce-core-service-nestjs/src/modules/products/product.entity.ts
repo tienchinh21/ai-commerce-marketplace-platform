@@ -22,19 +22,19 @@ export class Product {
   @Column({ name: 'category_id', type: 'uuid' })
   categoryId: string;
 
-  @Column({ type: 'varchar',  length: 500 })
+  @Column({ type: 'varchar', length: 500 })
   title: string;
 
-  @Column({ type: 'varchar',  length: 500 })
+  @Column({ type: 'varchar', length: 500 })
   slug: string;
 
-  @Column({ type: 'varchar',  length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   brand: string | null;
 
   @Column({ type: 'text', nullable: true })
   description: string | null;
 
-  @Column({ type: 'varchar',  length: 32, default: 'ACTIVE' })
+  @Column({ type: 'varchar', length: 32, default: 'ACTIVE' })
   status: string;
 
   @Column({

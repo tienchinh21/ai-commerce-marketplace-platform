@@ -22,19 +22,19 @@ export class Category {
   @JoinColumn({ name: 'parent_id' })
   parent: Category | null;
 
-  @Column({ type: 'varchar',  length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'varchar',  length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   slug: string;
 
-  @Column({ type: 'varchar',  length: 500 })
+  @Column({ type: 'varchar', length: 500 })
   path: string;
 
   @Column({ type: 'int', default: 0 })
   level: number;
 
-  @Column({ type: 'varchar',  length: 32, default: 'ACTIVE' })
+  @Column({ type: 'varchar', length: 32, default: 'ACTIVE' })
   status: string;
 
   @CreateDateColumn({ name: 'created_at' })

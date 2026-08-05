@@ -3,14 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   Index,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserPermission } from './user-permission.entity';
 
-@Entity({ schema: 'identity', name: 'users' })
-export class User {
+@Entity({ schema: 'identity', name: 'external_users' })
+export class ExternalUser {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -29,6 +27,9 @@ export class User {
   @Column({ type: 'varchar', name: 'display_name', length: 255 })
   displayName: string;
 
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  phone: string | null;
+
   @Column({ type: 'varchar', length: 32, default: 'ACTIVE' })
   status: string;
 
@@ -37,7 +38,4 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
-
-  @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
-  userPermissions: UserPermission[];
 }

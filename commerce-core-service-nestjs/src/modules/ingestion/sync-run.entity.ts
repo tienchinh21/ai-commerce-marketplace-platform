@@ -15,7 +15,7 @@ export class SyncRun {
   @Column({ name: 'data_source_id', type: 'uuid' })
   dataSourceId: string;
 
-  @Column({ type: 'varchar',  length: 32, default: 'PENDING' })
+  @Column({ type: 'varchar', length: 32, default: 'PENDING' })
   status: string;
 
   @Column({ name: 'started_at', type: 'timestamptz', nullable: true })

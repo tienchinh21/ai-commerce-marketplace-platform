@@ -22,10 +22,15 @@ export class Order {
   @Column({ name: 'seller_id', type: 'uuid' })
   sellerId: string;
 
-  @Column({ type: 'varchar',  length: 32, default: 'PENDING' })
+  @Column({ type: 'varchar', length: 32, default: 'PENDING' })
   status: string;
 
-  @Column({ type: 'varchar',  name: 'payment_status', length: 32, default: 'UNPAID' })
+  @Column({
+    type: 'varchar',
+    name: 'payment_status',
+    length: 32,
+    default: 'UNPAID',
+  })
   paymentStatus: string;
 
   @Column({
@@ -37,7 +42,7 @@ export class Order {
   })
   totalAmount: string;
 
-  @Column({ type: 'varchar',  length: 3, default: 'VND' })
+  @Column({ type: 'varchar', length: 3, default: 'VND' })
   currency: string;
 
   @Column({

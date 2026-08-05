@@ -455,7 +455,7 @@ export class SeederService {
         .into(CategoryAttribute)
         .values(
           seedCategory.attributes.map((attribute) => ({
-            category,
+            category: { id: category.id },
             code: attribute.code,
             label: attribute.label,
             dataType: attribute.dataType,
@@ -464,7 +464,7 @@ export class SeederService {
             isRequired: attribute.isRequired,
             unit: attribute.unit ?? null,
             optionsJson: 'options' in attribute ? attribute.options : null,
-          })),
+          })) as any,
         )
         .execute();
     }

@@ -11,16 +11,16 @@ export class DataSourceEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar',  length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'varchar',  length: 32 })
+  @Column({ type: 'varchar', length: 32 })
   type: string;
 
-  @Column({ type: 'varchar',  name: 'base_url', length: 1000, nullable: true })
+  @Column({ type: 'varchar', name: 'base_url', length: 1000, nullable: true })
   baseUrl: string | null;
 
-  @Column({ type: 'varchar',  length: 32, default: 'ACTIVE' })
+  @Column({ type: 'varchar', length: 32, default: 'ACTIVE' })
   status: string;
 
   @Column({ name: 'config_json', type: 'jsonb', default: () => "'{}'::jsonb" })

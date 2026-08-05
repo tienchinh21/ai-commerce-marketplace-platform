@@ -25,16 +25,21 @@ export class Review {
   @Column({ type: 'int' })
   rating: number;
 
-  @Column({ type: 'varchar',  length: 500, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   title: string | null;
 
   @Column({ type: 'text', nullable: true })
   content: string | null;
 
-  @Column({ type: 'varchar',  length: 32, default: 'APPROVED' })
+  @Column({ type: 'varchar', length: 32, default: 'APPROVED' })
   status: string;
 
-  @Column({ type: 'varchar',  name: 'source_type', length: 32, default: 'manual' })
+  @Column({
+    type: 'varchar',
+    name: 'source_type',
+    length: 32,
+    default: 'manual',
+  })
   sourceType: string;
 
   @Column({ name: 'source_review_id', type: 'uuid', nullable: true })
