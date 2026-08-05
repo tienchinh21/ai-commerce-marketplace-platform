@@ -13,3 +13,6 @@ export function setAuthToken(token: string | null) {
     }
   }
 }
+
+export const cmsPath = (path: string) =>
+  path.startsWith('/') ? `/cms${path}` : `/cms/${path}`;

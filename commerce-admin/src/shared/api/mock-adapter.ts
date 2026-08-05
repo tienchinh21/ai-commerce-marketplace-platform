@@ -1,9 +1,14 @@
 import { coreApi } from './http-client';
 
+function normalizeMockPath(url: string | undefined) {
+  if (!url) return url;
+  return url.startsWith('/cms/') ? url.slice('/cms'.length) : url;
+}
+
 export function installMockApi() {
   coreApi.interceptors.request.use((config) => config);
   coreApi.interceptors.response.use(undefined, async (error) => {
-    const url = error.config?.url;
+    const url = normalizeMockPath(error.config?.url);
     const method = error.config?.method;
 
     if (method === 'post' && url === '/auth/login') {
