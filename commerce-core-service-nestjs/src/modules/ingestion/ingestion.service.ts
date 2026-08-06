@@ -8,6 +8,11 @@ import { SourceProduct } from './source-product.entity';
 import { SourceReview } from './source-review.entity';
 import { ProductsService } from '../products/products.service';
 import { ReviewsService } from '../reviews/reviews.service';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
+
+const IMPORT_ERROR_MESSAGE =
+  VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR];
 
 export interface ImportProductsInput {
   dataSourceId: string;
@@ -211,7 +216,7 @@ export class IngestionService {
         success += 1;
       } catch (error) {
         failed += 1;
-        errors.push(`${item.sourceProductId}: ${String(error)}`);
+        errors.push(`${item.sourceProductId}: ${IMPORT_ERROR_MESSAGE}`);
       }
     }
 
@@ -258,7 +263,7 @@ export class IngestionService {
         success += 1;
       } catch (error) {
         failed += 1;
-        errors.push(`${item.sourceReviewId}: ${String(error)}`);
+        errors.push(`${item.sourceReviewId}: ${IMPORT_ERROR_MESSAGE}`);
       }
     }
 
