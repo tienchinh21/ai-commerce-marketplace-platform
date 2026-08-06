@@ -55,6 +55,15 @@ curl -X POST http://localhost:8080/api/cms/auth/login \
 
 All endpoints except `/cms/auth/login` and `/health` require `Authorization: Bearer <token>`. Permissions are enforced server-side via `@Permissions('resource:action')`.
 
+## CMS API Response Policy
+
+- GET endpoints return explicit response DTOs, not TypeORM entities.
+- POST create endpoints return `201 Created` with `{ "success": true, "id": "...", "message": "..." }`.
+- PATCH and PUT endpoints return `200 OK` with `{ "success": true, "message": "..." }`.
+- DELETE endpoints return `204 No Content`.
+- Import endpoints return a compact sync run summary with `syncRunId`, `status`, `totalRecords`, `successCount`, and `failedCount`.
+- Sensitive or heavy persistence fields such as `passwordHash`, `configJson`, and `rawJson` are not returned from CMS API responses by default.
+
 ## Env (`.env`)
 
 ```env
