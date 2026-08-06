@@ -16,6 +16,7 @@ import {
   createCreated,
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 import { toResponseDtoList } from '../../shared/api/response-serialization';
 import { UserResponseDto } from './dto/user-response.dto';
 import { PermissionResponseDto } from './dto/permission-response.dto';
@@ -30,7 +31,7 @@ export class UsersPermissionsController {
   ) {}
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'List of users', type: [UserResponseDto] })
+  @ApiOkResponse({ description: 'Danh sách người dùng', type: [UserResponseDto] })
   @Get('users')
   async listUsers(): Promise<UserResponseDto[]> {
     const users = await this.usersPermissionsService.listUsers();
@@ -38,15 +39,15 @@ export class UsersPermissionsController {
   }
 
   @Permissions('category:read')
-  @ApiCreatedResponse({ description: 'Created user', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Tạo người dùng thành công', type: CreatedResourceResponseDto })
   @Post('users')
   async createUser(@Body() body: CreateUserDto): Promise<CreatedResourceResponseDto> {
     const user = await this.usersPermissionsService.createUser(body);
-    return createCreated(user.id, 'User created successfully');
+    return createCreated(user.id, VI_API_MESSAGES.success.USER_CREATED);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'List of permissions', type: [PermissionResponseDto] })
+  @ApiOkResponse({ description: 'Danh sách quyền', type: [PermissionResponseDto] })
   @Get('permissions')
   async listPermissions(): Promise<PermissionResponseDto[]> {
     const permissions = await this.usersPermissionsService.listPermissions();
@@ -54,20 +55,20 @@ export class UsersPermissionsController {
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'List of permission codes for the user', type: [String] })
+  @ApiOkResponse({ description: 'Danh sách quyền của người dùng', type: [String] })
   @Get('users/:id/permissions')
   async getUserPermissions(@Param('id', ParseUUIDPipe) id: string): Promise<string[]> {
     return this.usersPermissionsService.getUserPermissions(id);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'User permissions updated successfully', type: MutationSuccessResponseDto })
+  @ApiOkResponse({ description: 'Cập nhật quyền người dùng thành công', type: MutationSuccessResponseDto })
   @Put('users/:id/permissions')
   async setPermissions(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: SetPermissionsDto,
   ): Promise<MutationSuccessResponseDto> {
     await this.usersPermissionsService.setPermissions(id, body.codes);
-    return createSuccess('User permissions updated successfully');
+    return createSuccess(VI_API_MESSAGES.success.USER_PERMISSIONS_UPDATED);
   }
 }

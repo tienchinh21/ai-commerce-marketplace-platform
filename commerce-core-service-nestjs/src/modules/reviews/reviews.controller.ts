@@ -18,6 +18,7 @@ import {
   createCreated,
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
 import { ReviewResponseDto } from './dto/review-response.dto';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -29,7 +30,7 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Permissions('review:read')
-  @ApiOkResponse({ description: 'Paginated list of reviews', type: () => PaginatedResponseDto<ReviewResponseDto> })
+  @ApiOkResponse({ description: 'Danh sách đánh giá có phân trang', type: () => PaginatedResponseDto<ReviewResponseDto> })
   @Get()
   async list(
     @Query('productId') productId?: string,
@@ -53,15 +54,15 @@ export class ReviewsController {
   }
 
   @Permissions('review:moderate')
-  @ApiCreatedResponse({ description: 'Created review', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Tạo đánh giá thành công', type: CreatedResourceResponseDto })
   @Post()
   async create(@Body() body: CreateReviewDto): Promise<CreatedResourceResponseDto> {
     const review = await this.reviewsService.create(body);
-    return createCreated(review.id, 'Review created successfully');
+    return createCreated(review.id, VI_API_MESSAGES.success.REVIEW_CREATED);
   }
 
   @Permissions('review:read')
-  @ApiOkResponse({ description: 'Review details', type: ReviewResponseDto })
+  @ApiOkResponse({ description: 'Chi tiết đánh giá', type: ReviewResponseDto })
   @Get(':id')
   async get(@Param('id', ParseUUIDPipe) id: string): Promise<ReviewResponseDto> {
     const review = await this.reviewsService.get(id);
@@ -69,13 +70,13 @@ export class ReviewsController {
   }
 
   @Permissions('review:moderate')
-  @ApiOkResponse({ description: 'Review updated successfully', type: MutationSuccessResponseDto })
+  @ApiOkResponse({ description: 'Cập nhật đánh giá thành công', type: MutationSuccessResponseDto })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateReviewDto,
   ): Promise<MutationSuccessResponseDto> {
     await this.reviewsService.update(id, body);
-    return createSuccess('Review updated successfully');
+    return createSuccess(VI_API_MESSAGES.success.REVIEW_UPDATED);
   }
 }

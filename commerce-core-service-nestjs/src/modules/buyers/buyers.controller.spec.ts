@@ -42,7 +42,7 @@ describe('BuyersController response shape', () => {
     ).resolves.toEqual({
       success: true,
       id: 'buyer-1',
-      message: 'Buyer created successfully',
+      message: 'Tạo người mua thành công.',
     });
   });
 
@@ -60,7 +60,7 @@ describe('BuyersController response shape', () => {
       ),
     ).resolves.toEqual({
       success: true,
-      message: 'Buyer updated successfully',
+      message: 'Cập nhật người mua thành công.',
     });
   });
 

@@ -15,6 +15,7 @@ import {
   CreatedResourceResponseDto,
   createCreated,
 } from '../../shared/api/mutation-response.dto';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
 import { OrderResponseDto, OrderDetailResponseDto } from './dto/order-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -25,7 +26,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Paginated list of orders', type: () => PaginatedResponseDto<OrderResponseDto> })
+  @ApiOkResponse({ description: 'Danh sách đơn hàng có phân trang', type: () => PaginatedResponseDto<OrderResponseDto> })
   @Get()
   async list(
     @Query('buyerId') buyerId?: string,
@@ -45,7 +46,7 @@ export class OrdersController {
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Order details', type: OrderDetailResponseDto })
+  @ApiOkResponse({ description: 'Chi tiết đơn hàng', type: OrderDetailResponseDto })
   @Get(':id')
   async get(@Param('id', ParseUUIDPipe) id: string): Promise<OrderDetailResponseDto> {
     const order = await this.ordersService.get(id);
@@ -53,10 +54,10 @@ export class OrdersController {
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ description: 'Created order', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Tạo đơn hàng thành công', type: CreatedResourceResponseDto })
   @Post()
   async create(@Body() body: CreateOrderDto): Promise<CreatedResourceResponseDto> {
     const order = await this.ordersService.create(body);
-    return createCreated(order.id, 'Order created successfully');
+    return createCreated(order.id, VI_API_MESSAGES.success.ORDER_CREATED);
   }
 }

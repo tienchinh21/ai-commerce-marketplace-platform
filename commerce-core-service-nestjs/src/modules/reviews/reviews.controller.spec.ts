@@ -38,7 +38,7 @@ describe('ReviewsController response shape', () => {
       ),
     ).resolves.toEqual({
       success: true,
-      message: 'Review updated successfully',
+      message: 'Cập nhật đánh giá thành công.',
     });
   });
 
@@ -66,7 +66,7 @@ describe('ReviewsController response shape', () => {
     ).resolves.toEqual({
       success: true,
       id: 'review-1',
-      message: 'Review created successfully',
+      message: 'Tạo đánh giá thành công.',
     });
   });
 

@@ -14,21 +14,21 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
-  @ApiCreatedResponse({ description: 'Access token and user profile', type: LoginResponseDto })
+  @ApiCreatedResponse({ description: 'Token truy cập và thông tin người dùng', type: LoginResponseDto })
   @Post('login')
   login(@Body() body: LoginDto) {
     return this.authService.login(body.email, body.password);
   }
 
   @ApiBearerAuth()
-  @ApiOkResponse({ description: 'Current authenticated user profile', type: MeResponseDto })
+  @ApiOkResponse({ description: 'Thông tin người dùng đang đăng nhập', type: MeResponseDto })
   @Get('me')
   me(@Request() request: { user: { id: string } }) {
     return this.authService.me(request.user.id);
   }
 
   @ApiBearerAuth()
-  @ApiOkResponse({ description: 'List of permission codes for the current user', type: MePermissionsResponseDto })
+  @ApiOkResponse({ description: 'Danh sách quyền của người dùng hiện tại', type: MePermissionsResponseDto })
   @Get('me/permissions')
   async mePermissions(@Request() request: { user: { id: string } }) {
     const me = await this.authService.me(request.user.id);

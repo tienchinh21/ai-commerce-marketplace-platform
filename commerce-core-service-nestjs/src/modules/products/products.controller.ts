@@ -23,6 +23,7 @@ import {
   createBulkCreated,
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 import { toPaginatedResponseDto, toResponseDto, toResponseDtoList } from '../../shared/api/response-serialization';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { ProductDetailResponseDto } from './dto/product-detail-response.dto';
@@ -38,7 +39,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Paginated list of products', type: () => PaginatedResponseDto<ProductResponseDto> })
+  @ApiOkResponse({ description: 'Danh sách sản phẩm có phân trang', type: () => PaginatedResponseDto<ProductResponseDto> })
   @Get()
   async list(
     @Query('search') search?: string,
@@ -60,15 +61,15 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ description: 'Created product', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Tạo sản phẩm thành công', type: CreatedResourceResponseDto })
   @Post()
   async create(@Body() body: CreateProductDto): Promise<CreatedResourceResponseDto> {
     const product = await this.productsService.create(body);
-    return createCreated(product.id, 'Product created successfully');
+    return createCreated(product.id, VI_API_MESSAGES.success.PRODUCT_CREATED);
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Product details', type: ProductDetailResponseDto })
+  @ApiOkResponse({ description: 'Chi tiết sản phẩm', type: ProductDetailResponseDto })
   @Get(':id')
   async get(@Param('id', ParseUUIDPipe) id: string): Promise<ProductDetailResponseDto> {
     const product = await this.productsService.getDetail(id);
@@ -76,18 +77,18 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
-  @ApiOkResponse({ description: 'Product updated successfully', type: MutationSuccessResponseDto })
+  @ApiOkResponse({ description: 'Cập nhật sản phẩm thành công', type: MutationSuccessResponseDto })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateProductDto,
   ): Promise<MutationSuccessResponseDto> {
     await this.productsService.update(id, body);
-    return createSuccess('Product updated successfully');
+    return createSuccess(VI_API_MESSAGES.success.PRODUCT_UPDATED);
   }
 
   @Permissions('product:write')
-  @ApiNoContentResponse({ description: 'Product deleted successfully' })
+  @ApiNoContentResponse({ description: 'Xóa sản phẩm thành công' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
@@ -95,7 +96,7 @@ export class ProductsController {
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'List of product variants', type: [ProductVariantResponseDto] })
+  @ApiOkResponse({ description: 'Danh sách biến thể sản phẩm', type: [ProductVariantResponseDto] })
   @Get(':id/variants')
   async listVariants(@Param('id', ParseUUIDPipe) id: string): Promise<ProductVariantResponseDto[]> {
     const variants = await this.productsService.listVariants(id);
@@ -103,18 +104,18 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ description: 'Created product variant', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Tạo biến thể sản phẩm thành công', type: CreatedResourceResponseDto })
   @Post(':id/variants')
   async createVariant(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: CreateVariantDto,
   ): Promise<CreatedResourceResponseDto> {
     const variant = await this.productsService.createVariant(id, body);
-    return createCreated(variant.id, 'Product variant created successfully');
+    return createCreated(variant.id, VI_API_MESSAGES.success.PRODUCT_VARIANT_CREATED);
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ description: 'Added product images', type: BulkCreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Thêm hình ảnh sản phẩm thành công', type: BulkCreatedResourceResponseDto })
   @Post(':id/images')
   async addImages(
     @Param('id', ParseUUIDPipe) id: string,
@@ -123,7 +124,7 @@ export class ProductsController {
     const images = await this.productsService.addImages(id, body.images);
     return createBulkCreated(
       images.map((image) => image.id),
-      'Product images added successfully',
+      VI_API_MESSAGES.success.PRODUCT_IMAGES_ADDED,
     );
   }
 }

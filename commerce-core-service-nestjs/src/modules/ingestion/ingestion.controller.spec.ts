@@ -102,7 +102,7 @@ describe('IngestionController response shape', () => {
       totalRecords: 2,
       successCount: 2,
       failedCount: 0,
-      message: 'Import finished successfully',
+      message: 'Nhập sản phẩm hoàn tất.',
     });
   });
 
@@ -124,7 +124,7 @@ describe('IngestionController response shape', () => {
       totalRecords: 2,
       successCount: 1,
       failedCount: 1,
-      message: 'Import finished with errors',
+      message: 'Nhập đánh giá hoàn tất nhưng có lỗi.',
     });
   });
 
@@ -143,7 +143,7 @@ describe('IngestionController response shape', () => {
     ).resolves.toEqual({
       success: true,
       id: 'source-2',
-      message: 'Data source created successfully',
+      message: 'Tạo nguồn dữ liệu thành công.',
     });
   });
 
@@ -160,7 +160,7 @@ describe('IngestionController response shape', () => {
       ),
     ).resolves.toEqual({
       success: true,
-      message: 'Data source updated successfully',
+      message: 'Cập nhật nguồn dữ liệu thành công.',
     });
   });
 });

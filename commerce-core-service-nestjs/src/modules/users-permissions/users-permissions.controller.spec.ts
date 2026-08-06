@@ -42,7 +42,7 @@ describe('UsersPermissionsController response shape', () => {
     ).resolves.toEqual({
       success: true,
       id: 'user-1',
-      message: 'User created successfully',
+      message: 'Tạo người dùng thành công.',
     });
   });
 
@@ -83,7 +83,7 @@ describe('UsersPermissionsController response shape', () => {
       }),
     ).resolves.toEqual({
       success: true,
-      message: 'User permissions updated successfully',
+      message: 'Cập nhật quyền người dùng thành công.',
     });
   });
 });

@@ -18,6 +18,7 @@ import {
   createCreated,
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
 import { SellerResponseDto, SellerDetailResponseDto } from './dto/seller-response.dto';
 import { CreateSellerDto } from './dto/create-seller.dto';
@@ -29,7 +30,7 @@ export class SellersController {
   constructor(private readonly sellersService: SellersService) {}
 
   @Permissions('seller:read')
-  @ApiOkResponse({ description: 'Paginated list of sellers', type: () => PaginatedResponseDto<SellerResponseDto> })
+  @ApiOkResponse({ description: 'Danh sách nhà bán hàng có phân trang', type: () => PaginatedResponseDto<SellerResponseDto> })
   @Get()
   async list(
     @Query('search') search?: string,
@@ -47,15 +48,15 @@ export class SellersController {
   }
 
   @Permissions('seller:write')
-  @ApiCreatedResponse({ description: 'Created seller', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Tạo nhà bán hàng thành công', type: CreatedResourceResponseDto })
   @Post()
   async create(@Body() body: CreateSellerDto): Promise<CreatedResourceResponseDto> {
     const seller = await this.sellersService.create(body);
-    return createCreated(seller.id, 'Seller created successfully');
+    return createCreated(seller.id, VI_API_MESSAGES.success.SELLER_CREATED);
   }
 
   @Permissions('seller:read')
-  @ApiOkResponse({ description: 'Seller details', type: SellerDetailResponseDto })
+  @ApiOkResponse({ description: 'Chi tiết nhà bán hàng', type: SellerDetailResponseDto })
   @Get(':id')
   async get(@Param('id', ParseUUIDPipe) id: string): Promise<SellerDetailResponseDto> {
     const seller = await this.sellersService.get(id);
@@ -63,13 +64,13 @@ export class SellersController {
   }
 
   @Permissions('seller:write')
-  @ApiOkResponse({ description: 'Seller updated successfully', type: MutationSuccessResponseDto })
+  @ApiOkResponse({ description: 'Cập nhật nhà bán hàng thành công', type: MutationSuccessResponseDto })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateSellerDto,
   ): Promise<MutationSuccessResponseDto> {
     await this.sellersService.update(id, body);
-    return createSuccess('Seller updated successfully');
+    return createSuccess(VI_API_MESSAGES.success.SELLER_UPDATED);
   }
 }
