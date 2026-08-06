@@ -45,7 +45,7 @@ describe('CategoriesController response shape', () => {
     ).resolves.toEqual({
       success: true,
       id: 'cat-1',
-      message: 'Category created successfully',
+      message: 'Tạo danh mục thành công.',
     });
   });
 
@@ -63,7 +63,7 @@ describe('CategoriesController response shape', () => {
       ),
     ).resolves.toEqual({
       success: true,
-      message: 'Category updated successfully',
+      message: 'Cập nhật danh mục thành công.',
     });
   });
 

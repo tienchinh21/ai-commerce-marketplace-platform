@@ -18,6 +18,7 @@ import {
   createCreated,
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
 import { BuyerResponseDto, BuyerDetailResponseDto } from './dto/buyer-response.dto';
 import { CreateBuyerDto } from './dto/create-buyer.dto';
@@ -29,7 +30,7 @@ export class BuyersController {
   constructor(private readonly buyersService: BuyersService) {}
 
   @Permissions('buyer:read')
-  @ApiOkResponse({ description: 'Paginated list of buyers', type: () => PaginatedResponseDto<BuyerResponseDto> })
+  @ApiOkResponse({ description: 'Danh sách người mua có phân trang', type: () => PaginatedResponseDto<BuyerResponseDto> })
   @Get()
   async list(
     @Query('search') search?: string,
@@ -47,15 +48,15 @@ export class BuyersController {
   }
 
   @Permissions('buyer:write')
-  @ApiCreatedResponse({ description: 'Created buyer', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Tạo người mua thành công', type: CreatedResourceResponseDto })
   @Post()
   async create(@Body() body: CreateBuyerDto): Promise<CreatedResourceResponseDto> {
     const buyer = await this.buyersService.create(body);
-    return createCreated(buyer.id, 'Buyer created successfully');
+    return createCreated(buyer.id, VI_API_MESSAGES.success.BUYER_CREATED);
   }
 
   @Permissions('buyer:read')
-  @ApiOkResponse({ description: 'Buyer details', type: BuyerDetailResponseDto })
+  @ApiOkResponse({ description: 'Chi tiết người mua', type: BuyerDetailResponseDto })
   @Get(':id')
   async get(@Param('id', ParseUUIDPipe) id: string): Promise<BuyerDetailResponseDto> {
     const buyer = await this.buyersService.get(id);
@@ -63,13 +64,13 @@ export class BuyersController {
   }
 
   @Permissions('buyer:write')
-  @ApiOkResponse({ description: 'Buyer updated successfully', type: MutationSuccessResponseDto })
+  @ApiOkResponse({ description: 'Cập nhật người mua thành công', type: MutationSuccessResponseDto })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateBuyerDto,
   ): Promise<MutationSuccessResponseDto> {
     await this.buyersService.update(id, body);
-    return createSuccess('Buyer updated successfully');
+    return createSuccess(VI_API_MESSAGES.success.BUYER_UPDATED);
   }
 }

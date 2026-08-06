@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { CategoryAttribute } from './category-attribute.entity';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 function slugify(input: string): string {
   return input
@@ -42,7 +44,10 @@ export class CategoriesService {
   async get(id: string): Promise<Category> {
     const category = await this.categories.findOne({ where: { id } });
     if (!category) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.CATEGORY_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.CATEGORY_NOT_FOUND],
+      });
     }
     return category;
   }
@@ -105,7 +110,11 @@ export class CategoriesService {
   ): Promise<CategoryAttribute> {
     const attribute = await this.attributes.findOne({ where: { id } });
     if (!attribute) {
-      throw new NotFoundException('Category attribute not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.CATEGORY_ATTRIBUTE_NOT_FOUND,
+        message:
+          VI_API_MESSAGES.errors[ApiErrorCode.CATEGORY_ATTRIBUTE_NOT_FOUND],
+      });
     }
     Object.assign(attribute, input);
     return this.attributes.save(attribute);
@@ -114,7 +123,11 @@ export class CategoriesService {
   async removeAttribute(id: string): Promise<void> {
     const attribute = await this.attributes.findOne({ where: { id } });
     if (!attribute) {
-      throw new NotFoundException('Category attribute not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.CATEGORY_ATTRIBUTE_NOT_FOUND,
+        message:
+          VI_API_MESSAGES.errors[ApiErrorCode.CATEGORY_ATTRIBUTE_NOT_FOUND],
+      });
     }
     await this.attributes.remove(attribute);
   }

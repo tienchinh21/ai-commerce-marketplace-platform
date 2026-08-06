@@ -17,6 +17,7 @@ import {
   createCreated,
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 import { toResponseDto, toResponseDtoList } from '../../shared/api/response-serialization';
 import { CategoriesService } from './categories.service';
 import { Permissions } from '../auth/permissions.decorator';
@@ -33,7 +34,7 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'List of categories', type: [CategoryResponseDto] })
+  @ApiOkResponse({ description: 'Danh sách danh mục', type: [CategoryResponseDto] })
   @Get()
   async list(): Promise<CategoryResponseDto[]> {
     const categories = await this.categoriesService.list();
@@ -41,15 +42,15 @@ export class CategoriesController {
   }
 
   @Permissions('category:write')
-  @ApiCreatedResponse({ description: 'Created category', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Tạo danh mục thành công', type: CreatedResourceResponseDto })
   @Post()
   async create(@Body() body: CreateCategoryDto): Promise<CreatedResourceResponseDto> {
     const category = await this.categoriesService.create(body);
-    return createCreated(category.id, 'Category created successfully');
+    return createCreated(category.id, VI_API_MESSAGES.success.CATEGORY_CREATED);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'Category details', type: CategoryResponseDto })
+  @ApiOkResponse({ description: 'Chi tiết danh mục', type: CategoryResponseDto })
   @Get(':id')
   async get(@Param('id', ParseUUIDPipe) id: string): Promise<CategoryResponseDto> {
     const category = await this.categoriesService.get(id);
@@ -57,18 +58,18 @@ export class CategoriesController {
   }
 
   @Permissions('category:write')
-  @ApiOkResponse({ description: 'Category updated successfully', type: MutationSuccessResponseDto })
+  @ApiOkResponse({ description: 'Cập nhật danh mục thành công', type: MutationSuccessResponseDto })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateCategoryDto,
   ): Promise<MutationSuccessResponseDto> {
     await this.categoriesService.update(id, body);
-    return createSuccess('Category updated successfully');
+    return createSuccess(VI_API_MESSAGES.success.CATEGORY_UPDATED);
   }
 
   @Permissions('category:write')
-  @ApiNoContentResponse({ description: 'Category deleted successfully' })
+  @ApiNoContentResponse({ description: 'Xóa danh mục thành công' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
@@ -76,7 +77,7 @@ export class CategoriesController {
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'List of category attributes', type: [CategoryAttributeResponseDto] })
+  @ApiOkResponse({ description: 'Danh sách thuộc tính danh mục', type: [CategoryAttributeResponseDto] })
   @Get(':id/attributes')
   async listAttributes(
     @Param('id', ParseUUIDPipe) id: string,
@@ -86,29 +87,29 @@ export class CategoriesController {
   }
 
   @Permissions('category:write')
-  @ApiCreatedResponse({ description: 'Created category attribute', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({ description: 'Tạo thuộc tính danh mục thành công', type: CreatedResourceResponseDto })
   @Post(':id/attributes')
   async createAttribute(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: CreateAttributeDto,
   ): Promise<CreatedResourceResponseDto> {
     const attribute = await this.categoriesService.createAttribute(id, body);
-    return createCreated(attribute.id, 'Category attribute created successfully');
+    return createCreated(attribute.id, VI_API_MESSAGES.success.CATEGORY_ATTRIBUTE_CREATED);
   }
 
   @Permissions('category:write')
-  @ApiOkResponse({ description: 'Category attribute updated successfully', type: MutationSuccessResponseDto })
+  @ApiOkResponse({ description: 'Cập nhật thuộc tính danh mục thành công', type: MutationSuccessResponseDto })
   @Patch('attributes/:attributeId')
   async updateAttribute(
     @Param('attributeId', ParseUUIDPipe) attributeId: string,
     @Body() body: UpdateAttributeDto,
   ): Promise<MutationSuccessResponseDto> {
     await this.categoriesService.updateAttribute(attributeId, body);
-    return createSuccess('Category attribute updated successfully');
+    return createSuccess(VI_API_MESSAGES.success.CATEGORY_ATTRIBUTE_UPDATED);
   }
 
   @Permissions('category:write')
-  @ApiNoContentResponse({ description: 'Category attribute deleted successfully' })
+  @ApiNoContentResponse({ description: 'Xóa thuộc tính danh mục thành công' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('attributes/:attributeId')
   async removeAttribute(

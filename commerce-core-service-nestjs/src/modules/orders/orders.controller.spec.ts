@@ -57,7 +57,7 @@ describe('OrdersController response shape', () => {
     ).resolves.toEqual({
       success: true,
       id: 'order-1',
-      message: 'Order created successfully',
+      message: 'Tạo đơn hàng thành công.',
     });
   });
 

@@ -53,7 +53,7 @@ describe('ProductsController response shape', () => {
     ).resolves.toEqual({
       success: true,
       id: 'prod-1',
-      message: 'Product created successfully',
+      message: 'Tạo sản phẩm thành công.',
     });
   });
 
@@ -71,7 +71,7 @@ describe('ProductsController response shape', () => {
       ),
     ).resolves.toEqual({
       success: true,
-      message: 'Product updated successfully',
+      message: 'Cập nhật sản phẩm thành công.',
     });
   });
 
@@ -105,7 +105,7 @@ describe('ProductsController response shape', () => {
       success: true,
       ids: ['img-1', 'img-2'],
       count: 2,
-      message: 'Product images added successfully',
+      message: 'Thêm hình ảnh sản phẩm thành công.',
     });
   });
 

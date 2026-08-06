@@ -40,7 +40,7 @@ describe('SellersController response shape', () => {
     ).resolves.toEqual({
       success: true,
       id: 'seller-1',
-      message: 'Seller created successfully',
+      message: 'Tạo nhà bán hàng thành công.',
     });
   });
 
@@ -58,7 +58,7 @@ describe('SellersController response shape', () => {
       ),
     ).resolves.toEqual({
       success: true,
-      message: 'Seller updated successfully',
+      message: 'Cập nhật nhà bán hàng thành công.',
     });
   });
 

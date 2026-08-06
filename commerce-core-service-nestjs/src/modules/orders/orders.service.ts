@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './order.entity';
 import { OrderItem } from './order-item.entity';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 export interface CreateOrderInput {
   buyerId: string;
@@ -63,7 +65,10 @@ export class OrdersService {
       relations: { items: true },
     });
     if (!order) {
-      throw new NotFoundException('Order not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.ORDER_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.ORDER_NOT_FOUND],
+      });
     }
     return order;
   }

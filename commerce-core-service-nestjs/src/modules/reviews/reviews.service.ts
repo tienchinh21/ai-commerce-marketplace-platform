@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Review } from './review.entity';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 export interface ListReviewsQuery {
   productId?: string;
@@ -74,7 +76,10 @@ export class ReviewsService {
   async get(id: string): Promise<Review> {
     const review = await this.reviews.findOne({ where: { id } });
     if (!review) {
-      throw new NotFoundException('Review not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.REVIEW_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.REVIEW_NOT_FOUND],
+      });
     }
     return review;
   }

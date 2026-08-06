@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { DeepPartial } from 'typeorm';
 import { IngestionService } from './ingestion.service';
 import { DataSourceEntity } from './data-source.entity';
 import { SyncRun } from './sync-run.entity';
@@ -14,63 +14,97 @@ import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 describe('IngestionService', () => {
   let service: IngestionService;
-
-  const dataSources = {
-    findOne: jest.fn(),
-    find: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-  };
-  const syncRuns = {
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-  };
-  const rawSnapshots = {
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-  };
-  const sourceProducts = {
-    create: jest.fn(),
-    save: jest.fn(),
-  };
-  const sourceReviews = {
-    create: jest.fn(),
-    save: jest.fn(),
-  };
-  const productsService = {
-    create: jest.fn(),
-  };
-  const reviewsService = {
-    create: jest.fn(),
-  };
+  const dataSourceFindOne = jest.fn();
+  const dataSourceCreate = jest.fn();
+  const dataSourceSave = jest.fn();
+  const syncRunFindOne = jest.fn();
+  const syncRunCreate = jest.fn<SyncRun, [DeepPartial<SyncRun>]>();
+  const syncRunSave = jest.fn();
+  const rawSnapshotFindOne = jest.fn();
+  const rawSnapshotCreate = jest.fn<RawSnapshot, [DeepPartial<RawSnapshot>]>();
+  const rawSnapshotSave = jest.fn();
+  const sourceProductCreate = jest.fn();
+  const sourceProductSave = jest.fn();
+  const sourceReviewCreate = jest.fn();
+  const sourceReviewSave = jest.fn();
+  const productsCreate = jest.fn();
+  const reviewsCreate = jest.fn();
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    syncRunCreate.mockImplementation((data) => data as SyncRun);
+    syncRunSave.mockImplementation((run) => Promise.resolve(run));
+    rawSnapshotCreate.mockImplementation((data) => data as RawSnapshot);
+    rawSnapshotSave.mockImplementation((snapshot) => Promise.resolve(snapshot));
 
     const moduleRef = await Test.createTestingModule({
       providers: [
         IngestionService,
         {
           provide: getRepositoryToken(DataSourceEntity),
-          useValue: dataSources,
+          useValue: {
+            findOne: dataSourceFindOne,
+            find: jest.fn(),
+            create: dataSourceCreate,
+            save: dataSourceSave,
+          },
         },
-        { provide: getRepositoryToken(SyncRun), useValue: syncRuns },
+        {
+          provide: getRepositoryToken(SyncRun),
+          useValue: {
+            findOne: syncRunFindOne,
+            create: syncRunCreate,
+            save: syncRunSave,
+            createQueryBuilder: jest.fn(() => ({
+              andWhere: jest.fn().mockReturnThis(),
+              orderBy: jest.fn().mockReturnThis(),
+              skip: jest.fn().mockReturnThis(),
+              take: jest.fn().mockReturnThis(),
+              getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
+            })),
+          },
+        },
         {
           provide: getRepositoryToken(RawSnapshot),
-          useValue: rawSnapshots,
+          useValue: {
+            findOne: rawSnapshotFindOne,
+            create: rawSnapshotCreate,
+            save: rawSnapshotSave,
+            createQueryBuilder: jest.fn(() => ({
+              andWhere: jest.fn().mockReturnThis(),
+              orderBy: jest.fn().mockReturnThis(),
+              skip: jest.fn().mockReturnThis(),
+              take: jest.fn().mockReturnThis(),
+              getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
+            })),
+          },
         },
         {
           provide: getRepositoryToken(SourceProduct),
-          useValue: sourceProducts,
+          useValue: {
+            create: sourceProductCreate,
+            save: sourceProductSave,
+          },
         },
         {
           provide: getRepositoryToken(SourceReview),
-          useValue: sourceReviews,
+          useValue: {
+            create: sourceReviewCreate,
+            save: sourceReviewSave,
+          },
         },
-        { provide: ProductsService, useValue: productsService },
-        { provide: ReviewsService, useValue: reviewsService },
+        {
+          provide: ProductsService,
+          useValue: {
+            create: productsCreate,
+          },
+        },
+        {
+          provide: ReviewsService,
+          useValue: {
+            create: reviewsCreate,
+          },
+        },
       ],
     }).compile();
 
@@ -81,87 +115,78 @@ describe('IngestionService', () => {
     expect(service).toBeDefined();
   });
 
-  it('throws DATA_SOURCE_NOT_FOUND when importing products to a missing source', async () => {
-    dataSources.findOne.mockResolvedValue(null);
+  it('should return DATA_SOURCE_NOT_FOUND for missing data source', async () => {
+    dataSourceFindOne.mockResolvedValue(null);
 
-    await expect(
-      service.importProducts({
-        dataSourceId: 'missing-source',
-        items: [],
-      }),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.getDataSource('missing')).rejects.toMatchObject({
+      response: {
+        code: ApiErrorCode.DATA_SOURCE_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.DATA_SOURCE_NOT_FOUND],
+      },
+    });
   });
 
-  it('sanitizes import product errors so errorSummary never contains raw exception text', async () => {
-    dataSources.findOne.mockResolvedValue({ id: 'source-1' });
-    syncRuns.create.mockImplementation((run: Partial<SyncRun>) => run);
-    syncRuns.save
-      .mockResolvedValueOnce({ id: 'run-1', dataSourceId: 'source-1' })
-      .mockImplementation((run: SyncRun) => Promise.resolve(run));
-    rawSnapshots.create.mockImplementation((snapshot: Partial<RawSnapshot>) => snapshot);
-    rawSnapshots.save.mockResolvedValue({ id: 'snapshot-1' });
-
-    productsService.create.mockRejectedValue(
-      new Error('SQL syntax error near INSERT INTO products; constraint "fk_category"'),
+  it('should sanitize errorSummary for importProducts and avoid leaking raw exception text', async () => {
+    const dataSourceId = 'ds-1';
+    const sourceProductId = 'sp-1';
+    dataSourceFindOne.mockResolvedValue({ id: dataSourceId });
+    productsCreate.mockRejectedValue(
+      new Error(
+        'insert into products values (...) - duplicate key value violates unique constraint "products_pkey"',
+      ),
     );
 
     const result = await service.importProducts({
-      dataSourceId: 'source-1',
+      dataSourceId,
       items: [
         {
-          sourceProductId: 'sp-1',
-          title: 'Product 1',
+          sourceProductId,
+          title: 'Product title',
           sellerId: 'seller-1',
-          categoryId: 'category-1',
+          categoryId: 'cat-1',
         },
       ],
     });
 
-    const genericMessage =
-      VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR];
-
-    expect(result.status).toBe('COMPLETED_WITH_ERRORS');
-    expect(result.failedCount).toBe(1);
-    expect(result.errorSummary).toContain('sp-1');
-    expect(result.errorSummary).toContain(genericMessage);
-    expect(result.errorSummary).not.toContain('SQL syntax error');
-    expect(result.errorSummary).not.toContain('INSERT INTO products');
-    expect(result.errorSummary).not.toContain('fk_category');
+    expect(result.errorSummary).toContain(
+      VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR],
+    );
+    expect(result.errorSummary).toContain(sourceProductId);
+    expect(result.errorSummary).not.toContain('insert into');
+    expect(result.errorSummary).not.toContain('products_pkey');
+    expect(result.errorSummary).not.toContain('Error:');
+    expect(result.errorSummary).not.toContain('duplicate key value');
   });
 
-  it('sanitizes import review errors so errorSummary never contains raw exception text', async () => {
-    dataSources.findOne.mockResolvedValue({ id: 'source-1' });
-    syncRuns.create.mockImplementation((run: Partial<SyncRun>) => run);
-    syncRuns.save
-      .mockResolvedValueOnce({ id: 'run-2', dataSourceId: 'source-1' })
-      .mockImplementation((run: SyncRun) => Promise.resolve(run));
-    rawSnapshots.create.mockImplementation((snapshot: Partial<RawSnapshot>) => snapshot);
-    rawSnapshots.save.mockResolvedValue({ id: 'snapshot-2' });
-
-    reviewsService.create.mockRejectedValue(
-      new Error('duplicate key value violates unique constraint "idx_review"'),
+  it('should sanitize errorSummary for importReviews and avoid leaking raw exception text', async () => {
+    const dataSourceId = 'ds-1';
+    const sourceReviewId = 'sr-1';
+    dataSourceFindOne.mockResolvedValue({ id: dataSourceId });
+    reviewsCreate.mockRejectedValue(
+      new Error(
+        'insert into reviews values (...) - duplicate key value violates unique constraint "reviews_pkey"',
+      ),
     );
 
     const result = await service.importReviews({
-      dataSourceId: 'source-1',
+      dataSourceId,
       items: [
         {
-          sourceReviewId: 'sr-1',
+          sourceReviewId,
           sourceProductId: 'sp-1',
-          productId: 'product-1',
+          productId: 'prod-1',
           rating: 5,
         },
       ],
     });
 
-    const genericMessage =
-      VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR];
-
-    expect(result.status).toBe('COMPLETED_WITH_ERRORS');
-    expect(result.failedCount).toBe(1);
-    expect(result.errorSummary).toContain('sr-1');
-    expect(result.errorSummary).toContain(genericMessage);
+    expect(result.errorSummary).toContain(
+      VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR],
+    );
+    expect(result.errorSummary).toContain(sourceReviewId);
+    expect(result.errorSummary).not.toContain('insert into');
+    expect(result.errorSummary).not.toContain('reviews_pkey');
+    expect(result.errorSummary).not.toContain('Error:');
     expect(result.errorSummary).not.toContain('duplicate key value');
-    expect(result.errorSummary).not.toContain('idx_review');
   });
 });

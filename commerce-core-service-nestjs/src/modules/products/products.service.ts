@@ -4,6 +4,8 @@ import { In, Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { ProductVariant } from './product-variant.entity';
 import { ProductImage } from './product-image.entity';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 export interface ListProductsQuery {
   search?: string;
@@ -106,7 +108,10 @@ export class ProductsService {
   async get(id: string): Promise<Product> {
     const product = await this.products.findOne({ where: { id } });
     if (!product) {
-      throw new NotFoundException('Product not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.PRODUCT_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.PRODUCT_NOT_FOUND],
+      });
     }
     return product;
   }
