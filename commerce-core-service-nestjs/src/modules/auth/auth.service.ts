@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from './user.entity';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 export interface LoginResult {
   accessToken: string;
@@ -34,12 +36,18 @@ export class AuthService {
       },
     });
     if (!user || user.status !== 'ACTIVE') {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException({
+        code: ApiErrorCode.AUTH_INVALID_CREDENTIALS,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.AUTH_INVALID_CREDENTIALS],
+      });
     }
 
     const passwordMatches = await bcrypt.compare(password, user.passwordHash);
     if (!passwordMatches) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException({
+        code: ApiErrorCode.AUTH_INVALID_CREDENTIALS,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.AUTH_INVALID_CREDENTIALS],
+      });
     }
 
     const permissions = await this.findPermissions(user.id);
@@ -62,7 +70,10 @@ export class AuthService {
   async me(userId: string): Promise<LoginResult['user']> {
     const user = await this.users.findOne({ where: { id: userId } });
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException({
+        code: ApiErrorCode.AUTH_USER_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.AUTH_USER_NOT_FOUND],
+      });
     }
     return {
       id: user.id,

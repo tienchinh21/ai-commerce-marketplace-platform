@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Seller } from './seller.entity';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 export interface ListSellersQuery {
   search?: string;
@@ -65,7 +67,10 @@ export class SellersService {
   async get(id: string): Promise<Seller> {
     const seller = await this.sellers.findOne({ where: { id } });
     if (!seller) {
-      throw new NotFoundException('Seller not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.SELLER_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.SELLER_NOT_FOUND],
+      });
     }
     return seller;
   }

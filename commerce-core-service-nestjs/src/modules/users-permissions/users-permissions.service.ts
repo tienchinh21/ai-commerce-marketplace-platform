@@ -9,6 +9,8 @@ import * as bcrypt from 'bcryptjs';
 import { User } from '../auth/user.entity';
 import { Permission } from '../auth/permission.entity';
 import { UserPermission } from '../auth/user-permission.entity';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 export interface CreateUserInput {
   email: string;
@@ -37,7 +39,10 @@ export class UsersPermissionsService {
       where: { email: input.email.toLowerCase() },
     });
     if (existing) {
-      throw new ConflictException('Email already exists');
+      throw new ConflictException({
+        code: ApiErrorCode.USER_EMAIL_EXISTS,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.USER_EMAIL_EXISTS],
+      });
     }
 
     const user = await this.users.save(
@@ -71,7 +76,10 @@ export class UsersPermissionsService {
   async setPermissions(userId: string, codes: string[]): Promise<void> {
     const user = await this.users.findOne({ where: { id: userId } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.USER_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.USER_NOT_FOUND],
+      });
     }
     await this.userPermissions.delete({ user: { id: userId } });
 

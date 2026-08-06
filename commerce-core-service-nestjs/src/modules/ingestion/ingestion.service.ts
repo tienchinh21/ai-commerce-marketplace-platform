@@ -8,6 +8,8 @@ import { SourceProduct } from './source-product.entity';
 import { SourceReview } from './source-review.entity';
 import { ProductsService } from '../products/products.service';
 import { ReviewsService } from '../reviews/reviews.service';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 export interface ImportProductsInput {
   dataSourceId: string;
@@ -61,7 +63,10 @@ export class IngestionService {
   async getDataSource(id: string): Promise<DataSourceEntity> {
     const source = await this.dataSources.findOne({ where: { id } });
     if (!source) {
-      throw new NotFoundException('Data source not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.DATA_SOURCE_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.DATA_SOURCE_NOT_FOUND],
+      });
     }
     return source;
   }
@@ -125,7 +130,10 @@ export class IngestionService {
   async getSyncRun(id: string): Promise<SyncRun> {
     const run = await this.syncRuns.findOne({ where: { id } });
     if (!run) {
-      throw new NotFoundException('Sync run not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.SYNC_RUN_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.SYNC_RUN_NOT_FOUND],
+      });
     }
     return run;
   }
@@ -163,7 +171,10 @@ export class IngestionService {
   async getRawSnapshot(id: string): Promise<RawSnapshot> {
     const snapshot = await this.rawSnapshots.findOne({ where: { id } });
     if (!snapshot) {
-      throw new NotFoundException('Raw snapshot not found');
+      throw new NotFoundException({
+        code: ApiErrorCode.RAW_SNAPSHOT_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.RAW_SNAPSHOT_NOT_FOUND],
+      });
     }
     return snapshot;
   }

@@ -1,10 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
 import type { DeepPartial } from 'typeorm';
 import { CategoriesService } from './categories.service';
 import { Category } from './category.entity';
 import { CategoryAttribute } from './category-attribute.entity';
+import { ApiErrorCode } from '../../shared/api/api-error-code';
+import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
 describe('CategoriesService', () => {
   let service: CategoriesService;
@@ -44,7 +45,12 @@ describe('CategoriesService', () => {
 
   it('should throw NotFoundException for missing category', async () => {
     findOne.mockResolvedValue(null);
-    await expect(service.get('missing')).rejects.toThrow(NotFoundException);
+    await expect(service.get('missing')).rejects.toMatchObject({
+      response: {
+        code: ApiErrorCode.CATEGORY_NOT_FOUND,
+        message: VI_API_MESSAGES.errors[ApiErrorCode.CATEGORY_NOT_FOUND],
+      },
+    });
   });
 
   it('should create a root category with level 0 and empty path', async () => {
