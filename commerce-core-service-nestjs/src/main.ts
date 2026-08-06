@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Client } from 'pg';
 import { AppModule } from './app.module';
 import { loadEnv } from './shared/config/env';
+import { createVietnameseValidationException } from './shared/api/validation-error.util';
 
 async function ensureSchemas(env: ReturnType<typeof loadEnv>): Promise<void> {
   if (!env.db.synchronize) {
@@ -46,6 +47,7 @@ async function bootstrap(): Promise<void> {
     new ValidationPipe({
       whitelist: true,
       transform: true,
+      exceptionFactory: createVietnameseValidationException,
     }),
   );
 
