@@ -44,8 +44,7 @@ describe('AuthService', () => {
     await expect(service.login('a@b.com', 'pass')).rejects.toMatchObject({
       response: {
         code: ApiErrorCode.AUTH_INVALID_CREDENTIALS,
-        message:
-          VI_API_MESSAGES.errors[ApiErrorCode.AUTH_INVALID_CREDENTIALS],
+        message: VI_API_MESSAGES.errors[ApiErrorCode.AUTH_INVALID_CREDENTIALS],
       },
     });
   });

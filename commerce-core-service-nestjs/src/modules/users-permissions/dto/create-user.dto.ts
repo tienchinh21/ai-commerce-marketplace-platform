@@ -19,7 +19,10 @@ export class CreateUserDto {
   @IsString()
   status?: string;
 
-  @ApiPropertyOptional({ example: ['category:read', 'category:write'], type: [String] })
+  @ApiPropertyOptional({
+    example: ['category:read', 'category:write'],
+    type: [String],
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

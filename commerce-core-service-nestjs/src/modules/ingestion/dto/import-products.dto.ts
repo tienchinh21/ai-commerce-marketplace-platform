@@ -1,6 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 export class ImportProductItemDto {
   @ApiProperty({ example: 'SRC-PROD-001' })
@@ -41,7 +48,11 @@ export class ImportProductItemDto {
   @IsString()
   description?: string;
 
-  @ApiPropertyOptional({ example: { color: 'black', storage: '256GB' }, type: 'object', additionalProperties: true })
+  @ApiPropertyOptional({
+    example: { color: 'black', storage: '256GB' },
+    type: 'object',
+    additionalProperties: true,
+  })
   @IsOptional()
   specs?: Record<string, unknown>;
 }
@@ -51,7 +62,22 @@ export class ImportProductsDto {
   @IsString()
   dataSourceId: string;
 
-  @ApiProperty({ type: () => [ImportProductItemDto], example: [{ sourceProductId: 'SRC-PROD-001', title: 'Imported Smartphone X', sellerId: '550e8400-e29b-41d4-a716-446655440000', categoryId: '550e8400-e29b-41d4-a716-446655440001', priceMin: 499.99, priceMax: 799.99, brand: 'TechBrand', description: 'Imported flagship smartphone.', specs: { color: 'black', storage: '256GB' } }] })
+  @ApiProperty({
+    type: () => [ImportProductItemDto],
+    example: [
+      {
+        sourceProductId: 'SRC-PROD-001',
+        title: 'Imported Smartphone X',
+        sellerId: '550e8400-e29b-41d4-a716-446655440000',
+        categoryId: '550e8400-e29b-41d4-a716-446655440001',
+        priceMin: 499.99,
+        priceMax: 799.99,
+        brand: 'TechBrand',
+        description: 'Imported flagship smartphone.',
+        specs: { color: 'black', storage: '256GB' },
+      },
+    ],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ImportProductItemDto)

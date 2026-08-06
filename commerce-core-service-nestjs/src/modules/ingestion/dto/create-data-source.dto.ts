@@ -21,7 +21,11 @@ export class CreateDataSourceDto {
   @IsString()
   status?: string;
 
-  @ApiPropertyOptional({ example: { apiKey: 'secret-key', shopId: '12345' }, type: 'object', additionalProperties: true })
+  @ApiPropertyOptional({
+    example: { apiKey: 'secret-key', shopId: '12345' },
+    type: 'object',
+    additionalProperties: true,
+  })
   @IsOptional()
   configJson?: Record<string, unknown>;
 }

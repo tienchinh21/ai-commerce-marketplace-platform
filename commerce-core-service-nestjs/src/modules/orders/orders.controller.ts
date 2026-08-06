@@ -7,7 +7,11 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
@@ -16,8 +20,14 @@ import {
   createCreated,
 } from '../../shared/api/mutation-response.dto';
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
-import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
-import { OrderResponseDto, OrderDetailResponseDto } from './dto/order-response.dto';
+import {
+  toPaginatedResponseDto,
+  toResponseDto,
+} from '../../shared/api/response-serialization';
+import {
+  OrderResponseDto,
+  OrderDetailResponseDto,
+} from './dto/order-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 
 @ApiBearerAuth()
@@ -26,7 +36,10 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Danh sách đơn hàng có phân trang', type: () => PaginatedResponseDto<OrderResponseDto> })
+  @ApiOkResponse({
+    description: 'Danh sách đơn hàng có phân trang',
+    type: () => PaginatedResponseDto<OrderResponseDto>,
+  })
   @Get()
   async list(
     @Query('buyerId') buyerId?: string,
@@ -46,17 +59,27 @@ export class OrdersController {
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Chi tiết đơn hàng', type: OrderDetailResponseDto })
+  @ApiOkResponse({
+    description: 'Chi tiết đơn hàng',
+    type: OrderDetailResponseDto,
+  })
   @Get(':id')
-  async get(@Param('id', ParseUUIDPipe) id: string): Promise<OrderDetailResponseDto> {
+  async get(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<OrderDetailResponseDto> {
     const order = await this.ordersService.get(id);
     return toResponseDto(OrderDetailResponseDto, order);
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ description: 'Tạo đơn hàng thành công', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Tạo đơn hàng thành công',
+    type: CreatedResourceResponseDto,
+  })
   @Post()
-  async create(@Body() body: CreateOrderDto): Promise<CreatedResourceResponseDto> {
+  async create(
+    @Body() body: CreateOrderDto,
+  ): Promise<CreatedResourceResponseDto> {
     const order = await this.ordersService.create(body);
     return createCreated(order.id, VI_API_MESSAGES.success.ORDER_CREATED);
   }

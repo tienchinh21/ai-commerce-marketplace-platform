@@ -35,15 +35,24 @@ export class CategoryAttribute {
   @Column({ type: 'varchar', name: 'data_type', length: 32 })
   dataType: string;
 
-  @ApiProperty({ description: 'Whether the attribute is filterable', type: Boolean })
+  @ApiProperty({
+    description: 'Whether the attribute is filterable',
+    type: Boolean,
+  })
   @Column({ name: 'is_filterable', type: 'boolean', default: false })
   isFilterable: boolean;
 
-  @ApiProperty({ description: 'Whether the attribute is searchable', type: Boolean })
+  @ApiProperty({
+    description: 'Whether the attribute is searchable',
+    type: Boolean,
+  })
   @Column({ name: 'is_searchable', type: 'boolean', default: false })
   isSearchable: boolean;
 
-  @ApiProperty({ description: 'Whether the attribute is required', type: Boolean })
+  @ApiProperty({
+    description: 'Whether the attribute is required',
+    type: Boolean,
+  })
   @Column({ name: 'is_required', type: 'boolean', default: false })
   isRequired: boolean;
 

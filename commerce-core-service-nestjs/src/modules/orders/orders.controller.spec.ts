@@ -14,9 +14,7 @@ describe('OrdersController response shape', () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
       controllers: [OrdersController],
-      providers: [
-        { provide: OrdersService, useValue: ordersService },
-      ],
+      providers: [{ provide: OrdersService, useValue: ordersService }],
     }).compile();
     controller = moduleRef.get(OrdersController);
   });

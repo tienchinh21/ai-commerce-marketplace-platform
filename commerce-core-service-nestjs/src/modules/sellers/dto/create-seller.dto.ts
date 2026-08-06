@@ -21,7 +21,11 @@ export class CreateSellerDto {
   @IsString()
   userId?: string;
 
-  @ApiPropertyOptional({ example: { taxId: '123456789' }, type: 'object', additionalProperties: true })
+  @ApiPropertyOptional({
+    example: { taxId: '123456789' },
+    type: 'object',
+    additionalProperties: true,
+  })
   @IsOptional()
   metadataJson?: Record<string, unknown>;
 }

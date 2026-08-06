@@ -15,9 +15,7 @@ describe('ReviewsController response shape', () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
       controllers: [ReviewsController],
-      providers: [
-        { provide: ReviewsService, useValue: reviewsService },
-      ],
+      providers: [{ provide: ReviewsService, useValue: reviewsService }],
     }).compile();
     controller = moduleRef.get(ReviewsController);
   });
@@ -32,10 +30,9 @@ describe('ReviewsController response shape', () => {
     });
 
     await expect(
-      controller.update(
-        '00000000-0000-0000-0000-000000000001',
-        { content: 'Updated content' },
-      ),
+      controller.update('00000000-0000-0000-0000-000000000001', {
+        content: 'Updated content',
+      }),
     ).resolves.toEqual({
       success: true,
       message: 'Cập nhật đánh giá thành công.',

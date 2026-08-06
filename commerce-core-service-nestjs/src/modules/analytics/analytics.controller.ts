@@ -10,7 +10,10 @@ export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
   @Permissions('ai:analyst:chat')
-  @ApiOkResponse({ description: 'Hiệu suất sản phẩm', type: [AnalyticsResponseDto] })
+  @ApiOkResponse({
+    description: 'Hiệu suất sản phẩm',
+    type: [AnalyticsResponseDto],
+  })
   @Get('product-performance')
   productPerformance(
     @Query('limit') limit?: string,
@@ -25,7 +28,10 @@ export class AnalyticsController {
   }
 
   @Permissions('ai:analyst:chat')
-  @ApiOkResponse({ description: 'Phân tích cảm xúc đánh giá', type: [AnalyticsResponseDto] })
+  @ApiOkResponse({
+    description: 'Phân tích cảm xúc đánh giá',
+    type: [AnalyticsResponseDto],
+  })
   @Get('review-sentiment')
   reviewSentiment(
     @Query('categoryId') categoryId?: string,
@@ -36,7 +42,10 @@ export class AnalyticsController {
   }
 
   @Permissions('ai:analyst:chat')
-  @ApiOkResponse({ description: 'Hiệu suất nhà bán hàng', type: [AnalyticsResponseDto] })
+  @ApiOkResponse({
+    description: 'Hiệu suất nhà bán hàng',
+    type: [AnalyticsResponseDto],
+  })
   @Get('seller-performance')
   sellerPerformance(
     @Query('limit') limit?: string,
@@ -51,7 +60,10 @@ export class AnalyticsController {
   }
 
   @Permissions('ai:analyst:chat')
-  @ApiOkResponse({ description: 'Tổng hợp danh mục', type: [AnalyticsResponseDto] })
+  @ApiOkResponse({
+    description: 'Tổng hợp danh mục',
+    type: [AnalyticsResponseDto],
+  })
   @Get('category-summary')
   categorySummary(@Query('from') from?: string, @Query('to') to?: string) {
     return this.analyticsService.categorySummary({ from, to });

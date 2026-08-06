@@ -19,9 +19,7 @@ describe('ProductsController response shape', () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
       controllers: [ProductsController],
-      providers: [
-        { provide: ProductsService, useValue: productsService },
-      ],
+      providers: [{ provide: ProductsService, useValue: productsService }],
     }).compile();
     controller = moduleRef.get(ProductsController);
   });
@@ -65,10 +63,9 @@ describe('ProductsController response shape', () => {
     });
 
     await expect(
-      controller.update(
-        '00000000-0000-0000-0000-000000000001',
-        { title: 'Updated Smartphone' },
-      ),
+      controller.update('00000000-0000-0000-0000-000000000001', {
+        title: 'Updated Smartphone',
+      }),
     ).resolves.toEqual({
       success: true,
       message: 'Cập nhật sản phẩm thành công.',
@@ -92,15 +89,12 @@ describe('ProductsController response shape', () => {
     ]);
 
     await expect(
-      controller.addImages(
-        '00000000-0000-0000-0000-000000000001',
-        {
-          images: [
-            { url: 'https://example.com/image.jpg', altText: 'Product image' },
-            { url: 'https://example.com/image2.jpg', altText: 'Product image 2' },
-          ],
-        },
-      ),
+      controller.addImages('00000000-0000-0000-0000-000000000001', {
+        images: [
+          { url: 'https://example.com/image.jpg', altText: 'Product image' },
+          { url: 'https://example.com/image2.jpg', altText: 'Product image 2' },
+        ],
+      }),
     ).resolves.toEqual({
       success: true,
       ids: ['img-1', 'img-2'],

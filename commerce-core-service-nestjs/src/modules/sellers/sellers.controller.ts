@@ -8,7 +8,11 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { SellersService } from './sellers.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
@@ -19,8 +23,14 @@ import {
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
-import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
-import { SellerResponseDto, SellerDetailResponseDto } from './dto/seller-response.dto';
+import {
+  toPaginatedResponseDto,
+  toResponseDto,
+} from '../../shared/api/response-serialization';
+import {
+  SellerResponseDto,
+  SellerDetailResponseDto,
+} from './dto/seller-response.dto';
 import { CreateSellerDto } from './dto/create-seller.dto';
 import { UpdateSellerDto } from './dto/update-seller.dto';
 
@@ -30,7 +40,10 @@ export class SellersController {
   constructor(private readonly sellersService: SellersService) {}
 
   @Permissions('seller:read')
-  @ApiOkResponse({ description: 'Danh sách nhà bán hàng có phân trang', type: () => PaginatedResponseDto<SellerResponseDto> })
+  @ApiOkResponse({
+    description: 'Danh sách nhà bán hàng có phân trang',
+    type: () => PaginatedResponseDto<SellerResponseDto>,
+  })
   @Get()
   async list(
     @Query('search') search?: string,
@@ -48,23 +61,36 @@ export class SellersController {
   }
 
   @Permissions('seller:write')
-  @ApiCreatedResponse({ description: 'Tạo nhà bán hàng thành công', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Tạo nhà bán hàng thành công',
+    type: CreatedResourceResponseDto,
+  })
   @Post()
-  async create(@Body() body: CreateSellerDto): Promise<CreatedResourceResponseDto> {
+  async create(
+    @Body() body: CreateSellerDto,
+  ): Promise<CreatedResourceResponseDto> {
     const seller = await this.sellersService.create(body);
     return createCreated(seller.id, VI_API_MESSAGES.success.SELLER_CREATED);
   }
 
   @Permissions('seller:read')
-  @ApiOkResponse({ description: 'Chi tiết nhà bán hàng', type: SellerDetailResponseDto })
+  @ApiOkResponse({
+    description: 'Chi tiết nhà bán hàng',
+    type: SellerDetailResponseDto,
+  })
   @Get(':id')
-  async get(@Param('id', ParseUUIDPipe) id: string): Promise<SellerDetailResponseDto> {
+  async get(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<SellerDetailResponseDto> {
     const seller = await this.sellersService.get(id);
     return toResponseDto(SellerDetailResponseDto, seller);
   }
 
   @Permissions('seller:write')
-  @ApiOkResponse({ description: 'Cập nhật nhà bán hàng thành công', type: MutationSuccessResponseDto })
+  @ApiOkResponse({
+    description: 'Cập nhật nhà bán hàng thành công',
+    type: MutationSuccessResponseDto,
+  })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,

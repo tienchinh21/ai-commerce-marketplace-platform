@@ -15,9 +15,7 @@ describe('BuyersController response shape', () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
       controllers: [BuyersController],
-      providers: [
-        { provide: BuyersService, useValue: buyersService },
-      ],
+      providers: [{ provide: BuyersService, useValue: buyersService }],
     }).compile();
     controller = moduleRef.get(BuyersController);
   });
@@ -54,10 +52,9 @@ describe('BuyersController response shape', () => {
     });
 
     await expect(
-      controller.update(
-        '00000000-0000-0000-0000-000000000001',
-        { displayName: 'Jane Updated' },
-      ),
+      controller.update('00000000-0000-0000-0000-000000000001', {
+        displayName: 'Jane Updated',
+      }),
     ).resolves.toEqual({
       success: true,
       message: 'Cập nhật người mua thành công.',

@@ -13,11 +13,13 @@ describe('Vietnamese validation errors', () => {
       {
         property: 'email',
         constraints: { isEmail: 'email must be an email' },
-      } as ValidationError,
+      },
       {
         property: 'password',
-        constraints: { minLength: 'password must be longer than or equal to 8 characters' },
-      } as ValidationError,
+        constraints: {
+          minLength: 'password must be longer than or equal to 8 characters',
+        },
+      },
       {
         property: 'items',
         children: [
@@ -27,16 +29,19 @@ describe('Vietnamese validation errors', () => {
               {
                 property: 'productId',
                 constraints: { isUuid: 'productId must be a UUID' },
-              } as ValidationError,
+              },
             ],
-          } as ValidationError,
+          },
         ],
-      } as ValidationError,
+      },
     ];
 
     expect(flattenValidationErrors(errors)).toEqual([
       { field: 'email', message: 'Email không hợp lệ.' },
-      { field: 'password', message: 'Mật khẩu không hợp lệ hoặc chưa đủ độ dài.' },
+      {
+        field: 'password',
+        message: 'Mật khẩu không hợp lệ hoặc chưa đủ độ dài.',
+      },
       { field: 'items.0.productId', message: 'Mã định danh không hợp lệ.' },
     ]);
   });
@@ -46,7 +51,7 @@ describe('Vietnamese validation errors', () => {
       {
         property: 'title',
         constraints: { isNotEmpty: 'title should not be empty' },
-      } as ValidationError,
+      },
     ]);
 
     expect(exception).toBeInstanceOf(BadRequestException);

@@ -1,6 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional, IsString, Max, Min, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 export class ImportReviewItemDto {
   @ApiProperty({ example: 'SRC-REV-001' })
@@ -47,7 +55,21 @@ export class ImportReviewsDto {
   @IsString()
   dataSourceId: string;
 
-  @ApiProperty({ type: () => [ImportReviewItemDto], example: [{ sourceReviewId: 'SRC-REV-001', sourceProductId: 'SRC-PROD-001', productId: '550e8400-e29b-41d4-a716-446655440000', buyerId: '550e8400-e29b-41d4-a716-446655440001', sellerId: '550e8400-e29b-41d4-a716-446655440002', rating: 5, title: 'Excellent product', content: 'I love this product. Highly recommended!' }] })
+  @ApiProperty({
+    type: () => [ImportReviewItemDto],
+    example: [
+      {
+        sourceReviewId: 'SRC-REV-001',
+        sourceProductId: 'SRC-PROD-001',
+        productId: '550e8400-e29b-41d4-a716-446655440000',
+        buyerId: '550e8400-e29b-41d4-a716-446655440001',
+        sellerId: '550e8400-e29b-41d4-a716-446655440002',
+        rating: 5,
+        title: 'Excellent product',
+        content: 'I love this product. Highly recommended!',
+      },
+    ],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ImportReviewItemDto)

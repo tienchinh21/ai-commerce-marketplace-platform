@@ -47,7 +47,11 @@ export class UpdateProductDto {
   @IsNumber()
   priceMax?: number;
 
-  @ApiPropertyOptional({ example: { color: 'black', storage: '256GB' }, type: 'object', additionalProperties: true })
+  @ApiPropertyOptional({
+    example: { color: 'black', storage: '256GB' },
+    type: 'object',
+    additionalProperties: true,
+  })
   @IsOptional()
   specsJson?: Record<string, unknown>;
 }

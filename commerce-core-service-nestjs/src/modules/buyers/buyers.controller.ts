@@ -8,7 +8,11 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { BuyersService } from './buyers.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
@@ -19,8 +23,14 @@ import {
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
-import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
-import { BuyerResponseDto, BuyerDetailResponseDto } from './dto/buyer-response.dto';
+import {
+  toPaginatedResponseDto,
+  toResponseDto,
+} from '../../shared/api/response-serialization';
+import {
+  BuyerResponseDto,
+  BuyerDetailResponseDto,
+} from './dto/buyer-response.dto';
 import { CreateBuyerDto } from './dto/create-buyer.dto';
 import { UpdateBuyerDto } from './dto/update-buyer.dto';
 
@@ -30,7 +40,10 @@ export class BuyersController {
   constructor(private readonly buyersService: BuyersService) {}
 
   @Permissions('buyer:read')
-  @ApiOkResponse({ description: 'Danh sách người mua có phân trang', type: () => PaginatedResponseDto<BuyerResponseDto> })
+  @ApiOkResponse({
+    description: 'Danh sách người mua có phân trang',
+    type: () => PaginatedResponseDto<BuyerResponseDto>,
+  })
   @Get()
   async list(
     @Query('search') search?: string,
@@ -48,23 +61,36 @@ export class BuyersController {
   }
 
   @Permissions('buyer:write')
-  @ApiCreatedResponse({ description: 'Tạo người mua thành công', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Tạo người mua thành công',
+    type: CreatedResourceResponseDto,
+  })
   @Post()
-  async create(@Body() body: CreateBuyerDto): Promise<CreatedResourceResponseDto> {
+  async create(
+    @Body() body: CreateBuyerDto,
+  ): Promise<CreatedResourceResponseDto> {
     const buyer = await this.buyersService.create(body);
     return createCreated(buyer.id, VI_API_MESSAGES.success.BUYER_CREATED);
   }
 
   @Permissions('buyer:read')
-  @ApiOkResponse({ description: 'Chi tiết người mua', type: BuyerDetailResponseDto })
+  @ApiOkResponse({
+    description: 'Chi tiết người mua',
+    type: BuyerDetailResponseDto,
+  })
   @Get(':id')
-  async get(@Param('id', ParseUUIDPipe) id: string): Promise<BuyerDetailResponseDto> {
+  async get(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<BuyerDetailResponseDto> {
     const buyer = await this.buyersService.get(id);
     return toResponseDto(BuyerDetailResponseDto, buyer);
   }
 
   @Permissions('buyer:write')
-  @ApiOkResponse({ description: 'Cập nhật người mua thành công', type: MutationSuccessResponseDto })
+  @ApiOkResponse({
+    description: 'Cập nhật người mua thành công',
+    type: MutationSuccessResponseDto,
+  })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,

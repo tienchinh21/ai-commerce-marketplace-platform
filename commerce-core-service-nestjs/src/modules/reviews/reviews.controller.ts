@@ -8,7 +8,11 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
@@ -19,7 +23,10 @@ import {
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
-import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
+import {
+  toPaginatedResponseDto,
+  toResponseDto,
+} from '../../shared/api/response-serialization';
 import { ReviewResponseDto } from './dto/review-response.dto';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -30,7 +37,10 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Permissions('review:read')
-  @ApiOkResponse({ description: 'Danh sách đánh giá có phân trang', type: () => PaginatedResponseDto<ReviewResponseDto> })
+  @ApiOkResponse({
+    description: 'Danh sách đánh giá có phân trang',
+    type: () => PaginatedResponseDto<ReviewResponseDto>,
+  })
   @Get()
   async list(
     @Query('productId') productId?: string,
@@ -54,9 +64,14 @@ export class ReviewsController {
   }
 
   @Permissions('review:moderate')
-  @ApiCreatedResponse({ description: 'Tạo đánh giá thành công', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Tạo đánh giá thành công',
+    type: CreatedResourceResponseDto,
+  })
   @Post()
-  async create(@Body() body: CreateReviewDto): Promise<CreatedResourceResponseDto> {
+  async create(
+    @Body() body: CreateReviewDto,
+  ): Promise<CreatedResourceResponseDto> {
     const review = await this.reviewsService.create(body);
     return createCreated(review.id, VI_API_MESSAGES.success.REVIEW_CREATED);
   }
@@ -64,13 +79,18 @@ export class ReviewsController {
   @Permissions('review:read')
   @ApiOkResponse({ description: 'Chi tiết đánh giá', type: ReviewResponseDto })
   @Get(':id')
-  async get(@Param('id', ParseUUIDPipe) id: string): Promise<ReviewResponseDto> {
+  async get(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ReviewResponseDto> {
     const review = await this.reviewsService.get(id);
     return toResponseDto(ReviewResponseDto, review);
   }
 
   @Permissions('review:moderate')
-  @ApiOkResponse({ description: 'Cập nhật đánh giá thành công', type: MutationSuccessResponseDto })
+  @ApiOkResponse({
+    description: 'Cập nhật đánh giá thành công',
+    type: MutationSuccessResponseDto,
+  })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,

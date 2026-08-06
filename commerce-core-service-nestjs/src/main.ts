@@ -56,7 +56,9 @@ async function bootstrap(): Promise<void> {
 
   const config = new DocumentBuilder()
     .setTitle('Commerce Core CMS API')
-    .setDescription('AI Commerce Marketplace Core CMS API (admin/internal routes under /api/cms)')
+    .setDescription(
+      'AI Commerce Marketplace Core CMS API (admin/internal routes under /api/cms)',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();

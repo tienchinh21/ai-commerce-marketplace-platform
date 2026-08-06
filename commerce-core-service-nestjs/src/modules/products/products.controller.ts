@@ -11,7 +11,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
@@ -24,7 +29,11 @@ import {
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
-import { toPaginatedResponseDto, toResponseDto, toResponseDtoList } from '../../shared/api/response-serialization';
+import {
+  toPaginatedResponseDto,
+  toResponseDto,
+  toResponseDtoList,
+} from '../../shared/api/response-serialization';
 import { ProductResponseDto } from './dto/product-response.dto';
 import { ProductDetailResponseDto } from './dto/product-detail-response.dto';
 import { ProductVariantResponseDto } from './dto/product-variant-response.dto';
@@ -39,7 +48,10 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Danh sách sản phẩm có phân trang', type: () => PaginatedResponseDto<ProductResponseDto> })
+  @ApiOkResponse({
+    description: 'Danh sách sản phẩm có phân trang',
+    type: () => PaginatedResponseDto<ProductResponseDto>,
+  })
   @Get()
   async list(
     @Query('search') search?: string,
@@ -61,23 +73,36 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ description: 'Tạo sản phẩm thành công', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Tạo sản phẩm thành công',
+    type: CreatedResourceResponseDto,
+  })
   @Post()
-  async create(@Body() body: CreateProductDto): Promise<CreatedResourceResponseDto> {
+  async create(
+    @Body() body: CreateProductDto,
+  ): Promise<CreatedResourceResponseDto> {
     const product = await this.productsService.create(body);
     return createCreated(product.id, VI_API_MESSAGES.success.PRODUCT_CREATED);
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Chi tiết sản phẩm', type: ProductDetailResponseDto })
+  @ApiOkResponse({
+    description: 'Chi tiết sản phẩm',
+    type: ProductDetailResponseDto,
+  })
   @Get(':id')
-  async get(@Param('id', ParseUUIDPipe) id: string): Promise<ProductDetailResponseDto> {
+  async get(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ProductDetailResponseDto> {
     const product = await this.productsService.getDetail(id);
     return toResponseDto(ProductDetailResponseDto, product);
   }
 
   @Permissions('product:write')
-  @ApiOkResponse({ description: 'Cập nhật sản phẩm thành công', type: MutationSuccessResponseDto })
+  @ApiOkResponse({
+    description: 'Cập nhật sản phẩm thành công',
+    type: MutationSuccessResponseDto,
+  })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -96,26 +121,40 @@ export class ProductsController {
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Danh sách biến thể sản phẩm', type: [ProductVariantResponseDto] })
+  @ApiOkResponse({
+    description: 'Danh sách biến thể sản phẩm',
+    type: [ProductVariantResponseDto],
+  })
   @Get(':id/variants')
-  async listVariants(@Param('id', ParseUUIDPipe) id: string): Promise<ProductVariantResponseDto[]> {
+  async listVariants(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ProductVariantResponseDto[]> {
     const variants = await this.productsService.listVariants(id);
     return toResponseDtoList(ProductVariantResponseDto, variants);
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ description: 'Tạo biến thể sản phẩm thành công', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Tạo biến thể sản phẩm thành công',
+    type: CreatedResourceResponseDto,
+  })
   @Post(':id/variants')
   async createVariant(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: CreateVariantDto,
   ): Promise<CreatedResourceResponseDto> {
     const variant = await this.productsService.createVariant(id, body);
-    return createCreated(variant.id, VI_API_MESSAGES.success.PRODUCT_VARIANT_CREATED);
+    return createCreated(
+      variant.id,
+      VI_API_MESSAGES.success.PRODUCT_VARIANT_CREATED,
+    );
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ description: 'Thêm hình ảnh sản phẩm thành công', type: BulkCreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Thêm hình ảnh sản phẩm thành công',
+    type: BulkCreatedResourceResponseDto,
+  })
   @Post(':id/images')
   async addImages(
     @Param('id', ParseUUIDPipe) id: string,

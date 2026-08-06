@@ -4,12 +4,14 @@ export const VI_API_MESSAGES = {
   errors: {
     [ApiErrorCode.AUTH_INVALID_CREDENTIALS]: 'Email hoặc mật khẩu không đúng.',
     [ApiErrorCode.AUTH_USER_NOT_FOUND]: 'Không tìm thấy người dùng đăng nhập.',
-    [ApiErrorCode.AUTH_UNAUTHORIZED]: 'Bạn cần đăng nhập để thực hiện thao tác này.',
+    [ApiErrorCode.AUTH_UNAUTHORIZED]:
+      'Bạn cần đăng nhập để thực hiện thao tác này.',
     [ApiErrorCode.AUTH_FORBIDDEN]: 'Bạn không có quyền thực hiện thao tác này.',
     [ApiErrorCode.USER_NOT_FOUND]: 'Không tìm thấy người dùng.',
     [ApiErrorCode.USER_EMAIL_EXISTS]: 'Email đã tồn tại.',
     [ApiErrorCode.CATEGORY_NOT_FOUND]: 'Không tìm thấy danh mục.',
-    [ApiErrorCode.CATEGORY_ATTRIBUTE_NOT_FOUND]: 'Không tìm thấy thuộc tính danh mục.',
+    [ApiErrorCode.CATEGORY_ATTRIBUTE_NOT_FOUND]:
+      'Không tìm thấy thuộc tính danh mục.',
     [ApiErrorCode.PRODUCT_NOT_FOUND]: 'Không tìm thấy sản phẩm.',
     [ApiErrorCode.SELLER_NOT_FOUND]: 'Không tìm thấy nhà bán hàng.',
     [ApiErrorCode.BUYER_NOT_FOUND]: 'Không tìm thấy người mua.',
@@ -17,13 +19,16 @@ export const VI_API_MESSAGES = {
     [ApiErrorCode.ORDER_NOT_FOUND]: 'Không tìm thấy đơn hàng.',
     [ApiErrorCode.DATA_SOURCE_NOT_FOUND]: 'Không tìm thấy nguồn dữ liệu.',
     [ApiErrorCode.SYNC_RUN_NOT_FOUND]: 'Không tìm thấy lượt đồng bộ.',
-    [ApiErrorCode.RAW_SNAPSHOT_NOT_FOUND]: 'Không tìm thấy bản ghi dữ liệu thô.',
+    [ApiErrorCode.RAW_SNAPSHOT_NOT_FOUND]:
+      'Không tìm thấy bản ghi dữ liệu thô.',
     [ApiErrorCode.VALIDATION_FAILED]: 'Dữ liệu gửi lên không hợp lệ.',
     [ApiErrorCode.INVALID_UUID]: 'Mã định danh không hợp lệ.',
     [ApiErrorCode.DATABASE_CONFLICT]: 'Dữ liệu đã tồn tại hoặc bị trùng.',
-    [ApiErrorCode.DATABASE_RELATION_NOT_FOUND]: 'Dữ liệu liên quan không tồn tại.',
+    [ApiErrorCode.DATABASE_RELATION_NOT_FOUND]:
+      'Dữ liệu liên quan không tồn tại.',
     [ApiErrorCode.DATABASE_REQUIRED_FIELD_MISSING]: 'Thiếu dữ liệu bắt buộc.',
-    [ApiErrorCode.INTERNAL_SERVER_ERROR]: 'Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.',
+    [ApiErrorCode.INTERNAL_SERVER_ERROR]:
+      'Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.',
   },
   success: {
     USER_CREATED: 'Tạo người dùng thành công.',
@@ -49,8 +54,10 @@ export const VI_API_MESSAGES = {
     DATA_SOURCE_CREATED: 'Tạo nguồn dữ liệu thành công.',
     DATA_SOURCE_UPDATED: 'Cập nhật nguồn dữ liệu thành công.',
     IMPORT_PRODUCTS_COMPLETED: 'Nhập sản phẩm hoàn tất.',
-    IMPORT_PRODUCTS_COMPLETED_WITH_ERRORS: 'Nhập sản phẩm hoàn tất nhưng có lỗi.',
+    IMPORT_PRODUCTS_COMPLETED_WITH_ERRORS:
+      'Nhập sản phẩm hoàn tất nhưng có lỗi.',
     IMPORT_REVIEWS_COMPLETED: 'Nhập đánh giá hoàn tất.',
-    IMPORT_REVIEWS_COMPLETED_WITH_ERRORS: 'Nhập đánh giá hoàn tất nhưng có lỗi.',
+    IMPORT_REVIEWS_COMPLETED_WITH_ERRORS:
+      'Nhập đánh giá hoàn tất nhưng có lỗi.',
   },
 } as const;

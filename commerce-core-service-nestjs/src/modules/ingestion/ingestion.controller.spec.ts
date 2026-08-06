@@ -21,9 +21,7 @@ describe('IngestionController response shape', () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
       controllers: [IngestionController],
-      providers: [
-        { provide: IngestionService, useValue: ingestionService },
-      ],
+      providers: [{ provide: IngestionService, useValue: ingestionService }],
     }).compile();
     controller = moduleRef.get(IngestionController);
   });
@@ -154,10 +152,9 @@ describe('IngestionController response shape', () => {
     });
 
     await expect(
-      controller.updateDataSource(
-        '00000000-0000-0000-0000-000000000001',
-        { name: 'Updated' },
-      ),
+      controller.updateDataSource('00000000-0000-0000-0000-000000000001', {
+        name: 'Updated',
+      }),
     ).resolves.toEqual({
       success: true,
       message: 'Cập nhật nguồn dữ liệu thành công.',

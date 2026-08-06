@@ -27,7 +27,17 @@ export class CreateOrderDto {
   @IsString()
   currency?: string;
 
-  @ApiProperty({ type: () => [OrderItemDto], example: [{ productId: '550e8400-e29b-41d4-a716-446655440000', variantId: '550e8400-e29b-41d4-a716-446655440001', quantity: 2, unitPrice: 699.99 }] })
+  @ApiProperty({
+    type: () => [OrderItemDto],
+    example: [
+      {
+        productId: '550e8400-e29b-41d4-a716-446655440000',
+        variantId: '550e8400-e29b-41d4-a716-446655440001',
+        quantity: 2,
+        unitPrice: 699.99,
+      },
+    ],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)

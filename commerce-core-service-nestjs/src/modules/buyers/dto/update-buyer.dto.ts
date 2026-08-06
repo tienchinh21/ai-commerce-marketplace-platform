@@ -27,7 +27,11 @@ export class UpdateBuyerDto {
   @IsString()
   userId?: string;
 
-  @ApiPropertyOptional({ example: { address: '123 Main St' }, type: 'object', additionalProperties: true })
+  @ApiPropertyOptional({
+    example: { address: '123 Main St' },
+    type: 'object',
+    additionalProperties: true,
+  })
   @IsOptional()
   metadataJson?: Record<string, unknown>;
 }

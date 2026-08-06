@@ -32,7 +32,11 @@ export class UpdateAttributeDto {
   @IsString()
   unit?: string;
 
-  @ApiPropertyOptional({ example: { values: ['red', 'blue', 'green'] }, type: 'object', additionalProperties: true })
+  @ApiPropertyOptional({
+    example: { values: ['red', 'blue', 'green'] },
+    type: 'object',
+    additionalProperties: true,
+  })
   @IsOptional()
   optionsJson?: Record<string, unknown>;
 }

@@ -10,7 +10,12 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import {
   CreatedResourceResponseDto,
   MutationSuccessResponseDto,
@@ -18,7 +23,10 @@ import {
   createSuccess,
 } from '../../shared/api/mutation-response.dto';
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
-import { toResponseDto, toResponseDtoList } from '../../shared/api/response-serialization';
+import {
+  toResponseDto,
+  toResponseDtoList,
+} from '../../shared/api/response-serialization';
 import { CategoriesService } from './categories.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -34,7 +42,10 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'Danh sách danh mục', type: [CategoryResponseDto] })
+  @ApiOkResponse({
+    description: 'Danh sách danh mục',
+    type: [CategoryResponseDto],
+  })
   @Get()
   async list(): Promise<CategoryResponseDto[]> {
     const categories = await this.categoriesService.list();
@@ -42,23 +53,36 @@ export class CategoriesController {
   }
 
   @Permissions('category:write')
-  @ApiCreatedResponse({ description: 'Tạo danh mục thành công', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Tạo danh mục thành công',
+    type: CreatedResourceResponseDto,
+  })
   @Post()
-  async create(@Body() body: CreateCategoryDto): Promise<CreatedResourceResponseDto> {
+  async create(
+    @Body() body: CreateCategoryDto,
+  ): Promise<CreatedResourceResponseDto> {
     const category = await this.categoriesService.create(body);
     return createCreated(category.id, VI_API_MESSAGES.success.CATEGORY_CREATED);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'Chi tiết danh mục', type: CategoryResponseDto })
+  @ApiOkResponse({
+    description: 'Chi tiết danh mục',
+    type: CategoryResponseDto,
+  })
   @Get(':id')
-  async get(@Param('id', ParseUUIDPipe) id: string): Promise<CategoryResponseDto> {
+  async get(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<CategoryResponseDto> {
     const category = await this.categoriesService.get(id);
     return toResponseDto(CategoryResponseDto, category);
   }
 
   @Permissions('category:write')
-  @ApiOkResponse({ description: 'Cập nhật danh mục thành công', type: MutationSuccessResponseDto })
+  @ApiOkResponse({
+    description: 'Cập nhật danh mục thành công',
+    type: MutationSuccessResponseDto,
+  })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -77,7 +101,10 @@ export class CategoriesController {
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'Danh sách thuộc tính danh mục', type: [CategoryAttributeResponseDto] })
+  @ApiOkResponse({
+    description: 'Danh sách thuộc tính danh mục',
+    type: [CategoryAttributeResponseDto],
+  })
   @Get(':id/attributes')
   async listAttributes(
     @Param('id', ParseUUIDPipe) id: string,
@@ -87,18 +114,27 @@ export class CategoriesController {
   }
 
   @Permissions('category:write')
-  @ApiCreatedResponse({ description: 'Tạo thuộc tính danh mục thành công', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Tạo thuộc tính danh mục thành công',
+    type: CreatedResourceResponseDto,
+  })
   @Post(':id/attributes')
   async createAttribute(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: CreateAttributeDto,
   ): Promise<CreatedResourceResponseDto> {
     const attribute = await this.categoriesService.createAttribute(id, body);
-    return createCreated(attribute.id, VI_API_MESSAGES.success.CATEGORY_ATTRIBUTE_CREATED);
+    return createCreated(
+      attribute.id,
+      VI_API_MESSAGES.success.CATEGORY_ATTRIBUTE_CREATED,
+    );
   }
 
   @Permissions('category:write')
-  @ApiOkResponse({ description: 'Cập nhật thuộc tính danh mục thành công', type: MutationSuccessResponseDto })
+  @ApiOkResponse({
+    description: 'Cập nhật thuộc tính danh mục thành công',
+    type: MutationSuccessResponseDto,
+  })
   @Patch('attributes/:attributeId')
   async updateAttribute(
     @Param('attributeId', ParseUUIDPipe) attributeId: string,

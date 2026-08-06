@@ -7,7 +7,11 @@ import {
   Put,
   Post,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { UsersPermissionsService } from './users-permissions.service';
 import { Permissions } from '../auth/permissions.decorator';
 import {
@@ -31,7 +35,10 @@ export class UsersPermissionsController {
   ) {}
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'Danh sách người dùng', type: [UserResponseDto] })
+  @ApiOkResponse({
+    description: 'Danh sách người dùng',
+    type: [UserResponseDto],
+  })
   @Get('users')
   async listUsers(): Promise<UserResponseDto[]> {
     const users = await this.usersPermissionsService.listUsers();
@@ -39,15 +46,23 @@ export class UsersPermissionsController {
   }
 
   @Permissions('category:read')
-  @ApiCreatedResponse({ description: 'Tạo người dùng thành công', type: CreatedResourceResponseDto })
+  @ApiCreatedResponse({
+    description: 'Tạo người dùng thành công',
+    type: CreatedResourceResponseDto,
+  })
   @Post('users')
-  async createUser(@Body() body: CreateUserDto): Promise<CreatedResourceResponseDto> {
+  async createUser(
+    @Body() body: CreateUserDto,
+  ): Promise<CreatedResourceResponseDto> {
     const user = await this.usersPermissionsService.createUser(body);
     return createCreated(user.id, VI_API_MESSAGES.success.USER_CREATED);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'Danh sách quyền', type: [PermissionResponseDto] })
+  @ApiOkResponse({
+    description: 'Danh sách quyền',
+    type: [PermissionResponseDto],
+  })
   @Get('permissions')
   async listPermissions(): Promise<PermissionResponseDto[]> {
     const permissions = await this.usersPermissionsService.listPermissions();
@@ -55,14 +70,22 @@ export class UsersPermissionsController {
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'Danh sách quyền của người dùng', type: [String] })
+  @ApiOkResponse({
+    description: 'Danh sách quyền của người dùng',
+    type: [String],
+  })
   @Get('users/:id/permissions')
-  async getUserPermissions(@Param('id', ParseUUIDPipe) id: string): Promise<string[]> {
+  async getUserPermissions(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<string[]> {
     return this.usersPermissionsService.getUserPermissions(id);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'Cập nhật quyền người dùng thành công', type: MutationSuccessResponseDto })
+  @ApiOkResponse({
+    description: 'Cập nhật quyền người dùng thành công',
+    type: MutationSuccessResponseDto,
+  })
   @Put('users/:id/permissions')
   async setPermissions(
     @Param('id', ParseUUIDPipe) id: string,

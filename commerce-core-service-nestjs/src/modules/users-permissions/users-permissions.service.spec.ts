@@ -75,7 +75,9 @@ describe('UsersPermissionsService', () => {
   it('should return USER_NOT_FOUND when setting permissions for missing user', async () => {
     usersFindOne.mockResolvedValue(null);
 
-    await expect(service.setPermissions('missing', ['p:read'])).rejects.toMatchObject({
+    await expect(
+      service.setPermissions('missing', ['p:read']),
+    ).rejects.toMatchObject({
       response: {
         code: ApiErrorCode.USER_NOT_FOUND,
         message: VI_API_MESSAGES.errors[ApiErrorCode.USER_NOT_FOUND],

@@ -31,11 +31,15 @@ function walkValidationErrors(
   parentPath = '',
 ): ApiErrorDetailDto[] {
   return errors.flatMap((error) => {
-    const field = parentPath ? `${parentPath}.${error.property}` : error.property;
-    const ownErrors = Object.keys(error.constraints ?? {}).map((constraint) => ({
-      field,
-      message: messageForConstraint(constraint),
-    }));
+    const field = parentPath
+      ? `${parentPath}.${error.property}`
+      : error.property;
+    const ownErrors = Object.keys(error.constraints ?? {}).map(
+      (constraint) => ({
+        field,
+        message: messageForConstraint(constraint),
+      }),
+    );
     const childErrors = error.children?.length
       ? walkValidationErrors(error.children, field)
       : [];
