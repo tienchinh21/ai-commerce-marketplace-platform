@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Client } from 'pg';
 import { AppModule } from './app.module';
 import { loadEnv } from './shared/config/env';
+import { ApiExceptionFilter } from './shared/api/api-exception.filter';
 import { createVietnameseValidationException } from './shared/api/validation-error.util';
 
 async function ensureSchemas(env: ReturnType<typeof loadEnv>): Promise<void> {
@@ -50,6 +51,8 @@ async function bootstrap(): Promise<void> {
       exceptionFactory: createVietnameseValidationException,
     }),
   );
+
+  app.useGlobalFilters(new ApiExceptionFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Commerce Core CMS API')
