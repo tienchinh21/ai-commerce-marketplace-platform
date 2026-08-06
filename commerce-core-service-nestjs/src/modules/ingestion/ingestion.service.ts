@@ -222,7 +222,9 @@ export class IngestionService {
         success += 1;
       } catch (error) {
         failed += 1;
-        errors.push(`${item.sourceProductId}: ${String(error)}`);
+        errors.push(
+          `${item.sourceProductId}: ${VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR]}`,
+        );
       }
     }
 
@@ -269,7 +271,9 @@ export class IngestionService {
         success += 1;
       } catch (error) {
         failed += 1;
-        errors.push(`${item.sourceReviewId}: ${String(error)}`);
+        errors.push(
+          `${item.sourceReviewId}: ${VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR]}`,
+        );
       }
     }
 

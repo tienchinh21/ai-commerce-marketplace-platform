@@ -14,9 +14,30 @@ import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 describe('IngestionService', () => {
   let service: IngestionService;
   const dataSourceFindOne = jest.fn();
+  const dataSourceCreate = jest.fn();
+  const dataSourceSave = jest.fn();
+  const syncRunFindOne = jest.fn();
+  const syncRunCreate = jest.fn();
+  const syncRunSave = jest.fn();
+  const rawSnapshotFindOne = jest.fn();
+  const rawSnapshotCreate = jest.fn();
+  const rawSnapshotSave = jest.fn();
+  const sourceProductCreate = jest.fn();
+  const sourceProductSave = jest.fn();
+  const sourceReviewCreate = jest.fn();
+  const sourceReviewSave = jest.fn();
+  const productsCreate = jest.fn();
+  const reviewsCreate = jest.fn();
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    syncRunCreate.mockImplementation((data) => data);
+    syncRunSave.mockImplementation((run) => Promise.resolve(run));
+    rawSnapshotCreate.mockImplementation((data) => data);
+    rawSnapshotSave.mockImplementation((snapshot) =>
+      Promise.resolve(snapshot),
+    );
+
     const moduleRef = await Test.createTestingModule({
       providers: [
         IngestionService,
@@ -25,16 +46,16 @@ describe('IngestionService', () => {
           useValue: {
             findOne: dataSourceFindOne,
             find: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
+            create: dataSourceCreate,
+            save: dataSourceSave,
           },
         },
         {
           provide: getRepositoryToken(SyncRun),
           useValue: {
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
+            findOne: syncRunFindOne,
+            create: syncRunCreate,
+            save: syncRunSave,
             createQueryBuilder: jest.fn(() => ({
               andWhere: jest.fn().mockReturnThis(),
               orderBy: jest.fn().mockReturnThis(),
@@ -47,9 +68,9 @@ describe('IngestionService', () => {
         {
           provide: getRepositoryToken(RawSnapshot),
           useValue: {
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
+            findOne: rawSnapshotFindOne,
+            create: rawSnapshotCreate,
+            save: rawSnapshotSave,
             createQueryBuilder: jest.fn(() => ({
               andWhere: jest.fn().mockReturnThis(),
               orderBy: jest.fn().mockReturnThis(),
@@ -62,27 +83,27 @@ describe('IngestionService', () => {
         {
           provide: getRepositoryToken(SourceProduct),
           useValue: {
-            create: jest.fn(),
-            save: jest.fn(),
+            create: sourceProductCreate,
+            save: sourceProductSave,
           },
         },
         {
           provide: getRepositoryToken(SourceReview),
           useValue: {
-            create: jest.fn(),
-            save: jest.fn(),
+            create: sourceReviewCreate,
+            save: sourceReviewSave,
           },
         },
         {
           provide: ProductsService,
           useValue: {
-            create: jest.fn(),
+            create: productsCreate,
           },
         },
         {
           provide: ReviewsService,
           useValue: {
-            create: jest.fn(),
+            create: reviewsCreate,
           },
         },
       ],
@@ -104,5 +125,69 @@ describe('IngestionService', () => {
         message: VI_API_MESSAGES.errors[ApiErrorCode.DATA_SOURCE_NOT_FOUND],
       },
     });
+  });
+
+  it('should sanitize errorSummary for importProducts and avoid leaking raw exception text', async () => {
+    const dataSourceId = 'ds-1';
+    const sourceProductId = 'sp-1';
+    dataSourceFindOne.mockResolvedValue({ id: dataSourceId });
+    productsCreate.mockRejectedValue(
+      new Error(
+        'insert into products values (...) - duplicate key value violates unique constraint "products_pkey"',
+      ),
+    );
+
+    const result = await service.importProducts({
+      dataSourceId,
+      items: [
+        {
+          sourceProductId,
+          title: 'Product title',
+          sellerId: 'seller-1',
+          categoryId: 'cat-1',
+        },
+      ],
+    });
+
+    expect(result.errorSummary).toContain(
+      VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR],
+    );
+    expect(result.errorSummary).toContain(sourceProductId);
+    expect(result.errorSummary).not.toContain('insert into');
+    expect(result.errorSummary).not.toContain('products_pkey');
+    expect(result.errorSummary).not.toContain('Error:');
+    expect(result.errorSummary).not.toContain('duplicate key value');
+  });
+
+  it('should sanitize errorSummary for importReviews and avoid leaking raw exception text', async () => {
+    const dataSourceId = 'ds-1';
+    const sourceReviewId = 'sr-1';
+    dataSourceFindOne.mockResolvedValue({ id: dataSourceId });
+    reviewsCreate.mockRejectedValue(
+      new Error(
+        'insert into reviews values (...) - duplicate key value violates unique constraint "reviews_pkey"',
+      ),
+    );
+
+    const result = await service.importReviews({
+      dataSourceId,
+      items: [
+        {
+          sourceReviewId,
+          sourceProductId: 'sp-1',
+          productId: 'prod-1',
+          rating: 5,
+        },
+      ],
+    });
+
+    expect(result.errorSummary).toContain(
+      VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR],
+    );
+    expect(result.errorSummary).toContain(sourceReviewId);
+    expect(result.errorSummary).not.toContain('insert into');
+    expect(result.errorSummary).not.toContain('reviews_pkey');
+    expect(result.errorSummary).not.toContain('Error:');
+    expect(result.errorSummary).not.toContain('duplicate key value');
   });
 });
