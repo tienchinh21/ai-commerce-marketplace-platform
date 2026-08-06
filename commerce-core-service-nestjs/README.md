@@ -64,6 +64,15 @@ All endpoints except `/cms/auth/login` and `/health` require `Authorization: Bea
 - Import endpoints return a compact sync run summary with `syncRunId`, `status`, `totalRecords`, `successCount`, and `failedCount`.
 - Sensitive or heavy persistence fields such as `passwordHash`, `configJson`, and `rawJson` are not returned from CMS API responses by default.
 
+## CMS API Message Policy
+
+- All client-facing `message` values are Vietnamese.
+- Success responses use the shared `VI_API_MESSAGES.success` catalog.
+- Service exceptions use `{ code, message }` payloads with `ApiErrorCode` and `VI_API_MESSAGES.errors`.
+- Validation errors return `VALIDATION_FAILED` with Vietnamese field-level details.
+- Database errors are normalized by `ApiExceptionFilter`; raw SQL, constraint names, stack traces, and internal error text are not returned to clients.
+- Swagger response descriptions for CMS endpoints are Vietnamese.
+
 ## Env (`.env`)
 
 ```env

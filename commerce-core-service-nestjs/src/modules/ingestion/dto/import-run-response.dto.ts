@@ -20,7 +20,7 @@ export class ImportRunResponseDto {
   @ApiProperty()
   failedCount: number;
 
-  @ApiProperty({ example: 'Import finished' })
+  @ApiProperty({ example: 'Nhập sản phẩm hoàn tất.' })
   message: string;
 }
 
