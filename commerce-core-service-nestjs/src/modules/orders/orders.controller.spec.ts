@@ -50,7 +50,7 @@ describe('OrdersController response shape', () => {
             productId: 'prod-1',
             variantId: 'variant-1',
             quantity: 2,
-            unitPrice: '699.99',
+            unitPrice: 699.99,
           },
         ],
       }),

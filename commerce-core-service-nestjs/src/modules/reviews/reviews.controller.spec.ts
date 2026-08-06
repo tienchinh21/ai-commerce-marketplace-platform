@@ -70,7 +70,7 @@ describe('ReviewsController response shape', () => {
     });
   });
 
-  it('list returns reviews without leaking heavy content', async () => {
+  it('list returns reviews mapped to the review response DTO', async () => {
     reviewsService.list.mockResolvedValue({
       items: [
         {

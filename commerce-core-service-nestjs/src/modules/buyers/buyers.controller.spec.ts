@@ -64,7 +64,7 @@ describe('BuyersController response shape', () => {
     });
   });
 
-  it('list returns buyers without exposing sensitive metadata', async () => {
+  it('list returns buyers mapped to the buyer response DTO', async () => {
     buyersService.list.mockResolvedValue({
       items: [
         {

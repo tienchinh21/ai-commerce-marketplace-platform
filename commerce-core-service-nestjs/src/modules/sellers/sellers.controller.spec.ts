@@ -62,7 +62,7 @@ describe('SellersController response shape', () => {
     });
   });
 
-  it('list returns sellers without exposing sensitive metadata', async () => {
+  it('list returns sellers mapped to the seller response DTO', async () => {
     sellersService.list.mockResolvedValue({
       items: [
         {
