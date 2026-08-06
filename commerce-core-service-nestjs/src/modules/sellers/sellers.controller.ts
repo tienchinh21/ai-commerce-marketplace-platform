@@ -22,7 +22,7 @@ export class SellersController {
   constructor(private readonly sellersService: SellersService) {}
 
   @Permissions('seller:read')
-  @ApiOkResponse({ type: () => PaginatedResponseDto<Seller> })
+  @ApiOkResponse({ description: 'Paginated list of sellers', type: () => PaginatedResponseDto<Seller> })
   @Get()
   list(
     @Query('search') search?: string,
@@ -39,21 +39,21 @@ export class SellersController {
   }
 
   @Permissions('seller:write')
-  @ApiCreatedResponse({ type: Seller })
+  @ApiCreatedResponse({ description: 'Created seller', type: Seller })
   @Post()
   create(@Body() body: CreateSellerDto) {
     return this.sellersService.create(body);
   }
 
   @Permissions('seller:read')
-  @ApiOkResponse({ type: Seller })
+  @ApiOkResponse({ description: 'Seller details', type: Seller })
   @Get(':id')
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.sellersService.get(id);
   }
 
   @Permissions('seller:write')
-  @ApiOkResponse({ type: Seller })
+  @ApiOkResponse({ description: 'Updated seller', type: Seller })
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,

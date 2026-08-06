@@ -22,7 +22,7 @@ export class BuyersController {
   constructor(private readonly buyersService: BuyersService) {}
 
   @Permissions('buyer:read')
-  @ApiOkResponse({ type: () => PaginatedResponseDto<Buyer> })
+  @ApiOkResponse({ description: 'Paginated list of buyers', type: () => PaginatedResponseDto<Buyer> })
   @Get()
   list(
     @Query('search') search?: string,
@@ -39,21 +39,21 @@ export class BuyersController {
   }
 
   @Permissions('buyer:write')
-  @ApiCreatedResponse({ type: Buyer })
+  @ApiCreatedResponse({ description: 'Created buyer', type: Buyer })
   @Post()
   create(@Body() body: CreateBuyerDto) {
     return this.buyersService.create(body);
   }
 
   @Permissions('buyer:read')
-  @ApiOkResponse({ type: Buyer })
+  @ApiOkResponse({ description: 'Buyer details', type: Buyer })
   @Get(':id')
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.buyersService.get(id);
   }
 
   @Permissions('buyer:write')
-  @ApiOkResponse({ type: Buyer })
+  @ApiOkResponse({ description: 'Updated buyer', type: Buyer })
   @Patch(':id')
   update(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateBuyerDto) {
     return this.buyersService.update(id, body);

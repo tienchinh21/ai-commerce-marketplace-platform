@@ -28,7 +28,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Permissions('product:read')
-  @ApiOkResponse({ type: () => PaginatedResponseDto<Product> })
+  @ApiOkResponse({ description: 'Paginated list of products', type: () => PaginatedResponseDto<Product> })
   @Get()
   list(
     @Query('search') search?: string,
@@ -49,21 +49,21 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ type: Product })
+  @ApiCreatedResponse({ description: 'Created product', type: Product })
   @Post()
   create(@Body() body: CreateProductDto) {
     return this.productsService.create(body);
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ type: ProductDetailResponseDto })
+  @ApiOkResponse({ description: 'Product details', type: ProductDetailResponseDto })
   @Get(':id')
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.getDetail(id);
   }
 
   @Permissions('product:write')
-  @ApiOkResponse({ type: Product })
+  @ApiOkResponse({ description: 'Updated product', type: Product })
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -73,21 +73,21 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
-  @ApiOkResponse()
+  @ApiOkResponse({ description: 'Product deleted successfully' })
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ type: [ProductVariant] })
+  @ApiOkResponse({ description: 'List of product variants', type: [ProductVariant] })
   @Get(':id/variants')
   listVariants(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.listVariants(id);
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ type: ProductVariant })
+  @ApiCreatedResponse({ description: 'Created product variant', type: ProductVariant })
   @Post(':id/variants')
   createVariant(
     @Param('id', ParseUUIDPipe) id: string,
@@ -97,7 +97,7 @@ export class ProductsController {
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ type: [ProductImage] })
+  @ApiCreatedResponse({ description: 'Added product images', type: [ProductImage] })
   @Post(':id/images')
   addImages(
     @Param('id', ParseUUIDPipe) id: string,

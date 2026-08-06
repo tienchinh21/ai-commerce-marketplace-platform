@@ -10,7 +10,7 @@ export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
   @Permissions('ai:analyst:chat')
-  @ApiOkResponse({ type: [AnalyticsResponseDto] })
+  @ApiOkResponse({ description: 'Analytics query result record', type: [AnalyticsResponseDto] })
   @Get('product-performance')
   productPerformance(
     @Query('limit') limit?: string,
@@ -25,7 +25,7 @@ export class AnalyticsController {
   }
 
   @Permissions('ai:analyst:chat')
-  @ApiOkResponse({ type: [AnalyticsResponseDto] })
+  @ApiOkResponse({ description: 'Analytics query result record', type: [AnalyticsResponseDto] })
   @Get('review-sentiment')
   reviewSentiment(
     @Query('categoryId') categoryId?: string,
@@ -36,7 +36,7 @@ export class AnalyticsController {
   }
 
   @Permissions('ai:analyst:chat')
-  @ApiOkResponse({ type: [AnalyticsResponseDto] })
+  @ApiOkResponse({ description: 'Analytics query result record', type: [AnalyticsResponseDto] })
   @Get('seller-performance')
   sellerPerformance(
     @Query('limit') limit?: string,
@@ -51,7 +51,7 @@ export class AnalyticsController {
   }
 
   @Permissions('ai:analyst:chat')
-  @ApiOkResponse({ type: [AnalyticsResponseDto] })
+  @ApiOkResponse({ description: 'Analytics query result record', type: [AnalyticsResponseDto] })
   @Get('category-summary')
   categorySummary(@Query('from') from?: string, @Query('to') to?: string) {
     return this.analyticsService.categorySummary({ from, to });

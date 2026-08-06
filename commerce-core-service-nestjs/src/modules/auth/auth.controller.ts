@@ -14,21 +14,21 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
-  @ApiCreatedResponse({ type: LoginResponseDto })
+  @ApiCreatedResponse({ description: 'Access token and user profile', type: LoginResponseDto })
   @Post('login')
   login(@Body() body: LoginDto) {
     return this.authService.login(body.email, body.password);
   }
 
   @ApiBearerAuth()
-  @ApiOkResponse({ type: MeResponseDto })
+  @ApiOkResponse({ description: 'Current authenticated user profile', type: MeResponseDto })
   @Get('me')
   me(@Request() request: { user: { id: string } }) {
     return this.authService.me(request.user.id);
   }
 
   @ApiBearerAuth()
-  @ApiOkResponse({ type: MePermissionsResponseDto })
+  @ApiOkResponse({ description: 'List of permission codes for the current user', type: MePermissionsResponseDto })
   @Get('me/permissions')
   async mePermissions(@Request() request: { user: { id: string } }) {
     const me = await this.authService.me(request.user.id);

@@ -22,7 +22,7 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Permissions('review:read')
-  @ApiOkResponse({ type: () => PaginatedResponseDto<Review> })
+  @ApiOkResponse({ description: 'Paginated list of reviews', type: () => PaginatedResponseDto<Review> })
   @Get()
   list(
     @Query('productId') productId?: string,
@@ -45,21 +45,21 @@ export class ReviewsController {
   }
 
   @Permissions('review:moderate')
-  @ApiCreatedResponse({ type: Review })
+  @ApiCreatedResponse({ description: 'Created review', type: Review })
   @Post()
   create(@Body() body: CreateReviewDto) {
     return this.reviewsService.create(body);
   }
 
   @Permissions('review:read')
-  @ApiOkResponse({ type: Review })
+  @ApiOkResponse({ description: 'Review details', type: Review })
   @Get(':id')
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.reviewsService.get(id);
   }
 
   @Permissions('review:moderate')
-  @ApiOkResponse({ type: Review })
+  @ApiOkResponse({ description: 'Updated review', type: Review })
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,

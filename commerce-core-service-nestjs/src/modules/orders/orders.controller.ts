@@ -20,7 +20,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Permissions('product:read')
-  @ApiOkResponse({ type: () => PaginatedResponseDto<Order> })
+  @ApiOkResponse({ description: 'Paginated list of orders', type: () => PaginatedResponseDto<Order> })
   @Get()
   list(
     @Query('buyerId') buyerId?: string,
@@ -39,14 +39,14 @@ export class OrdersController {
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ type: Order })
+  @ApiOkResponse({ description: 'Order details', type: Order })
   @Get(':id')
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.ordersService.get(id);
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ type: Order })
+  @ApiCreatedResponse({ description: 'Created order', type: Order })
   @Post()
   create(@Body() body: CreateOrderDto) {
     return this.ordersService.create(body);

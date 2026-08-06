@@ -23,35 +23,35 @@ export class UsersPermissionsController {
   ) {}
 
   @Permissions('category:read')
-  @ApiOkResponse({ type: [User] })
+  @ApiOkResponse({ description: 'List of users', type: [User] })
   @Get('users')
   listUsers() {
     return this.usersPermissionsService.listUsers();
   }
 
   @Permissions('category:read')
-  @ApiCreatedResponse({ type: User })
+  @ApiCreatedResponse({ description: 'Created user', type: User })
   @Post('users')
   createUser(@Body() body: CreateUserDto) {
     return this.usersPermissionsService.createUser(body);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ type: [Permission] })
+  @ApiOkResponse({ description: 'List of permissions', type: [Permission] })
   @Get('permissions')
   listPermissions() {
     return this.usersPermissionsService.listPermissions();
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ type: [String] })
+  @ApiOkResponse({ description: 'List of permission codes for the user', type: [String] })
   @Get('users/:id/permissions')
   getUserPermissions(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersPermissionsService.getUserPermissions(id);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse()
+  @ApiOkResponse({ description: 'User permissions updated successfully' })
   @Put('users/:id/permissions')
   setPermissions(
     @Param('id', ParseUUIDPipe) id: string,

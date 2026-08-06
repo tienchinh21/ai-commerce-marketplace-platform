@@ -26,28 +26,28 @@ export class IngestionController {
   constructor(private readonly ingestionService: IngestionService) {}
 
   @Permissions('source:read')
-  @ApiOkResponse({ type: [DataSourceEntity] })
+  @ApiOkResponse({ description: 'List of data sources', type: [DataSourceEntity] })
   @Get('data-sources')
   listDataSources() {
     return this.ingestionService.listDataSources();
   }
 
   @Permissions('source:write')
-  @ApiCreatedResponse({ type: DataSourceEntity })
+  @ApiCreatedResponse({ description: 'Created data source', type: DataSourceEntity })
   @Post('data-sources')
   createDataSource(@Body() body: CreateDataSourceDto) {
     return this.ingestionService.createDataSource(body);
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ type: DataSourceEntity })
+  @ApiOkResponse({ description: 'Data source details', type: DataSourceEntity })
   @Get('data-sources/:id')
   getDataSource(@Param('id', ParseUUIDPipe) id: string) {
     return this.ingestionService.getDataSource(id);
   }
 
   @Permissions('source:write')
-  @ApiOkResponse({ type: DataSourceEntity })
+  @ApiOkResponse({ description: 'Updated data source', type: DataSourceEntity })
   @Patch('data-sources/:id')
   updateDataSource(
     @Param('id', ParseUUIDPipe) id: string,
@@ -57,7 +57,7 @@ export class IngestionController {
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ type: () => PaginatedResponseDto<SyncRun> })
+  @ApiOkResponse({ description: 'Paginated list of sync runs', type: () => PaginatedResponseDto<SyncRun> })
   @Get('sync-runs')
   listSyncRuns(
     @Query('dataSourceId') dataSourceId?: string,
@@ -72,14 +72,14 @@ export class IngestionController {
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ type: SyncRun })
+  @ApiOkResponse({ description: 'Sync run details', type: SyncRun })
   @Get('sync-runs/:id')
   getSyncRun(@Param('id', ParseUUIDPipe) id: string) {
     return this.ingestionService.getSyncRun(id);
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ type: () => PaginatedResponseDto<RawSnapshot> })
+  @ApiOkResponse({ description: 'Paginated list of raw snapshots', type: () => PaginatedResponseDto<RawSnapshot> })
   @Get('raw-snapshots')
   listRawSnapshots(
     @Query('dataSourceId') dataSourceId?: string,
@@ -96,21 +96,21 @@ export class IngestionController {
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ type: RawSnapshot })
+  @ApiOkResponse({ description: 'Raw snapshot details', type: RawSnapshot })
   @Get('raw-snapshots/:id')
   getRawSnapshot(@Param('id', ParseUUIDPipe) id: string) {
     return this.ingestionService.getRawSnapshot(id);
   }
 
   @Permissions('source:sync')
-  @ApiCreatedResponse({ type: SyncRun })
+  @ApiCreatedResponse({ description: 'Product import sync run', type: SyncRun })
   @Post('imports/products')
   importProducts(@Body() body: ImportProductsDto) {
     return this.ingestionService.importProducts(body);
   }
 
   @Permissions('source:sync')
-  @ApiCreatedResponse({ type: SyncRun })
+  @ApiCreatedResponse({ description: 'Review import sync run', type: SyncRun })
   @Post('imports/reviews')
   importReviews(@Body() body: ImportReviewsDto) {
     return this.ingestionService.importReviews(body);

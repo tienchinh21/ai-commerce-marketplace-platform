@@ -6,6 +6,7 @@ import { Public } from './modules/auth/public.decorator';
 export class AppController {
   @Public()
   @ApiOkResponse({
+    description: 'Health check status',
     schema: {
       type: 'object',
       properties: {
