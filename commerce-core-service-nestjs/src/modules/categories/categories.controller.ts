@@ -3,20 +3,29 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  CreatedResourceResponseDto,
+  MutationSuccessResponseDto,
+  createCreated,
+  createSuccess,
+} from '../../shared/api/mutation-response.dto';
+import { toResponseDto, toResponseDtoList } from '../../shared/api/response-serialization';
 import { CategoriesService } from './categories.service';
 import { Permissions } from '../auth/permissions.decorator';
-import { Category } from './category.entity';
-import { CategoryAttribute } from './category-attribute.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CreateAttributeDto } from './dto/create-attribute.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
+import { CategoryResponseDto } from './dto/category-response.dto';
+import { CategoryAttributeResponseDto } from './dto/category-attribute-response.dto';
 
 @ApiBearerAuth()
 @Controller('cms/categories')
@@ -24,74 +33,87 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'List of categories', type: [Category] })
+  @ApiOkResponse({ description: 'List of categories', type: [CategoryResponseDto] })
   @Get()
-  list() {
-    return this.categoriesService.list();
+  async list(): Promise<CategoryResponseDto[]> {
+    const categories = await this.categoriesService.list();
+    return toResponseDtoList(CategoryResponseDto, categories);
   }
 
   @Permissions('category:write')
-  @ApiCreatedResponse({ description: 'Created category', type: Category })
+  @ApiCreatedResponse({ description: 'Created category', type: CreatedResourceResponseDto })
   @Post()
-  create(@Body() body: CreateCategoryDto) {
-    return this.categoriesService.create(body);
+  async create(@Body() body: CreateCategoryDto): Promise<CreatedResourceResponseDto> {
+    const category = await this.categoriesService.create(body);
+    return createCreated(category.id, 'Category created successfully');
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'Category details', type: Category })
+  @ApiOkResponse({ description: 'Category details', type: CategoryResponseDto })
   @Get(':id')
-  get(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.get(id);
+  async get(@Param('id', ParseUUIDPipe) id: string): Promise<CategoryResponseDto> {
+    const category = await this.categoriesService.get(id);
+    return toResponseDto(CategoryResponseDto, category);
   }
 
   @Permissions('category:write')
-  @ApiOkResponse({ description: 'Updated category', type: Category })
+  @ApiOkResponse({ description: 'Category updated successfully', type: MutationSuccessResponseDto })
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateCategoryDto,
-  ) {
-    return this.categoriesService.update(id, body);
+  ): Promise<MutationSuccessResponseDto> {
+    await this.categoriesService.update(id, body);
+    return createSuccess('Category updated successfully');
   }
 
   @Permissions('category:write')
-  @ApiOkResponse({ description: 'Category deleted successfully' })
+  @ApiNoContentResponse({ description: 'Category deleted successfully' })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    await this.categoriesService.remove(id);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'List of category attributes', type: [CategoryAttribute] })
+  @ApiOkResponse({ description: 'List of category attributes', type: [CategoryAttributeResponseDto] })
   @Get(':id/attributes')
-  listAttributes(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.listAttributes(id);
+  async listAttributes(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<CategoryAttributeResponseDto[]> {
+    const attributes = await this.categoriesService.listAttributes(id);
+    return toResponseDtoList(CategoryAttributeResponseDto, attributes);
   }
 
   @Permissions('category:write')
-  @ApiCreatedResponse({ description: 'Created category attribute', type: CategoryAttribute })
+  @ApiCreatedResponse({ description: 'Created category attribute', type: CreatedResourceResponseDto })
   @Post(':id/attributes')
-  createAttribute(
+  async createAttribute(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: CreateAttributeDto,
-  ) {
-    return this.categoriesService.createAttribute(id, body);
+  ): Promise<CreatedResourceResponseDto> {
+    const attribute = await this.categoriesService.createAttribute(id, body);
+    return createCreated(attribute.id, 'Category attribute created successfully');
   }
 
   @Permissions('category:write')
-  @ApiOkResponse({ description: 'Updated category attribute', type: CategoryAttribute })
+  @ApiOkResponse({ description: 'Category attribute updated successfully', type: MutationSuccessResponseDto })
   @Patch('attributes/:attributeId')
-  updateAttribute(
+  async updateAttribute(
     @Param('attributeId', ParseUUIDPipe) attributeId: string,
     @Body() body: UpdateAttributeDto,
-  ) {
-    return this.categoriesService.updateAttribute(attributeId, body);
+  ): Promise<MutationSuccessResponseDto> {
+    await this.categoriesService.updateAttribute(attributeId, body);
+    return createSuccess('Category attribute updated successfully');
   }
 
   @Permissions('category:write')
-  @ApiOkResponse({ description: 'Category attribute deleted successfully' })
+  @ApiNoContentResponse({ description: 'Category attribute deleted successfully' })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('attributes/:attributeId')
-  removeAttribute(@Param('attributeId', ParseUUIDPipe) attributeId: string) {
-    return this.categoriesService.removeAttribute(attributeId);
+  async removeAttribute(
+    @Param('attributeId', ParseUUIDPipe) attributeId: string,
+  ): Promise<void> {
+    await this.categoriesService.removeAttribute(attributeId);
   }
 }

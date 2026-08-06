@@ -10,8 +10,15 @@ import {
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { UsersPermissionsService } from './users-permissions.service';
 import { Permissions } from '../auth/permissions.decorator';
-import { User } from '../auth/user.entity';
-import { Permission } from '../auth/permission.entity';
+import {
+  CreatedResourceResponseDto,
+  MutationSuccessResponseDto,
+  createCreated,
+  createSuccess,
+} from '../../shared/api/mutation-response.dto';
+import { toResponseDtoList } from '../../shared/api/response-serialization';
+import { UserResponseDto } from './dto/user-response.dto';
+import { PermissionResponseDto } from './dto/permission-response.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SetPermissionsDto } from './dto/set-permissions.dto';
 
@@ -23,40 +30,44 @@ export class UsersPermissionsController {
   ) {}
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'List of users', type: [User] })
+  @ApiOkResponse({ description: 'List of users', type: [UserResponseDto] })
   @Get('users')
-  listUsers() {
-    return this.usersPermissionsService.listUsers();
+  async listUsers(): Promise<UserResponseDto[]> {
+    const users = await this.usersPermissionsService.listUsers();
+    return toResponseDtoList(UserResponseDto, users);
   }
 
   @Permissions('category:read')
-  @ApiCreatedResponse({ description: 'Created user', type: User })
+  @ApiCreatedResponse({ description: 'Created user', type: CreatedResourceResponseDto })
   @Post('users')
-  createUser(@Body() body: CreateUserDto) {
-    return this.usersPermissionsService.createUser(body);
+  async createUser(@Body() body: CreateUserDto): Promise<CreatedResourceResponseDto> {
+    const user = await this.usersPermissionsService.createUser(body);
+    return createCreated(user.id, 'User created successfully');
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'List of permissions', type: [Permission] })
+  @ApiOkResponse({ description: 'List of permissions', type: [PermissionResponseDto] })
   @Get('permissions')
-  listPermissions() {
-    return this.usersPermissionsService.listPermissions();
+  async listPermissions(): Promise<PermissionResponseDto[]> {
+    const permissions = await this.usersPermissionsService.listPermissions();
+    return toResponseDtoList(PermissionResponseDto, permissions);
   }
 
   @Permissions('category:read')
   @ApiOkResponse({ description: 'List of permission codes for the user', type: [String] })
   @Get('users/:id/permissions')
-  getUserPermissions(@Param('id', ParseUUIDPipe) id: string) {
+  async getUserPermissions(@Param('id', ParseUUIDPipe) id: string): Promise<string[]> {
     return this.usersPermissionsService.getUserPermissions(id);
   }
 
   @Permissions('category:read')
-  @ApiOkResponse({ description: 'User permissions updated successfully' })
+  @ApiOkResponse({ description: 'User permissions updated successfully', type: MutationSuccessResponseDto })
   @Put('users/:id/permissions')
-  setPermissions(
+  async setPermissions(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: SetPermissionsDto,
-  ) {
-    return this.usersPermissionsService.setPermissions(id, body.codes);
+  ): Promise<MutationSuccessResponseDto> {
+    await this.usersPermissionsService.setPermissions(id, body.codes);
+    return createSuccess('User permissions updated successfully');
   }
 }

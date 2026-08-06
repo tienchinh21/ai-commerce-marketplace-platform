@@ -12,7 +12,14 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagge
 import { SellersService } from './sellers.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
-import { Seller } from './seller.entity';
+import {
+  CreatedResourceResponseDto,
+  MutationSuccessResponseDto,
+  createCreated,
+  createSuccess,
+} from '../../shared/api/mutation-response.dto';
+import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
+import { SellerResponseDto, SellerDetailResponseDto } from './dto/seller-response.dto';
 import { CreateSellerDto } from './dto/create-seller.dto';
 import { UpdateSellerDto } from './dto/update-seller.dto';
 
@@ -22,43 +29,47 @@ export class SellersController {
   constructor(private readonly sellersService: SellersService) {}
 
   @Permissions('seller:read')
-  @ApiOkResponse({ description: 'Paginated list of sellers', type: () => PaginatedResponseDto<Seller> })
+  @ApiOkResponse({ description: 'Paginated list of sellers', type: () => PaginatedResponseDto<SellerResponseDto> })
   @Get()
-  list(
+  async list(
     @Query('search') search?: string,
     @Query('status') status?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
-  ) {
-    return this.sellersService.list({
+  ): Promise<PaginatedResponseDto<SellerResponseDto>> {
+    const result = await this.sellersService.list({
       search,
       status,
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
     });
+    return toPaginatedResponseDto(SellerResponseDto, result);
   }
 
   @Permissions('seller:write')
-  @ApiCreatedResponse({ description: 'Created seller', type: Seller })
+  @ApiCreatedResponse({ description: 'Created seller', type: CreatedResourceResponseDto })
   @Post()
-  create(@Body() body: CreateSellerDto) {
-    return this.sellersService.create(body);
+  async create(@Body() body: CreateSellerDto): Promise<CreatedResourceResponseDto> {
+    const seller = await this.sellersService.create(body);
+    return createCreated(seller.id, 'Seller created successfully');
   }
 
   @Permissions('seller:read')
-  @ApiOkResponse({ description: 'Seller details', type: Seller })
+  @ApiOkResponse({ description: 'Seller details', type: SellerDetailResponseDto })
   @Get(':id')
-  get(@Param('id', ParseUUIDPipe) id: string) {
-    return this.sellersService.get(id);
+  async get(@Param('id', ParseUUIDPipe) id: string): Promise<SellerDetailResponseDto> {
+    const seller = await this.sellersService.get(id);
+    return toResponseDto(SellerDetailResponseDto, seller);
   }
 
   @Permissions('seller:write')
-  @ApiOkResponse({ description: 'Updated seller', type: Seller })
+  @ApiOkResponse({ description: 'Seller updated successfully', type: MutationSuccessResponseDto })
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateSellerDto,
-  ) {
-    return this.sellersService.update(id, body);
+  ): Promise<MutationSuccessResponseDto> {
+    await this.sellersService.update(id, body);
+    return createSuccess('Seller updated successfully');
   }
 }

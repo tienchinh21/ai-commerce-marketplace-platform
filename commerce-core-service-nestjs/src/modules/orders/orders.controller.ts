@@ -11,7 +11,12 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagge
 import { OrdersService } from './orders.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
-import { Order } from './order.entity';
+import {
+  CreatedResourceResponseDto,
+  createCreated,
+} from '../../shared/api/mutation-response.dto';
+import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
+import { OrderResponseDto, OrderDetailResponseDto } from './dto/order-response.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 
 @ApiBearerAuth()
@@ -20,35 +25,38 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Paginated list of orders', type: () => PaginatedResponseDto<Order> })
+  @ApiOkResponse({ description: 'Paginated list of orders', type: () => PaginatedResponseDto<OrderResponseDto> })
   @Get()
-  list(
+  async list(
     @Query('buyerId') buyerId?: string,
     @Query('sellerId') sellerId?: string,
     @Query('status') status?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
-  ) {
-    return this.ordersService.list({
+  ): Promise<PaginatedResponseDto<OrderResponseDto>> {
+    const result = await this.ordersService.list({
       buyerId,
       sellerId,
       status,
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
     });
+    return toPaginatedResponseDto(OrderResponseDto, result);
   }
 
   @Permissions('product:read')
-  @ApiOkResponse({ description: 'Order details', type: Order })
+  @ApiOkResponse({ description: 'Order details', type: OrderDetailResponseDto })
   @Get(':id')
-  get(@Param('id', ParseUUIDPipe) id: string) {
-    return this.ordersService.get(id);
+  async get(@Param('id', ParseUUIDPipe) id: string): Promise<OrderDetailResponseDto> {
+    const order = await this.ordersService.get(id);
+    return toResponseDto(OrderDetailResponseDto, order);
   }
 
   @Permissions('product:write')
-  @ApiCreatedResponse({ description: 'Created order', type: Order })
+  @ApiCreatedResponse({ description: 'Created order', type: CreatedResourceResponseDto })
   @Post()
-  create(@Body() body: CreateOrderDto) {
-    return this.ordersService.create(body);
+  async create(@Body() body: CreateOrderDto): Promise<CreatedResourceResponseDto> {
+    const order = await this.ordersService.create(body);
+    return createCreated(order.id, 'Order created successfully');
   }
 }

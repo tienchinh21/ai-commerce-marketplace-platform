@@ -12,9 +12,21 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagge
 import { IngestionService } from './ingestion.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
-import { DataSourceEntity } from './data-source.entity';
-import { SyncRun } from './sync-run.entity';
-import { RawSnapshot } from './raw-snapshot.entity';
+import {
+  CreatedResourceResponseDto,
+  MutationSuccessResponseDto,
+  createCreated,
+  createSuccess,
+} from '../../shared/api/mutation-response.dto';
+import {
+  toPaginatedResponseDto,
+  toResponseDto,
+  toResponseDtoList,
+} from '../../shared/api/response-serialization';
+import { DataSourceResponseDto } from './dto/data-source-response.dto';
+import { SyncRunResponseDto } from './dto/sync-run-response.dto';
+import { RawSnapshotResponseDto } from './dto/raw-snapshot-response.dto';
+import { ImportRunResponseDto, toImportRunResponse } from './dto/import-run-response.dto';
 import { CreateDataSourceDto } from './dto/create-data-source.dto';
 import { UpdateDataSourceDto } from './dto/update-data-source.dto';
 import { ImportProductsDto } from './dto/import-products.dto';
@@ -26,93 +38,113 @@ export class IngestionController {
   constructor(private readonly ingestionService: IngestionService) {}
 
   @Permissions('source:read')
-  @ApiOkResponse({ description: 'List of data sources', type: [DataSourceEntity] })
+  @ApiOkResponse({ description: 'List of data sources', type: [DataSourceResponseDto] })
   @Get('data-sources')
-  listDataSources() {
-    return this.ingestionService.listDataSources();
+  async listDataSources(): Promise<DataSourceResponseDto[]> {
+    return toResponseDtoList(
+      DataSourceResponseDto,
+      await this.ingestionService.listDataSources(),
+    );
   }
 
   @Permissions('source:write')
-  @ApiCreatedResponse({ description: 'Created data source', type: DataSourceEntity })
+  @ApiCreatedResponse({ description: 'Created data source', type: CreatedResourceResponseDto })
   @Post('data-sources')
-  createDataSource(@Body() body: CreateDataSourceDto) {
-    return this.ingestionService.createDataSource(body);
+  async createDataSource(@Body() body: CreateDataSourceDto): Promise<CreatedResourceResponseDto> {
+    const source = await this.ingestionService.createDataSource(body);
+    return createCreated(source.id, 'Data source created successfully');
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ description: 'Data source details', type: DataSourceEntity })
+  @ApiOkResponse({ description: 'Data source details', type: DataSourceResponseDto })
   @Get('data-sources/:id')
-  getDataSource(@Param('id', ParseUUIDPipe) id: string) {
-    return this.ingestionService.getDataSource(id);
+  async getDataSource(@Param('id', ParseUUIDPipe) id: string): Promise<DataSourceResponseDto> {
+    return toResponseDto(
+      DataSourceResponseDto,
+      await this.ingestionService.getDataSource(id),
+    );
   }
 
   @Permissions('source:write')
-  @ApiOkResponse({ description: 'Updated data source', type: DataSourceEntity })
+  @ApiOkResponse({ description: 'Data source updated successfully', type: MutationSuccessResponseDto })
   @Patch('data-sources/:id')
-  updateDataSource(
+  async updateDataSource(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateDataSourceDto,
-  ) {
-    return this.ingestionService.updateDataSource(id, body);
+  ): Promise<MutationSuccessResponseDto> {
+    await this.ingestionService.updateDataSource(id, body);
+    return createSuccess('Data source updated successfully');
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ description: 'Paginated list of sync runs', type: () => PaginatedResponseDto<SyncRun> })
+  @ApiOkResponse({ description: 'Paginated list of sync runs', type: () => PaginatedResponseDto<SyncRunResponseDto> })
   @Get('sync-runs')
-  listSyncRuns(
+  async listSyncRuns(
     @Query('dataSourceId') dataSourceId?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
-  ) {
-    return this.ingestionService.listSyncRuns({
-      dataSourceId,
-      page: page ? Number(page) : undefined,
-      pageSize: pageSize ? Number(pageSize) : undefined,
-    });
+  ): Promise<PaginatedResponseDto<SyncRunResponseDto>> {
+    return toPaginatedResponseDto(
+      SyncRunResponseDto,
+      await this.ingestionService.listSyncRuns({
+        dataSourceId,
+        page: page ? Number(page) : undefined,
+        pageSize: pageSize ? Number(pageSize) : undefined,
+      }),
+    );
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ description: 'Sync run details', type: SyncRun })
+  @ApiOkResponse({ description: 'Sync run details', type: SyncRunResponseDto })
   @Get('sync-runs/:id')
-  getSyncRun(@Param('id', ParseUUIDPipe) id: string) {
-    return this.ingestionService.getSyncRun(id);
+  async getSyncRun(@Param('id', ParseUUIDPipe) id: string): Promise<SyncRunResponseDto> {
+    return toResponseDto(
+      SyncRunResponseDto,
+      await this.ingestionService.getSyncRun(id),
+    );
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ description: 'Paginated list of raw snapshots', type: () => PaginatedResponseDto<RawSnapshot> })
+  @ApiOkResponse({ description: 'Paginated list of raw snapshots', type: () => PaginatedResponseDto<RawSnapshotResponseDto> })
   @Get('raw-snapshots')
-  listRawSnapshots(
+  async listRawSnapshots(
     @Query('dataSourceId') dataSourceId?: string,
     @Query('syncRunId') syncRunId?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
-  ) {
-    return this.ingestionService.listRawSnapshots({
-      dataSourceId,
-      syncRunId,
-      page: page ? Number(page) : undefined,
-      pageSize: pageSize ? Number(pageSize) : undefined,
-    });
+  ): Promise<PaginatedResponseDto<RawSnapshotResponseDto>> {
+    return toPaginatedResponseDto(
+      RawSnapshotResponseDto,
+      await this.ingestionService.listRawSnapshots({
+        dataSourceId,
+        syncRunId,
+        page: page ? Number(page) : undefined,
+        pageSize: pageSize ? Number(pageSize) : undefined,
+      }),
+    );
   }
 
   @Permissions('source:read')
-  @ApiOkResponse({ description: 'Raw snapshot details', type: RawSnapshot })
+  @ApiOkResponse({ description: 'Raw snapshot details', type: RawSnapshotResponseDto })
   @Get('raw-snapshots/:id')
-  getRawSnapshot(@Param('id', ParseUUIDPipe) id: string) {
-    return this.ingestionService.getRawSnapshot(id);
+  async getRawSnapshot(@Param('id', ParseUUIDPipe) id: string): Promise<RawSnapshotResponseDto> {
+    return toResponseDto(
+      RawSnapshotResponseDto,
+      await this.ingestionService.getRawSnapshot(id),
+    );
   }
 
   @Permissions('source:sync')
-  @ApiCreatedResponse({ description: 'Product import sync run', type: SyncRun })
+  @ApiCreatedResponse({ description: 'Product import sync run', type: ImportRunResponseDto })
   @Post('imports/products')
-  importProducts(@Body() body: ImportProductsDto) {
-    return this.ingestionService.importProducts(body);
+  async importProducts(@Body() body: ImportProductsDto): Promise<ImportRunResponseDto> {
+    return toImportRunResponse(await this.ingestionService.importProducts(body));
   }
 
   @Permissions('source:sync')
-  @ApiCreatedResponse({ description: 'Review import sync run', type: SyncRun })
+  @ApiCreatedResponse({ description: 'Review import sync run', type: ImportRunResponseDto })
   @Post('imports/reviews')
-  importReviews(@Body() body: ImportReviewsDto) {
-    return this.ingestionService.importReviews(body);
+  async importReviews(@Body() body: ImportReviewsDto): Promise<ImportRunResponseDto> {
+    return toImportRunResponse(await this.ingestionService.importReviews(body));
   }
 }

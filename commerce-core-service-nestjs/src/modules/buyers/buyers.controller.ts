@@ -12,7 +12,14 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagge
 import { BuyersService } from './buyers.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
-import { Buyer } from './buyer.entity';
+import {
+  CreatedResourceResponseDto,
+  MutationSuccessResponseDto,
+  createCreated,
+  createSuccess,
+} from '../../shared/api/mutation-response.dto';
+import { toPaginatedResponseDto, toResponseDto } from '../../shared/api/response-serialization';
+import { BuyerResponseDto, BuyerDetailResponseDto } from './dto/buyer-response.dto';
 import { CreateBuyerDto } from './dto/create-buyer.dto';
 import { UpdateBuyerDto } from './dto/update-buyer.dto';
 
@@ -22,40 +29,47 @@ export class BuyersController {
   constructor(private readonly buyersService: BuyersService) {}
 
   @Permissions('buyer:read')
-  @ApiOkResponse({ description: 'Paginated list of buyers', type: () => PaginatedResponseDto<Buyer> })
+  @ApiOkResponse({ description: 'Paginated list of buyers', type: () => PaginatedResponseDto<BuyerResponseDto> })
   @Get()
-  list(
+  async list(
     @Query('search') search?: string,
     @Query('status') status?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
-  ) {
-    return this.buyersService.list({
+  ): Promise<PaginatedResponseDto<BuyerResponseDto>> {
+    const result = await this.buyersService.list({
       search,
       status,
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
     });
+    return toPaginatedResponseDto(BuyerResponseDto, result);
   }
 
   @Permissions('buyer:write')
-  @ApiCreatedResponse({ description: 'Created buyer', type: Buyer })
+  @ApiCreatedResponse({ description: 'Created buyer', type: CreatedResourceResponseDto })
   @Post()
-  create(@Body() body: CreateBuyerDto) {
-    return this.buyersService.create(body);
+  async create(@Body() body: CreateBuyerDto): Promise<CreatedResourceResponseDto> {
+    const buyer = await this.buyersService.create(body);
+    return createCreated(buyer.id, 'Buyer created successfully');
   }
 
   @Permissions('buyer:read')
-  @ApiOkResponse({ description: 'Buyer details', type: Buyer })
+  @ApiOkResponse({ description: 'Buyer details', type: BuyerDetailResponseDto })
   @Get(':id')
-  get(@Param('id', ParseUUIDPipe) id: string) {
-    return this.buyersService.get(id);
+  async get(@Param('id', ParseUUIDPipe) id: string): Promise<BuyerDetailResponseDto> {
+    const buyer = await this.buyersService.get(id);
+    return toResponseDto(BuyerDetailResponseDto, buyer);
   }
 
   @Permissions('buyer:write')
-  @ApiOkResponse({ description: 'Updated buyer', type: Buyer })
+  @ApiOkResponse({ description: 'Buyer updated successfully', type: MutationSuccessResponseDto })
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateBuyerDto) {
-    return this.buyersService.update(id, body);
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: UpdateBuyerDto,
+  ): Promise<MutationSuccessResponseDto> {
+    await this.buyersService.update(id, body);
+    return createSuccess('Buyer updated successfully');
   }
 }
