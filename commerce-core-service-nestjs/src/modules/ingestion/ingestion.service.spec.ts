@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { DeepPartial } from 'typeorm';
 import { IngestionService } from './ingestion.service';
 import { DataSourceEntity } from './data-source.entity';
 import { SyncRun } from './sync-run.entity';
@@ -17,10 +18,10 @@ describe('IngestionService', () => {
   const dataSourceCreate = jest.fn();
   const dataSourceSave = jest.fn();
   const syncRunFindOne = jest.fn();
-  const syncRunCreate = jest.fn();
+  const syncRunCreate = jest.fn<SyncRun, [DeepPartial<SyncRun>]>();
   const syncRunSave = jest.fn();
   const rawSnapshotFindOne = jest.fn();
-  const rawSnapshotCreate = jest.fn();
+  const rawSnapshotCreate = jest.fn<RawSnapshot, [DeepPartial<RawSnapshot>]>();
   const rawSnapshotSave = jest.fn();
   const sourceProductCreate = jest.fn();
   const sourceProductSave = jest.fn();
@@ -31,12 +32,10 @@ describe('IngestionService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    syncRunCreate.mockImplementation((data) => data);
+    syncRunCreate.mockImplementation((data) => data as SyncRun);
     syncRunSave.mockImplementation((run) => Promise.resolve(run));
-    rawSnapshotCreate.mockImplementation((data) => data);
-    rawSnapshotSave.mockImplementation((snapshot) =>
-      Promise.resolve(snapshot),
-    );
+    rawSnapshotCreate.mockImplementation((data) => data as RawSnapshot);
+    rawSnapshotSave.mockImplementation((snapshot) => Promise.resolve(snapshot));
 
     const moduleRef = await Test.createTestingModule({
       providers: [
