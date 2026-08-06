@@ -4,7 +4,7 @@ export class MutationSuccessResponseDto {
   @ApiProperty({ example: true })
   success: true;
 
-  @ApiProperty({ example: 'Updated successfully' })
+  @ApiProperty({ example: 'Cập nhật dữ liệu thành công.' })
   message: string;
 }
 
