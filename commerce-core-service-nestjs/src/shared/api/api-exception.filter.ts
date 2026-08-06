@@ -9,7 +9,10 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ApiErrorCode } from './api-error-code';
-import { ApiErrorDetailDto, ApiErrorResponseDto } from './api-error-response.dto';
+import {
+  ApiErrorDetailDto,
+  ApiErrorResponseDto,
+} from './api-error-response.dto';
 import { VI_API_MESSAGES } from './api-messages.vi';
 
 interface CodedErrorBody {
@@ -29,6 +32,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
+function stringifyResponse(response: unknown): string {
+  return String(response);
+}
+
 function getPgErrorCode(exception: unknown): string | undefined {
   return isRecord(exception) && typeof exception.code === 'string'
     ? exception.code
@@ -37,10 +44,13 @@ function getPgErrorCode(exception: unknown): string | undefined {
 
 function normalizeHttpException(exception: HttpException): NormalizedError {
   const statusCode = exception.getStatus();
-  const response = exception.getResponse();
+  const response = exception.getResponse() as string | CodedErrorBody;
   const body: CodedErrorBody = isRecord(response)
-    ? (response as CodedErrorBody)
-    : { message: String(response) };
+    ? response
+    : {
+        message:
+          typeof response === 'string' ? response : stringifyResponse(response),
+      };
 
   if (body.code && typeof body.message === 'string') {
     return {
@@ -68,7 +78,7 @@ function normalizeHttpException(exception: HttpException): NormalizedError {
   }
 
   if (
-    statusCode === HttpStatus.BAD_REQUEST &&
+    statusCode === 400 &&
     typeof body.message === 'string' &&
     body.message.toLowerCase().includes('uuid')
   ) {
@@ -79,7 +89,7 @@ function normalizeHttpException(exception: HttpException): NormalizedError {
     };
   }
 
-  if (statusCode === HttpStatus.CONFLICT) {
+  if (statusCode === 409) {
     return {
       statusCode,
       code: ApiErrorCode.DATABASE_CONFLICT,
@@ -117,7 +127,8 @@ function normalizeDatabaseError(exception: unknown): NormalizedError | null {
     return {
       statusCode: HttpStatus.BAD_REQUEST,
       code: ApiErrorCode.DATABASE_REQUIRED_FIELD_MISSING,
-      message: VI_API_MESSAGES.errors[ApiErrorCode.DATABASE_REQUIRED_FIELD_MISSING],
+      message:
+        VI_API_MESSAGES.errors[ApiErrorCode.DATABASE_REQUIRED_FIELD_MISSING],
     };
   }
   return null;
@@ -133,12 +144,12 @@ export class ApiExceptionFilter implements ExceptionFilter {
     const normalized =
       exception instanceof HttpException
         ? normalizeHttpException(exception)
-        : normalizeDatabaseError(exception) ?? {
+        : (normalizeDatabaseError(exception) ?? {
             statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
             code: ApiErrorCode.INTERNAL_SERVER_ERROR,
             message: VI_API_MESSAGES.errors[ApiErrorCode.INTERNAL_SERVER_ERROR],
             details: undefined,
-          };
+          });
 
     const payload: ApiErrorResponseDto = {
       success: false,

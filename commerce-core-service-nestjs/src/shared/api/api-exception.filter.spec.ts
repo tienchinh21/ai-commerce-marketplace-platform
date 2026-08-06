@@ -11,7 +11,7 @@ import { ApiErrorCode } from './api-error-code';
 import { VI_API_MESSAGES } from './api-messages.vi';
 
 function createHost() {
-  const json = jest.fn();
+  const json = jest.fn<unknown, [unknown]>();
   const status = jest.fn().mockReturnValue({ json });
   const response = { status };
   const request = { url: '/api/cms/products/id', method: 'GET' };
@@ -84,7 +84,10 @@ describe('ApiExceptionFilter', () => {
     const { host, json } = createHost();
     const filter = new ApiExceptionFilter();
 
-    filter.catch(new BadRequestException('Validation failed (uuid is expected)'), host);
+    filter.catch(
+      new BadRequestException('Validation failed (uuid is expected)'),
+      host,
+    );
 
     expect(json).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -124,6 +127,8 @@ describe('ApiExceptionFilter', () => {
         message: 'Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.',
       }),
     );
-    expect(JSON.stringify(json.mock.calls[0][0])).not.toContain('database password leaked');
+    expect(JSON.stringify(json.mock.calls[0][0])).not.toContain(
+      'database password leaked',
+    );
   });
 });
