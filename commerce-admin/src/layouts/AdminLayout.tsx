@@ -116,10 +116,16 @@ export function AdminLayout() {
         width={260}
         collapsedWidth={80}
         style={{
+          overflow: 'auto',
+          height: '100vh',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          bottom: 0,
           background: '#ffffff',
           borderRight: '1px solid #e2e8f0',
           boxShadow: '1px 0 4px 0 rgba(0, 0, 0, 0.02)',
-          zIndex: 10,
+          zIndex: 100,
         }}
       >
         {/* Brand Header */}
@@ -133,6 +139,9 @@ export function AdminLayout() {
             padding: collapsed ? '0' : '0 20px',
             borderBottom: '1px solid #e2e8f0',
             background: '#ffffff',
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
           }}
         >
           <div
@@ -176,10 +185,14 @@ export function AdminLayout() {
         </div>
       </Sider>
 
-      <Layout>
+      <Layout style={{ marginLeft: collapsed ? 80 : 260, transition: 'margin-left 0.2s', minHeight: '100vh', background: '#f8fafc' }}>
         {/* Top Navbar Header */}
         <Header
           style={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 99,
+            width: '100%',
             background: '#ffffff',
             padding: '0 24px',
             display: 'flex',
