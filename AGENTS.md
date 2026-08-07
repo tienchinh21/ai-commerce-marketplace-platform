@@ -19,6 +19,10 @@ Core Java implementation details are intentionally left for the Java engineer. T
 
 Design docs to read first: `docs/architecture/overview.md`, `docs/architecture/service-boundaries.md`, `docs/architecture/data-flow.md`, `docs/modules/database-model.md`.
 
+## commerce-core-service-nestjs Guidance
+
+For any task inside `commerce-core-service-nestjs/`, read `commerce-core-service-nestjs/AGENTS.md` before analysis or edits. That service has its own agent docs and rulebook under `commerce-core-service-nestjs/docs/agent/`, especially `commerce-core-service-nestjs/docs/agent/rules.md`.
+
 ## Service Boundaries
 
 - **commerce-admin**: Thin UI layer. Calls Core API for marketplace data, AI API for AI features. No business logic, no direct DB access.

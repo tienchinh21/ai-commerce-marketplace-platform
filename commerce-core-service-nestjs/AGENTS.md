@@ -7,10 +7,11 @@ Scoped instructions for AI agents working inside `commerce-core-service-nestjs/`
 Before analysis or edits in this service, read these reference files:
 
 1. `docs/agent/README.md` - quick orientation and source-of-truth map.
-2. `docs/agent/architecture.md` - NestJS module, database, auth, and response architecture.
-3. `docs/agent/api-boundaries.md` - CMS/client route boundary and naming rules.
-4. `docs/agent/workflows.md` - commands, verification, and safe-change workflow.
-5. `docs/agent/known-plans.md` - active implementation plans and current cleanup priorities.
+2. `docs/agent/rules.md` - concrete implementation rules and review checklist.
+3. `docs/agent/architecture.md` - NestJS module, database, auth, and response architecture.
+4. `docs/agent/api-boundaries.md` - CMS/client route boundary and naming rules.
+5. `docs/agent/workflows.md` - commands, verification, and safe-change workflow.
+6. `docs/agent/known-plans.md` - active implementation plans and current cleanup priorities.
 
 Also keep the repo-level `../AGENTS.md` constraints in force.
 

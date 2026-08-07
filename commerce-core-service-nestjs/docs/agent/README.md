@@ -23,6 +23,7 @@ Read in this order when context is needed:
 
 ```txt
 commerce-core-service-nestjs/AGENTS.md
+commerce-core-service-nestjs/docs/agent/rules.md
 commerce-core-service-nestjs/docs/agent/architecture.md
 commerce-core-service-nestjs/docs/agent/api-boundaries.md
 commerce-core-service-nestjs/docs/agent/workflows.md
@@ -55,3 +56,4 @@ The service is moving toward:
 
 See `known-plans.md` for plan files already written.
 
+Use `rules.md` as the compact rulebook before changing controllers, DTOs, response contracts, auth boundaries, database access, or tests.
