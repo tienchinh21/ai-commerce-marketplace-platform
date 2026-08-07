@@ -32,11 +32,17 @@ export function AppProviders({ children }: { children: ReactNode }) {
         },
         components: {
           Menu: {
-            darkItemBg: '#0f172a',
-            darkSubMenuItemBg: '#020617',
-            darkItemSelectedBg: '#2563eb',
-            darkItemSelectedColor: '#ffffff',
-            darkItemHoverBg: '#1e293b',
+            itemBg: 'transparent',
+            itemColor: '#475569',
+            itemHoverColor: '#0f172a',
+            itemHoverBg: '#f1f5f9',
+            itemSelectedColor: '#2563eb',
+            itemSelectedBg: '#f1f5f9',
+            groupTitleColor: '#94a3b8',
+            groupTitleFontSize: 11,
+            activeBarWidth: 0,
+            itemMarginInline: 8,
+            itemBorderRadius: 8,
           },
           Card: {
             boxShadowSecondary: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',

@@ -108,6 +108,7 @@ export function AdminLayout() {
   return (
     <Layout style={{ minHeight: '100vh', background: '#f8fafc' }}>
       <Sider
+        theme="light"
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
@@ -115,8 +116,9 @@ export function AdminLayout() {
         width={260}
         collapsedWidth={80}
         style={{
-          background: '#0f172a',
-          boxShadow: '4px 0 24px 0 rgba(0,0,0,0.08)',
+          background: '#ffffff',
+          borderRight: '1px solid #e2e8f0',
+          boxShadow: '1px 0 4px 0 rgba(0, 0, 0, 0.02)',
           zIndex: 10,
         }}
       >
@@ -129,8 +131,8 @@ export function AdminLayout() {
             justifyContent: collapsed ? 'center' : 'flex-start',
             gap: 12,
             padding: collapsed ? '0' : '0 20px',
-            borderBottom: '1px solid #1e293b',
-            background: '#0f172a',
+            borderBottom: '1px solid #e2e8f0',
+            background: '#ffffff',
           }}
         >
           <div
@@ -151,10 +153,10 @@ export function AdminLayout() {
           </div>
           {!collapsed && (
             <div>
-              <div style={{ color: '#f8fafc', fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
+              <div style={{ color: '#0f172a', fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
                 OKZ Commerce
               </div>
-              <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 500 }}>
+              <div style={{ color: '#64748b', fontSize: 11, fontWeight: 500 }}>
                 AI Admin Platform
               </div>
             </div>
@@ -164,7 +166,7 @@ export function AdminLayout() {
         {/* Navigation Menu */}
         <div style={{ padding: '12px 8px' }}>
           <Menu
-            theme="dark"
+            theme="light"
             mode="inline"
             selectedKeys={[location.pathname]}
             items={menuItems}
