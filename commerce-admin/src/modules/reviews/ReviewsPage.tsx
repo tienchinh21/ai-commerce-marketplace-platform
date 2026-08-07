@@ -1,54 +1,106 @@
-import { Card, Table, Input, Space, Rate } from 'antd';
-import { SearchOutlined, CommentOutlined } from '@ant-design/icons';
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Alert, Card, Input, Rate, Space, Table, Typography } from 'antd';
+import { CommentOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
+import { useDebounce } from '@/shared/hooks';
+import { extractErrorMessage } from '@/shared/utils/error-handler';
+import { formatDateTime, truncateText } from '@/shared/utils/formatters';
+import { fetchReviews } from './review.api';
+import type { Review } from './review.types';
 
-const mockReviews = [
-  { id: 'rev-1', product: 'Tai nghe Bluetooth Anker Soundcore Life Q30', user: 'Nguyễn Văn An', rating: 5, content: 'Chống ồn ANC cực đỉnh trong tầm giá, pin dùng cả tuần không hết.', created: '2026-07-28', status: 'ACTIVE' },
-  { id: 'rev-2', product: 'Áo thun Nam gia nhiệt Coolmate Active Ultra', user: 'Trần Thị Bình', rating: 5, content: 'Vải mềm mát, thấm hút mồ hôi tốt khi tập gym.', created: '2026-07-27', status: 'ACTIVE' },
-  { id: 'rev-3', product: 'Tẩy tế bào chết Cà phê Đắc Lắk Cocoon 200ml', user: 'Lê Hoàng Cường', rating: 4, content: 'Mùi cà phê thơm dễ chịu, tẩy xong da mịn màng.', created: '2026-07-26', status: 'ACTIVE' },
-];
+const DEFAULT_PAGE_SIZE = 20;
 
 export function ReviewsPage() {
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const debouncedKeyword = useDebounce(searchKeyword, 300);
+
+  const reviewsQuery = useQuery({
+    queryKey: ['cms-reviews', page, pageSize],
+    queryFn: () => fetchReviews({ page, pageSize }),
+  });
+
+  const reviews = useMemo(() => {
+    const items = reviewsQuery.data?.items ?? [];
+    const query = debouncedKeyword.trim().toLowerCase();
+    if (!query) return items;
+    return items.filter((review) =>
+      [
+        review.productId,
+        review.buyerId,
+        review.sellerId,
+        review.title,
+        review.content,
+        review.sourceType,
+      ]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(query))
+    );
+  }, [reviewsQuery.data?.items, debouncedKeyword]);
+
   return (
     <Space direction="vertical" size={20} style={{ width: '100%' }}>
       <DataPageHeader
         title="Quản Lý Đánh Giá & Phản Hồi (Reviews)"
         description="Quản lý dữ liệu đánh giá nguyên bản từ khách hàng và các trạng thái kiểm duyệt (Moderation)."
+        onRefresh={() => reviewsQuery.refetch()}
       />
+
+      {reviewsQuery.isError && (
+        <Alert type="error" showIcon message="Không tải được danh sách đánh giá" description={extractErrorMessage(reviewsQuery.error)} />
+      )}
 
       <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
         <div style={{ marginBottom: 20 }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
-            placeholder="Tìm theo sản phẩm, nội dung review..."
-            style={{ width: 340, borderRadius: 8 }}
+            placeholder="Lọc theo productId, buyerId, sellerId, nội dung..."
+            value={searchKeyword}
+            onChange={(event) => setSearchKeyword(event.target.value)}
+            style={{ width: 420, borderRadius: 8 }}
+            allowClear
           />
         </div>
 
-        <Table
-          dataSource={mockReviews}
+        <Table<Review>
+          dataSource={reviews}
           rowKey="id"
+          loading={reviewsQuery.isLoading}
+          pagination={{
+            current: reviewsQuery.data?.page ?? page,
+            pageSize: reviewsQuery.data?.pageSize ?? pageSize,
+            total: reviewsQuery.data?.total ?? 0,
+            showSizeChanger: true,
+            onChange: (nextPage, nextPageSize) => {
+              setPage(nextPage);
+              setPageSize(nextPageSize);
+            },
+          }}
           columns={[
             {
               title: 'Sản phẩm',
-              dataIndex: 'product',
-              render: (prod) => (
+              dataIndex: 'productId',
+              render: (productId: string) => (
                 <Space>
                   <CommentOutlined style={{ color: '#6366f1' }} />
-                  <span style={{ fontWeight: 600 }}>{prod}</span>
+                  <Typography.Text copyable style={{ fontWeight: 600 }}>{productId}</Typography.Text>
                 </Space>
               ),
             },
-            { title: 'Người viết', dataIndex: 'user' },
+            { title: 'Người viết', dataIndex: 'buyerId', render: (buyerId: string | null) => buyerId || '-' },
             {
               title: 'Điểm đánh giá',
               dataIndex: 'rating',
-              render: (rating) => <Rate disabled defaultValue={rating} style={{ fontSize: 13 }} />,
+              render: (rating: number) => <Rate disabled defaultValue={rating} style={{ fontSize: 13 }} />,
             },
-            { title: 'Nội dung phản hồi', dataIndex: 'content', width: 360 },
-            { title: 'Ngày tạo', dataIndex: 'created' },
-            { title: 'Trạng thái', dataIndex: 'status', render: (status) => <StatusTag status={status} /> },
+            { title: 'Tiêu đề', dataIndex: 'title', render: (title: string | null) => title || '-' },
+            { title: 'Nội dung phản hồi', dataIndex: 'content', width: 360, render: (content: string | null) => truncateText(content, 120) || '-' },
+            { title: 'Nguồn', dataIndex: 'sourceType' },
+            { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
+            { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
           ]}
         />
       </Card>

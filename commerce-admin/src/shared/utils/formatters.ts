@@ -24,6 +24,17 @@ export function formatNumber(value: number | string | null | undefined): string 
   return new Intl.NumberFormat('vi-VN').format(numericValue);
 }
 
+export function formatDateTime(value: string | Date | null | undefined): string {
+  if (!value) return '-';
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return '-';
+
+  return new Intl.DateTimeFormat('vi-VN', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(date);
+}
+
 /**
  * Định dạng phần trăm (Ví dụ: 0.125 -> 12.5% hoặc 12.5 -> 12.5%)
  */

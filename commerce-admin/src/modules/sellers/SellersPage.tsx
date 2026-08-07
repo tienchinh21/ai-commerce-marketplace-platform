@@ -1,62 +1,92 @@
-import { Card, Table, Tag, Input, Space, Button, Rate, Avatar } from 'antd';
-import { SearchOutlined, ShopOutlined, PlusOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Alert, Avatar, Button, Card, Input, Space, Table, Tag } from 'antd';
+import { PlusOutlined, SearchOutlined, ShopOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
+import { useDebounce } from '@/shared/hooks';
+import { extractErrorMessage } from '@/shared/utils/error-handler';
+import { formatDateTime } from '@/shared/utils/formatters';
+import { fetchSellers } from './seller.api';
+import type { Seller } from './seller.types';
 
-const mockSellers = [
-  { id: 'sel-1', name: 'Anker Official Store', slug: 'anker-official', rating: 4.9, products: 42, status: 'ACTIVE' },
-  { id: 'sel-2', name: 'Coolmate Vietnam', slug: 'coolmate-vn', rating: 4.8, products: 120, status: 'ACTIVE' },
-  { id: 'sel-3', name: 'Cocoon Vietnam', slug: 'cocoon-beauty', rating: 4.9, products: 35, status: 'ACTIVE' },
-  { id: 'sel-4', name: 'Decathlon Sport', slug: 'decathlon-sport', rating: 4.7, products: 210, status: 'ACTIVE' },
-];
+const DEFAULT_PAGE_SIZE = 20;
 
 export function SellersPage() {
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const debouncedKeyword = useDebounce(searchKeyword, 300);
+
+  const sellersQuery = useQuery({
+    queryKey: ['cms-sellers', debouncedKeyword, page, pageSize],
+    queryFn: () =>
+      fetchSellers({
+        search: debouncedKeyword.trim() || undefined,
+        page,
+        pageSize,
+      }),
+  });
+
   return (
     <Space direction="vertical" size={20} style={{ width: '100%' }}>
       <DataPageHeader
         title="Quản Lý Nhà Bán Hàng (Sellers)"
         description="Danh sách đối tác bán hàng, gian hàng và chỉ số đánh giá uy tín."
+        onRefresh={() => sellersQuery.refetch()}
       />
+
+      {sellersQuery.isError && (
+        <Alert type="error" showIcon message="Không tải được danh sách nhà bán hàng" description={extractErrorMessage(sellersQuery.error)} />
+      )}
 
       <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
             placeholder="Tìm theo tên nhà bán hàng..."
+            value={searchKeyword}
+            onChange={(event) => {
+              setSearchKeyword(event.target.value);
+              setPage(1);
+            }}
             style={{ width: 340, borderRadius: 8 }}
+            allowClear
           />
           <Button type="primary" icon={<PlusOutlined />} style={{ background: '#4f46e5' }}>
             Thêm Nhà Bán Hàng
           </Button>
         </div>
 
-        <Table
-          dataSource={mockSellers}
+        <Table<Seller>
+          dataSource={sellersQuery.data?.items ?? []}
           rowKey="id"
+          loading={sellersQuery.isLoading}
+          pagination={{
+            current: sellersQuery.data?.page ?? page,
+            pageSize: sellersQuery.data?.pageSize ?? pageSize,
+            total: sellersQuery.data?.total ?? 0,
+            showSizeChanger: true,
+            onChange: (nextPage, nextPageSize) => {
+              setPage(nextPage);
+              setPageSize(nextPageSize);
+            },
+          }}
           columns={[
             {
               title: 'Nhà bán hàng',
               dataIndex: 'name',
-              render: (text) => (
+              render: (text: string) => (
                 <Space>
                   <Avatar icon={<ShopOutlined />} style={{ backgroundColor: '#e0e7ff', color: '#4f46e5' }} />
                   <span style={{ fontWeight: 600 }}>{text}</span>
                 </Space>
               ),
             },
-            { title: 'Slug gian hàng', dataIndex: 'slug', render: (slug) => <Tag color="blue">{slug}</Tag> },
-            {
-              title: 'Đánh giá trung bình',
-              dataIndex: 'rating',
-              render: (rating) => (
-                <Space>
-                  <Rate disabled defaultValue={rating} style={{ fontSize: 14 }} />
-                  <span style={{ fontWeight: 600 }}>{rating}</span>
-                </Space>
-              ),
-            },
-            { title: 'Số sản phẩm', dataIndex: 'products', render: (num) => <strong>{num} SKU</strong> },
-            { title: 'Trạng thái', dataIndex: 'status', render: (status) => <StatusTag status={status} /> },
+            { title: 'Slug gian hàng', dataIndex: 'slug', render: (slug: string) => <Tag color="blue">{slug}</Tag> },
+            { title: 'User ID', dataIndex: 'userId', render: (userId: string | null) => userId ? <Tag>{userId.slice(0, 8)}</Tag> : '-' },
+            { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
+            { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
           ]}
         />
       </Card>

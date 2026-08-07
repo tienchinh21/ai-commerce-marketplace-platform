@@ -12,8 +12,9 @@ for (const client of [coreApi, aiApi]) {
     (response) => response,
     (error) => {
       if (error.response?.status === 401 && window.location.pathname !== ROUTES.LOGIN) {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_user');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('currentUser');
         window.location.href = ROUTES.LOGIN;
       }
       return Promise.reject(error);
@@ -33,4 +34,3 @@ export function setAuthToken(token: string | null) {
 
 export const cmsPath = (path: string) =>
   path.startsWith('/') ? `/cms${path}` : `/cms/${path}`;
-

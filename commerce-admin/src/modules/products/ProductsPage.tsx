@@ -1,63 +1,70 @@
-import { useState, useMemo } from 'react';
-import { Card, Table, Tag, Input, Space, Button, Rate, Badge } from 'antd';
-import { SearchOutlined, PlusOutlined, ShoppingOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Alert, Badge, Button, Card, Input, Rate, Space, Table, Tag } from 'antd';
+import { DeleteOutlined, EyeOutlined, PlusOutlined, SearchOutlined, ShoppingOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
 import { ConfirmModal } from '@/shared/components/ConfirmModal';
 import { formatCurrency } from '@/shared/utils/formatters';
+import { extractErrorMessage } from '@/shared/utils/error-handler';
 import { useDebounce, useModalState, useNotification } from '@/shared/hooks';
 import { ROUTES } from '@/shared/constants/routes.constants';
+import { deleteProduct, fetchProducts } from './product.api';
+import type { Product } from './product.types';
 
-interface ProductItem {
-  id: string;
-  title: string;
-  category: string;
-  brand: string;
-  price: number;
-  rating: number;
-  reviews: number;
-  status: string;
-}
-
-const initialMockProducts: ProductItem[] = [
-  { id: 'prod-1', title: 'Tai nghe Bluetooth Anker Soundcore Life Q30', category: 'Electronics', brand: 'Anker', price: 1790000, rating: 4.8, reviews: 340, status: 'ACTIVE' },
-  { id: 'prod-2', title: 'Áo thun Nam gia nhiệt Coolmate Active Ultra', category: 'Fashion', brand: 'Coolmate', price: 299000, rating: 4.9, reviews: 820, status: 'ACTIVE' },
-  { id: 'prod-3', title: 'Tẩy tế bào chết Cà phê Đắc Lắk Cocoon 200ml', category: 'Beauty', brand: 'Cocoon', price: 145000, rating: 4.9, reviews: 1420, status: 'ACTIVE' },
-  { id: 'prod-4', title: 'Giày Chạy Bộ Nam Run Active Decathlon', category: 'Sports-Outdoor', brand: 'Decathlon', price: 899000, rating: 4.7, reviews: 190, status: 'ACTIVE' },
-];
+const DEFAULT_PAGE_SIZE = 20;
 
 export function ProductsPage() {
   const navigate = useNavigate();
   const notify = useNotification();
-  const [products, setProducts] = useState<ProductItem[]>(initialMockProducts);
+  const queryClient = useQueryClient();
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const debouncedKeyword = useDebounce(searchKeyword, 300);
+  const deleteModal = useModalState<Product>();
 
-  const deleteModal = useModalState<ProductItem>();
+  const productsQuery = useQuery({
+    queryKey: ['cms-products', debouncedKeyword, page, pageSize],
+    queryFn: () =>
+      fetchProducts({
+        search: debouncedKeyword.trim() || undefined,
+        page,
+        pageSize,
+      }),
+  });
 
-  const filteredProducts = useMemo(() => {
-    if (!debouncedKeyword.trim()) return products;
-    const query = debouncedKeyword.toLowerCase();
-    return products.filter(
-      (p) => p.title.toLowerCase().includes(query) || p.brand.toLowerCase().includes(query) || p.category.toLowerCase().includes(query)
-    );
-  }, [products, debouncedKeyword]);
+  const deleteMutation = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: async () => {
+      notify.success('Đã xóa sản phẩm thành công.');
+      deleteModal.hideModal();
+      await queryClient.invalidateQueries({ queryKey: ['cms-products'] });
+    },
+    onError: (error) => {
+      notify.error(extractErrorMessage(error, 'Xóa sản phẩm thất bại.'));
+    },
+  });
 
-  const handleDeleteConfirm = () => {
-    if (!deleteModal.data) return;
-    const targetId = deleteModal.data.id;
-    setProducts((prev) => prev.filter((p) => p.id !== targetId));
-    notify.success(`Đã xóa sản phẩm "${deleteModal.data.title}" thành công.`);
-    deleteModal.hideModal();
-  };
+  const products = productsQuery.data?.items ?? [];
 
   return (
     <Space direction="vertical" size={20} style={{ width: '100%' }}>
       <DataPageHeader
         title="Quản Lý Sản Phẩm (Catalog Products)"
         description="Quản lý thông tin sản phẩm chuẩn hóa (Canonical Products), biến thể, hình ảnh và thuộc tính kỹ thuật specs_json."
+        onRefresh={() => productsQuery.refetch()}
       />
+
+      {productsQuery.isError && (
+        <Alert
+          type="error"
+          showIcon
+          message="Không tải được danh sách sản phẩm"
+          description={extractErrorMessage(productsQuery.error)}
+        />
+      )}
 
       <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -65,7 +72,10 @@ export function ProductsPage() {
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
             placeholder="Tìm theo tên sản phẩm, thương hiệu..."
             value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
+            onChange={(event) => {
+              setSearchKeyword(event.target.value);
+              setPage(1);
+            }}
             style={{ width: 340, borderRadius: 8 }}
             allowClear
           />
@@ -74,43 +84,62 @@ export function ProductsPage() {
           </Button>
         </div>
 
-        <Table
-          dataSource={filteredProducts}
+        <Table<Product>
+          dataSource={products}
           rowKey="id"
+          loading={productsQuery.isLoading || deleteMutation.isPending}
+          pagination={{
+            current: productsQuery.data?.page ?? page,
+            pageSize: productsQuery.data?.pageSize ?? pageSize,
+            total: productsQuery.data?.total ?? 0,
+            showSizeChanger: true,
+            onChange: (nextPage, nextPageSize) => {
+              setPage(nextPage);
+              setPageSize(nextPageSize);
+            },
+          }}
           columns={[
             {
               title: 'Sản phẩm',
               dataIndex: 'title',
-              render: (title, record) => (
+              render: (title: string, record) => (
                 <Space>
                   <div style={{ width: 38, height: 38, borderRadius: 8, background: '#f1f5f9', display: 'grid', placeItems: 'center', color: '#6366f1' }}>
                     <ShoppingOutlined />
                   </div>
                   <div>
                     <div style={{ fontWeight: 600, color: '#0f172a' }}>{title}</div>
-                    <Tag color="cyan" style={{ fontSize: 11 }}>Hãng: {record.brand}</Tag>
+                    <Tag color="cyan" style={{ fontSize: 11 }}>Hãng: {record.brand || '-'}</Tag>
                   </div>
                 </Space>
               ),
             },
-            { title: 'Danh mục', dataIndex: 'category', render: (cat) => <Tag color="blue">{cat}</Tag> },
+            { title: 'Danh mục', dataIndex: 'categoryId', render: (categoryId: string) => <Tag color="blue">{categoryId.slice(0, 8)}</Tag> },
             {
               title: 'Giá hiển thị',
-              dataIndex: 'price',
-              render: (price) => <span style={{ fontWeight: 700, color: '#16a34a' }}>{formatCurrency(price)}</span>,
+              key: 'price',
+              render: (_, record) => (
+                <span style={{ fontWeight: 700, color: '#16a34a' }}>
+                  {formatCurrency(record.priceMin)}
+                  {record.priceMax !== record.priceMin ? ` - ${formatCurrency(record.priceMax)}` : ''}
+                </span>
+              ),
             },
             {
               title: 'Đánh giá & Phản hồi',
-              dataIndex: 'rating',
-              render: (rating, record) => (
-                <Space>
-                  <Rate disabled defaultValue={rating} style={{ fontSize: 13 }} />
-                  <span style={{ fontWeight: 600 }}>{rating}</span>
-                  <Badge count={`${record.reviews} review`} style={{ backgroundColor: '#e2e8f0', color: '#475569' }} />
-                </Space>
-              ),
+              key: 'rating',
+              render: (_, record) => {
+                const rating = Number.parseFloat(record.ratingAvg);
+                return (
+                  <Space>
+                    <Rate disabled defaultValue={Number.isFinite(rating) ? rating : 0} style={{ fontSize: 13 }} />
+                    <span style={{ fontWeight: 600 }}>{Number.isFinite(rating) ? rating.toFixed(1) : '0.0'}</span>
+                    <Badge count={`${record.reviewCount} review`} style={{ backgroundColor: '#e2e8f0', color: '#475569' }} />
+                  </Space>
+                );
+              },
             },
-            { title: 'Trạng thái', dataIndex: 'status', render: (status) => <StatusTag status={status} /> },
+            { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
             {
               title: 'Thao tác',
               key: 'action',
@@ -142,7 +171,11 @@ export function ProductsPage() {
         open={deleteModal.open}
         title="Xác nhận xóa sản phẩm"
         content={`Bạn có chắc chắn muốn xóa sản phẩm "${deleteModal.data?.title}" khỏi catalog không? Thao tác này không thể hoàn tác.`}
-        onConfirm={handleDeleteConfirm}
+        onConfirm={() => {
+          if (deleteModal.data) {
+            deleteMutation.mutate(deleteModal.data.id);
+          }
+        }}
         onCancel={deleteModal.hideModal}
         danger
         okText="Xóa sản phẩm"

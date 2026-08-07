@@ -1,56 +1,110 @@
-import { Card, Table, Tag, Input, Space, Button, Avatar } from 'antd';
-import { SearchOutlined, SafetyCertificateOutlined, UserOutlined, PlusOutlined } from '@ant-design/icons';
+import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Alert, Avatar, Button, Card, Input, Space, Table, Tag } from 'antd';
+import { PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
-
-const mockUsers = [
-  { id: 'usr-1', name: 'Quản trị viên Hệ thống', email: 'admin@example.com', role: 'Super Admin', permissions: ['ALL_PERMISSIONS'], status: 'ACTIVE' },
-  { id: 'usr-2', name: 'Văn Thị Mai', email: 'mai.van@okz.vn', role: 'Catalog Manager', permissions: ['product:read', 'product:write', 'category:read'], status: 'ACTIVE' },
-  { id: 'usr-3', name: 'Hoàng Minh Tuấn', email: 'tuan.hoang@okz.vn', role: 'AI Analyst User', permissions: ['ai:search', 'ai:analyst:chat', 'review:read'], status: 'ACTIVE' },
-];
+import { useDebounce } from '@/shared/hooks';
+import { extractErrorMessage } from '@/shared/utils/error-handler';
+import { formatDateTime } from '@/shared/utils/formatters';
+import { fetchPermissions, fetchUsersWithPermissions } from './users-permissions.api';
+import type { AdminUserWithPermissions, Permission } from './users-permissions.types';
 
 export function UsersPermissionsPage() {
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const debouncedKeyword = useDebounce(searchKeyword, 300);
+
+  const usersQuery = useQuery({
+    queryKey: ['cms-users-with-permissions'],
+    queryFn: fetchUsersWithPermissions,
+  });
+  const permissionsQuery = useQuery({
+    queryKey: ['cms-permissions'],
+    queryFn: fetchPermissions,
+  });
+
+  const users = useMemo(() => {
+    const items = usersQuery.data ?? [];
+    const query = debouncedKeyword.trim().toLowerCase();
+    if (!query) return items;
+    return items.filter((user) =>
+      [user.displayName, user.email, user.status, ...user.permissions]
+        .some((value) => value.toLowerCase().includes(query))
+    );
+  }, [usersQuery.data, debouncedKeyword]);
+
   return (
     <Space direction="vertical" size={20} style={{ width: '100%' }}>
       <DataPageHeader
         title="Quản Lý Người Dùng & Phân Quyền (Users & Permissions)"
         description="Quản lý tài khoản Admin internal và phân quyền truy cập theo cơ chế RBAC (Resource:Action Permissions)."
+        onRefresh={() => {
+          usersQuery.refetch();
+          permissionsQuery.refetch();
+        }}
       />
+
+      {(usersQuery.isError || permissionsQuery.isError) && (
+        <Alert
+          type="error"
+          showIcon
+          message="Không tải được dữ liệu người dùng hoặc quyền"
+          description={extractErrorMessage(usersQuery.error ?? permissionsQuery.error)}
+        />
+      )}
 
       <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
-            placeholder="Tìm theo tên người dùng, email..."
+            placeholder="Tìm theo tên người dùng, email, mã quyền..."
+            value={searchKeyword}
+            onChange={(event) => setSearchKeyword(event.target.value)}
             style={{ width: 340, borderRadius: 8 }}
+            allowClear
           />
           <Button type="primary" icon={<PlusOutlined />} style={{ background: '#4f46e5' }}>
             Tạo Tài Khoản Mới
           </Button>
         </div>
 
-        <Table
-          dataSource={mockUsers}
+        <Table<AdminUserWithPermissions>
+          dataSource={users}
           rowKey="id"
+          loading={usersQuery.isLoading}
           columns={[
             {
               title: 'Người dùng',
-              dataIndex: 'name',
-              render: (name) => (
+              dataIndex: 'displayName',
+              render: (displayName: string) => (
                 <Space>
                   <Avatar icon={<UserOutlined />} style={{ backgroundColor: '#4f46e5' }} />
-                  <span style={{ fontWeight: 600 }}>{name}</span>
+                  <span style={{ fontWeight: 600 }}>{displayName}</span>
                 </Space>
               ),
             },
             { title: 'Email', dataIndex: 'email' },
-            { title: 'Vai trò', dataIndex: 'role', render: (role) => <Tag color="purple">{role}</Tag> },
             {
               title: 'Mã quyền RBAC',
               dataIndex: 'permissions',
-              render: (perms: string[]) => perms.map(p => <Tag key={p} color="blue">{p}</Tag>),
+              render: (permissions: string[]) => permissions.length > 0 ? permissions.map((permission) => <Tag key={permission} color="blue">{permission}</Tag>) : '-',
             },
-            { title: 'Trạng thái', dataIndex: 'status', render: (status) => <StatusTag status={status} /> },
+            { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
+            { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
+          ]}
+        />
+      </Card>
+
+      <Card title="Danh mục quyền hệ thống" style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+        <Table<Permission>
+          dataSource={permissionsQuery.data ?? []}
+          rowKey="id"
+          loading={permissionsQuery.isLoading}
+          pagination={{ pageSize: 10 }}
+          columns={[
+            { title: 'Mã quyền', dataIndex: 'code', render: (code: string) => <Tag color="purple">{code}</Tag> },
+            { title: 'Mô tả', dataIndex: 'description', render: (description: string | null) => description || '-' },
+            { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
           ]}
         />
       </Card>
