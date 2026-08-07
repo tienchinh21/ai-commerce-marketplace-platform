@@ -1,0 +1,15 @@
+export const ROUTES = {
+  LOGIN: '/dang-nhap',
+  DASHBOARD: '/',
+  PRODUCTS: '/san-pham',
+  PRODUCT_DETAIL: (id: string) => `/san-pham/${id}`,
+  CATEGORIES: '/danh-muc',
+  REVIEWS: '/danh-gia',
+  SELLERS: '/nha-ban-hang',
+  BUYERS: '/khach-hang',
+  USERS_PERMISSIONS: '/nguoi-dung-phan-quyen',
+  INGESTION: '/nap-du-lieu',
+  AI_SEARCH: '/tim-kiem-ai',
+  REVIEW_INTELLIGENCE: '/phan-tich-danh-gia-ai',
+  ANALYST_CHAT: '/tro-ly-bao-cao-ai',
+} as const;

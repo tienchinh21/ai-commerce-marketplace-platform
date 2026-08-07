@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card, Input, Button, Space, Table, Tag, Typography, Alert, Row, Col } from 'antd';
 import { RobotOutlined, SendOutlined, SafetyCertificateOutlined, CodeOutlined, AreaChartOutlined } from '@ant-design/icons';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
 
 export function AnalystChatPage() {
   const [prompt, setPrompt] = useState('Top 5 sản phẩm có nhiều đánh giá tiêu cực nhất tháng này là gì?');

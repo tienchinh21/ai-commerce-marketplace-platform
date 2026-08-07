@@ -1,7 +1,7 @@
 import { Card, Table, Tag, Button, Space, Progress, Statistic, Row, Col } from 'antd';
 import { CloudUploadOutlined, SyncOutlined, DatabaseOutlined, FileTextOutlined } from '@ant-design/icons';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
-import { StatusTag } from '../../shared/components/StatusTag';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
+import { StatusTag } from '@/shared/components/StatusTag';
 
 const mockSources = [
   { id: 'src-1', name: 'Shopee Synthetic Import Feed', type: 'manual_import', lastSync: '2026-07-29 14:30', records: 120, status: 'COMPLETED' },

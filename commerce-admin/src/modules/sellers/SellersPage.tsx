@@ -1,7 +1,7 @@
 import { Card, Table, Tag, Input, Space, Button, Rate, Avatar } from 'antd';
 import { SearchOutlined, ShopOutlined, PlusOutlined } from '@ant-design/icons';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
-import { StatusTag } from '../../shared/components/StatusTag';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
+import { StatusTag } from '@/shared/components/StatusTag';
 
 const mockSellers = [
   { id: 'sel-1', name: 'Anker Official Store', slug: 'anker-official', rating: 4.9, products: 42, status: 'ACTIVE' },

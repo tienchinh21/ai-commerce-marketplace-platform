@@ -20,23 +20,25 @@ import {
   MenuUnfoldOutlined,
 } from '@ant-design/icons';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../modules/auth/auth.store';
-import { adminRoutes } from '../routes/route-permissions';
+import { useAuth } from '@/modules/auth/auth.store';
+import { adminRoutes } from '@/routes/route-permissions';
+
+import { ROUTES } from '@/shared/constants/routes.constants';
 
 const { Header, Sider, Content } = Layout;
 
 const iconMap: Record<string, ReactNode> = {
-  '/': <DashboardOutlined />,
-  '/categories': <AppstoreOutlined />,
-  '/products': <ShoppingOutlined />,
-  '/sellers': <ShopOutlined />,
-  '/buyers': <UserOutlined />,
-  '/reviews': <CommentOutlined />,
-  '/ingestion': <CloudUploadOutlined />,
-  '/ai-search': <SearchOutlined />,
-  '/review-intelligence': <BarChartOutlined />,
-  '/analyst-chat': <RobotOutlined />,
-  '/users-permissions': <SafetyCertificateOutlined />,
+  [ROUTES.DASHBOARD]: <DashboardOutlined />,
+  [ROUTES.CATEGORIES]: <AppstoreOutlined />,
+  [ROUTES.PRODUCTS]: <ShoppingOutlined />,
+  [ROUTES.SELLERS]: <ShopOutlined />,
+  [ROUTES.BUYERS]: <UserOutlined />,
+  [ROUTES.REVIEWS]: <CommentOutlined />,
+  [ROUTES.INGESTION]: <CloudUploadOutlined />,
+  [ROUTES.AI_SEARCH]: <SearchOutlined />,
+  [ROUTES.REVIEW_INTELLIGENCE]: <BarChartOutlined />,
+  [ROUTES.ANALYST_CHAT]: <RobotOutlined />,
+  [ROUTES.USERS_PERMISSIONS]: <SafetyCertificateOutlined />,
 };
 
 export function AdminLayout() {
@@ -75,7 +77,7 @@ export function AdminLayout() {
 
   function handleLogout() {
     auth.clearSession();
-    navigate('/login');
+    navigate(ROUTES.LOGIN);
   }
 
   const userMenu = {

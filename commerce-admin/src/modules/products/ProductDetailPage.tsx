@@ -1,5 +1,5 @@
 import { Empty } from 'antd';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
 
 export function ProductDetailPage() {
   return (

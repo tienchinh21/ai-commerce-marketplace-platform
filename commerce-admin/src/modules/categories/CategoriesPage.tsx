@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Table, Card, Input, Space, Button, Tag, Tooltip, Popconfirm, message } from 'antd';
 import { SearchOutlined, EditOutlined, DeleteOutlined, SettingOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
-import { StatusTag } from '../../shared/components/StatusTag';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
+import { StatusTag } from '@/shared/components/StatusTag';
 import { fetchCategories } from './category.api';
 
 export function CategoriesPage() {

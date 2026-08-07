@@ -1,4 +1,4 @@
-import { cmsPath, coreApi } from '../../shared/api/http-client';
+import { cmsPath, coreApi } from '@/shared/api/http-client';
 import type { Category, CategoryAttribute } from './category.types';
 
 export async function fetchCategories(): Promise<Category[]> {

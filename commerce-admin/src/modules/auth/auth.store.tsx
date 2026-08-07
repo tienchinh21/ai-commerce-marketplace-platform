@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { setAuthToken } from '../../shared/api/http-client';
+import { setAuthToken } from '@/shared/api/http-client';
 import type { CurrentUser, PermissionCode } from './auth.types';
 
 interface AuthState {

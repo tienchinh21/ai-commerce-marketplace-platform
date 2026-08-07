@@ -4,6 +4,7 @@ import { LockOutlined, MailOutlined, ThunderboltFilled, SafetyCertificateOutline
 import { useNavigate } from 'react-router-dom';
 import { login } from './auth.api';
 import { useAuth } from './auth.store';
+import { ROUTES } from '@/shared/constants/routes.constants';
 
 interface LoginFormValues {
   email: string;
@@ -21,7 +22,7 @@ export function LoginPage() {
       const result = await login(values.email, values.password);
       auth.setSession(result.accessToken, result.user);
       message.success('Đăng nhập thành công! Đang chuyển hướng...');
-      navigate('/');
+      navigate(ROUTES.DASHBOARD);
     } catch {
       message.error('Đăng nhập thất bại. Vui lòng kiểm tra lại email hoặc mật khẩu.');
     } finally {

@@ -1,7 +1,7 @@
-import { Card, Table, Tag, Input, Space, Rate, Badge } from 'antd';
+import { Card, Table, Input, Space, Rate } from 'antd';
 import { SearchOutlined, CommentOutlined } from '@ant-design/icons';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
-import { StatusTag } from '../../shared/components/StatusTag';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
+import { StatusTag } from '@/shared/components/StatusTag';
 
 const mockReviews = [
   { id: 'rev-1', product: 'Tai nghe Bluetooth Anker Soundcore Life Q30', user: 'Nguyễn Văn An', rating: 5, content: 'Chống ồn ANC cực đỉnh trong tầm giá, pin dùng cả tuần không hết.', created: '2026-07-28', status: 'ACTIVE' },

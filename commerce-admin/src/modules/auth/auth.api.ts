@@ -1,4 +1,4 @@
-import { cmsPath, coreApi } from '../../shared/api/http-client';
+import { cmsPath, coreApi } from '@/shared/api/http-client';
 import type { CurrentUser, LoginResponse } from './auth.types';
 
 export async function login(email: string, password: string): Promise<LoginResponse> {

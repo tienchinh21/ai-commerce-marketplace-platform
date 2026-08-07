@@ -1,7 +1,7 @@
 import { Card, Table, Tag, Input, Space, Avatar } from 'antd';
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
-import { StatusTag } from '../../shared/components/StatusTag';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
+import { StatusTag } from '@/shared/components/StatusTag';
 
 const mockBuyers = [
   { id: 'buy-1', name: 'Nguyễn Văn An', email: 'an.nguyen@gmail.com', phone: '0901234567', orders: 12, status: 'ACTIVE' },

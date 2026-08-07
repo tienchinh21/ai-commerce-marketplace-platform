@@ -1,7 +1,7 @@
 import { Card, Table, Tag, Input, Space, Button, Avatar } from 'antd';
 import { SearchOutlined, SafetyCertificateOutlined, UserOutlined, PlusOutlined } from '@ant-design/icons';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
-import { StatusTag } from '../../shared/components/StatusTag';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
+import { StatusTag } from '@/shared/components/StatusTag';
 
 const mockUsers = [
   { id: 'usr-1', name: 'Quản trị viên Hệ thống', email: 'admin@example.com', role: 'Super Admin', permissions: ['ALL_PERMISSIONS'], status: 'ACTIVE' },

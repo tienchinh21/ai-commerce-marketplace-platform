@@ -1,11 +1,9 @@
-import { Card, Col, Row, Statistic, Typography, Table, Tag, Space, Progress, Button } from 'antd';
+import { Card, Col, Row, Typography, Table, Space, Progress, Button } from 'antd';
 import {
   ShoppingOutlined,
   CommentOutlined,
   ShopOutlined,
   RobotOutlined,
-  ArrowUpOutlined,
-  CheckCircleOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -21,19 +19,22 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { MetricCard } from '@/shared/components/MetricCard';
+import { StatusTag } from '@/shared/components/StatusTag';
+import { formatNumber, formatCurrency } from '@/shared/utils/formatters';
+import { ROUTES } from '@/shared/constants/routes.constants';
 
 // Recharts Mock Data
 const monthlyData = [
-  { month: 'Tháng 1', revenue: 450, orders: 320 },
-  { month: 'Tháng 2', revenue: 620, orders: 480 },
-  { month: 'Tháng 3', revenue: 580, orders: 410 },
-  { month: 'Tháng 4', revenue: 890, orders: 670 },
-  { month: 'Tháng 5', revenue: 1100, orders: 850 },
-  { month: 'Tháng 6', revenue: 1350, orders: 990 },
-  { month: 'Tháng 7', revenue: 1680, orders: 1280 },
+  { month: 'Tháng 1', revenue: 450000000, orders: 320 },
+  { month: 'Tháng 2', revenue: 620000000, orders: 480 },
+  { month: 'Tháng 3', revenue: 580000000, orders: 410 },
+  { month: 'Tháng 4', revenue: 890000000, orders: 670 },
+  { month: 'Tháng 5', revenue: 1100000000, orders: 850 },
+  { month: 'Tháng 6', revenue: 1350000000, orders: 990 },
+  { month: 'Tháng 7', revenue: 1680000000, orders: 1280 },
 ];
 
 const categoryData = [
@@ -53,7 +54,7 @@ const sentimentData = [
 const mockRecentActivities = [
   { key: '1', time: '10 phút trước', action: 'Import Dataset', detail: 'Tải 120 sản phẩm mới vào danh mục Electronics', user: 'Admin System', status: 'COMPLETED' },
   { key: '2', time: '25 phút trước', action: 'AI Embedding', detail: 'Tạo pgvector embedding cho 45 đánh giá sản phẩm', user: 'AI Service Worker', status: 'COMPLETED' },
-  { key: '3', time: '1 giờ trước', action: 'Review Analysis', detail: 'Phân tích Sentiment & trích xuất chủ đề danh mục Beauty', user: 'AI Service Worker', status: 'COMPLETED' },
+  { key: '3', time: '1 giờ trước', action: 'Review Analysis', detail: 'Phân tích Sentiment & trích xuất chủ đề danh mục Beauty', user: 'AI Service Worker', status: 'RUNNING' },
   { key: '4', time: '2 giờ trước', action: 'Text-to-SQL Query', detail: 'Thực thi câu hỏi: "Top 5 sản phẩm bán chạy nhất tháng"', user: 'Quản trị viên', status: 'COMPLETED' },
 ];
 
@@ -76,14 +77,14 @@ export function DashboardPage() {
           <Button
             type="primary"
             icon={<SearchOutlined />}
-            onClick={() => navigate('/ai-search')}
+            onClick={() => navigate(ROUTES.AI_SEARCH)}
             style={{ borderRadius: 8, background: '#2563eb', fontWeight: 600 }}
           >
             Thử AI Search
           </Button>
           <Button
             icon={<RobotOutlined />}
-            onClick={() => navigate('/analyst-chat')}
+            onClick={() => navigate(ROUTES.ANALYST_CHAT)}
             style={{ borderRadius: 8, fontWeight: 600 }}
           >
             Hỏi AI Analyst
@@ -91,99 +92,61 @@ export function DashboardPage() {
         </Space>
       </div>
 
-      {/* KPI Statistic Cards */}
+      {/* KPI Statistic Cards using Reusable MetricCard */}
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>
-          <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <Typography.Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>
-                  Tổng Sản Phẩm Catalog
-                </Typography.Text>
-                <Typography.Title level={2} style={{ margin: '8px 0 4px', fontWeight: 700 }}>
-                  1,280
-                </Typography.Title>
-                <Tag color="success" style={{ borderRadius: 10, border: 0 }}>
-                  <ArrowUpOutlined /> +12.5% tuần này
-                </Tag>
-              </div>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: '#eff6ff', color: '#2563eb', display: 'grid', placeItems: 'center', fontSize: 20 }}>
-                <ShoppingOutlined />
-              </div>
-            </div>
-          </Card>
+          <MetricCard
+            title="Tổng Sản Phẩm Catalog"
+            value={formatNumber(1280)}
+            icon={<ShoppingOutlined />}
+            iconColor="#2563eb"
+            iconBg="#eff6ff"
+            trend={{ value: '12.5%', isUp: true, label: 'tuần này' }}
+          />
         </Col>
 
         <Col xs={24} sm={12} lg={6}>
-          <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <Typography.Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>
-                  Đánh Giá (Reviews)
-                </Typography.Text>
-                <Typography.Title level={2} style={{ margin: '8px 0 4px', fontWeight: 700 }}>
-                  4,560
-                </Typography.Title>
-                <Tag color="processing" style={{ borderRadius: 10, border: 0 }}>
-                  <ArrowUpOutlined /> +8.3% tích cực
-                </Tag>
-              </div>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: '#f0fdf4', color: '#16a34a', display: 'grid', placeItems: 'center', fontSize: 20 }}>
-                <CommentOutlined />
-              </div>
-            </div>
-          </Card>
+          <MetricCard
+            title="Đánh Giá (Reviews)"
+            value={formatNumber(4560)}
+            icon={<CommentOutlined />}
+            iconColor="#16a34a"
+            iconBg="#f0fdf4"
+            trend={{ value: '8.3%', isUp: true, label: 'tích cực' }}
+          />
         </Col>
 
         <Col xs={24} sm={12} lg={6}>
-          <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <Typography.Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>
-                  Nhà Bán Hàng (Sellers)
-                </Typography.Text>
-                <Typography.Title level={2} style={{ margin: '8px 0 4px', fontWeight: 700 }}>
-                  85
-                </Typography.Title>
-                <Tag color="blue" style={{ borderRadius: 10, border: 0 }}>
-                  5 Danh mục chính
-                </Tag>
-              </div>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: '#f8fafc', color: '#475569', display: 'grid', placeItems: 'center', fontSize: 20 }}>
-                <ShopOutlined />
-              </div>
-            </div>
-          </Card>
+          <MetricCard
+            title="Sellers Hoạt Động"
+            value={formatNumber(142)}
+            icon={<ShopOutlined />}
+            iconColor="#9333ea"
+            iconBg="#faf5ff"
+            subTitle="25 sellers mới tháng này"
+          />
         </Col>
 
         <Col xs={24} sm={12} lg={6}>
-          <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <Typography.Text type="secondary" style={{ fontSize: 13, fontWeight: 500 }}>
-                  Tác Vụ AI Indexing
-                </Typography.Text>
-                <Typography.Title level={2} style={{ margin: '8px 0 4px', fontWeight: 700 }}>
-                  99.4%
-                </Typography.Title>
-                <Tag color="cyan" style={{ borderRadius: 10, border: 0 }}>
-                  pgvector ready
-                </Tag>
-              </div>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: '#ecfeff', color: '#0891b2', display: 'grid', placeItems: 'center', fontSize: 20 }}>
-                <RobotOutlined />
-              </div>
-            </div>
-          </Card>
+          <MetricCard
+            title="AI Vector Indexing"
+            value="98.5%"
+            icon={<RobotOutlined />}
+            iconColor="#0284c7"
+            iconBg="#f0f9ff"
+            subTitle="5,720 vectors pgvector"
+          />
         </Col>
       </Row>
 
-      {/* Interactive Charts Section */}
-      <Row gutter={[20, 20]}>
-        {/* Revenue & Orders Trend Area Chart */}
+      {/* Charts Row */}
+      <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
-          <Card title={<span style={{ fontWeight: 700, fontSize: 16 }}>Biểu đồ Tăng Trưởng Doanh Thu & Đơn Hàng</span>} style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-            <div style={{ width: '100%', height: 300 }}>
+          <Card
+            title={<span style={{ fontWeight: 700, color: '#0f172a' }}>Tăng Trưởng Doanh Số & Đơn Hàng</span>}
+            style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}
+          >
+            <div style={{ height: 320 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={monthlyData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                   <defs>
@@ -191,101 +154,120 @@ export function DashboardPage() {
                       <stop offset="5%" stopColor="#2563eb" stopOpacity={0.8} />
                       <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
                     </linearGradient>
-                    <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#16a34a" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
-                    </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
-                  <YAxis stroke="#64748b" fontSize={12} />
-                  <Tooltip />
-                  <Legend />
-                  <Area type="monotone" dataKey="revenue" name="Doanh thu (triệu ₫)" stroke="#2563eb" fillOpacity={1} fill="url(#colorRevenue)" />
-                  <Area type="monotone" dataKey="orders" name="Số đơn hàng" stroke="#16a34a" fillOpacity={1} fill="url(#colorOrders)" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis dataKey="month" stroke="#64748b" style={{ fontSize: 12 }} />
+                  <YAxis
+                    stroke="#64748b"
+                    style={{ fontSize: 12 }}
+                    tickFormatter={(val) => `${val / 1000000}M`}
+                  />
+                  <Tooltip
+                    formatter={(value: any) => [
+                      formatCurrency(value),
+                      'Doanh số',
+                    ]}
+                  />
+                  <Area type="monotone" dataKey="revenue" stroke="#2563eb" fillOpacity={1} fill="url(#colorRevenue)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </Card>
         </Col>
 
-        {/* Review Sentiment Donut Chart */}
         <Col xs={24} lg={8}>
-          <Card title={<span style={{ fontWeight: 700, fontSize: 16 }}>Phân Bổ Sentiment Đánh Giá AI</span>} style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-            <div style={{ width: '100%', height: 300 }}>
+          <Card
+            title={<span style={{ fontWeight: 700, color: '#0f172a' }}>Phân Tích Sentiment Đánh Giá</span>}
+            style={{ borderRadius: 12, border: '1px solid #e2e8f0', height: '100%' }}
+          >
+            <div style={{ height: 220, display: 'grid', placeItems: 'center' }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={sentimentData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
-                    paddingAngle={4}
+                    innerRadius={55}
+                    outerRadius={80}
+                    paddingAngle={5}
                     dataKey="value"
                   >
                     {sentimentData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => `${value}%`} />
-                  <Legend />
+                  <Tooltip formatter={(value) => [`${value}%`, 'Tỷ lệ']} />
                 </PieChart>
               </ResponsiveContainer>
+            </div>
+            <div style={{ marginTop: 12 }}>
+              {sentimentData.map((item) => (
+                <div key={item.name} style={{ marginBottom: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+                    <span>{item.name}</span>
+                    <span style={{ fontWeight: 700 }}>{item.value}%</span>
+                  </div>
+                  <Progress percent={item.value} strokeColor={item.color} showInfo={false} size="small" />
+                </div>
+              ))}
             </div>
           </Card>
         </Col>
       </Row>
 
-      {/* Category Bar Chart & Activity Table */}
-      <Row gutter={[20, 20]}>
-        {/* Products by Category Bar Chart */}
+      {/* Category Breakdown & Recent Activities */}
+      <Row gutter={[16, 16]}>
         <Col xs={24} lg={12}>
-          <Card title={<span style={{ fontWeight: 700, fontSize: 16 }}>Phân Bổ Sản Phẩm Theo Danh Mục</span>} style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-            <div style={{ width: '100%', height: 260 }}>
+          <Card
+            title={<span style={{ fontWeight: 700, color: '#0f172a' }}>Phân Bổ Sản Phẩm Theo Danh Mục</span>}
+            style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}
+          >
+            <div style={{ height: 260 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={categoryData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
-                  <YAxis stroke="#64748b" fontSize={12} />
+                <BarChart data={categoryData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+                  <XAxis type="number" stroke="#64748b" style={{ fontSize: 12 }} />
+                  <YAxis dataKey="name" type="category" stroke="#64748b" style={{ fontSize: 12 }} />
                   <Tooltip />
-                  <Bar dataKey="count" name="Số lượng SKU" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="count" fill="#4f46e5" radius={[0, 4, 4, 0]} barSize={20} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </Card>
         </Col>
 
-        {/* Recent Activities */}
         <Col xs={24} lg={12}>
           <Card
-            title={<span style={{ fontWeight: 700, fontSize: 16 }}>Nhật ký hoạt động gần đây</span>}
-            extra={<a onClick={() => navigate('/ingestion')}>Xem tất cả</a>}
+            title={<span style={{ fontWeight: 700, color: '#0f172a' }}>Hoạt Động Hệ Thống & AI Worker</span>}
             style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}
           >
             <Table
-              pagination={false}
               dataSource={mockRecentActivities}
+              rowKey="key"
+              pagination={false}
+              size="small"
               columns={[
                 {
-                  title: 'Thời gian',
-                  dataIndex: 'time',
-                  render: (text) => <span style={{ color: '#64748b', fontSize: 12 }}>{text}</span>,
-                },
-                {
-                  title: 'Thao tác',
+                  title: 'Hoạt động',
                   dataIndex: 'action',
-                  render: (text) => <Tag color="blue" style={{ fontWeight: 600 }}>{text}</Tag>,
-                },
-                {
-                  title: 'Chi tiết',
-                  dataIndex: 'detail',
-                  ellipsis: true,
+                  render: (text, record) => (
+                    <div>
+                      <div style={{ fontWeight: 600, color: '#0f172a', fontSize: 13 }}>{text}</div>
+                      <div style={{ fontSize: 12, color: '#64748b' }}>{record.detail}</div>
+                    </div>
+                  ),
                 },
                 {
                   title: 'Trạng thái',
                   dataIndex: 'status',
-                  render: () => <Tag color="green" icon={<CheckCircleOutlined />}>HOÀN THÀNH</Tag>,
+                  width: 120,
+                  render: (status) => <StatusTag status={status} />,
+                },
+                {
+                  title: 'Thời gian',
+                  dataIndex: 'time',
+                  width: 110,
+                  render: (t) => <span style={{ fontSize: 12, color: '#94a3b8' }}>{t}</span>,
                 },
               ]}
             />

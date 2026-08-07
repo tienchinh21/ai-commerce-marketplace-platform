@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card, Input, Button, Space, Tag, Rate, Typography, Row, Col, Select, Badge } from 'antd';
 import { SearchOutlined, RobotOutlined, ThunderboltOutlined, FilterOutlined } from '@ant-design/icons';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
 
 const mockSearchResults = [
   {

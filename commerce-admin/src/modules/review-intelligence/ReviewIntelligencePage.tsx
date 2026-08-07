@@ -1,6 +1,6 @@
 import { Card, Row, Col, Tag, Progress, Space, Typography, Badge, List } from 'antd';
 import { LikeOutlined, DislikeOutlined, SmileOutlined, MehOutlined, FrownOutlined } from '@ant-design/icons';
-import { DataPageHeader } from '../../shared/components/DataPageHeader';
+import { DataPageHeader } from '@/shared/components/DataPageHeader';
 
 export function ReviewIntelligencePage() {
   return (
