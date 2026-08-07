@@ -7,6 +7,10 @@ export const VI_API_MESSAGES = {
     [ApiErrorCode.AUTH_UNAUTHORIZED]:
       'Bạn cần đăng nhập để thực hiện thao tác này.',
     [ApiErrorCode.AUTH_FORBIDDEN]: 'Bạn không có quyền thực hiện thao tác này.',
+    [ApiErrorCode.AUTH_REFRESH_INVALID]:
+      'Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.',
+    [ApiErrorCode.AUTH_REFRESH_REUSED]:
+      'Phiên làm mới đã bị sử dụng trước đó. Vui lòng đăng nhập lại.',
     [ApiErrorCode.USER_NOT_FOUND]: 'Không tìm thấy người dùng.',
     [ApiErrorCode.USER_EMAIL_EXISTS]: 'Email đã tồn tại.',
     [ApiErrorCode.CATEGORY_NOT_FOUND]: 'Không tìm thấy danh mục.',
@@ -59,5 +63,7 @@ export const VI_API_MESSAGES = {
     IMPORT_REVIEWS_COMPLETED: 'Nhập đánh giá hoàn tất.',
     IMPORT_REVIEWS_COMPLETED_WITH_ERRORS:
       'Nhập đánh giá hoàn tất nhưng có lỗi.',
+    LOGOUT_SUCCESS: 'Đăng xuất thành công.',
+    LOGIN_SUCCESS: 'Đăng nhập thành công.',
   },
 } as const;

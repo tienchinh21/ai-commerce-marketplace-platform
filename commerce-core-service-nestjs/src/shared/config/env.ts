@@ -13,6 +13,8 @@ export interface CoreEnv {
   jwt: {
     secret: string;
     expiresIn: string;
+    refreshSecret: string;
+    refreshExpiresIn: string;
   };
   corsOrigins: string[];
 }
@@ -33,6 +35,9 @@ export function loadEnv(): CoreEnv {
     jwt: {
       secret: process.env.JWT_SECRET ?? 'change-me-in-production',
       expiresIn: process.env.JWT_EXPIRES_IN ?? '8h',
+      refreshSecret:
+        process.env.JWT_REFRESH_SECRET ?? 'change-me-in-production-refresh',
+      refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN ?? '7d',
     },
     corsOrigins: (process.env.CORS_ORIGINS ?? 'http://localhost:5173')
       .split(',')

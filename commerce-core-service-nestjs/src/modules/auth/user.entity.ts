@@ -45,6 +45,15 @@ export class User {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
+  @Column({
+    type: 'varchar',
+    name: 'refresh_token_hash',
+    length: 255,
+    nullable: true,
+    select: false,
+  })
+  refreshTokenHash?: string | null;
+
   @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
   userPermissions: UserPermission[];
 }
