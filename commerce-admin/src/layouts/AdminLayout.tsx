@@ -21,6 +21,7 @@ import {
 } from '@ant-design/icons';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/auth.store';
+import { logout } from '@/modules/auth/auth.api';
 import { adminRoutes } from '@/routes/route-permissions';
 
 import { ROUTES } from '@/shared/constants/routes.constants';
@@ -75,9 +76,15 @@ export function AdminLayout() {
     })),
   }));
 
-  function handleLogout() {
-    auth.clearSession();
-    navigate(ROUTES.LOGIN);
+  async function handleLogout() {
+    try {
+      await logout();
+    } catch {
+      // Ignore network error on logout
+    } finally {
+      auth.clearSession();
+      navigate(ROUTES.LOGIN);
+    }
   }
 
   const userMenu = {

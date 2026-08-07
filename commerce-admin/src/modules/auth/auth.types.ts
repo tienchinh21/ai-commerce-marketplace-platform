@@ -24,6 +24,18 @@ export interface CurrentUser {
 }
 
 export interface LoginResponse {
+  success: boolean;
+  message: string;
   accessToken: string;
-  user: CurrentUser;
+  refreshToken: string;
+}
+
+export interface LogoutResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
 }

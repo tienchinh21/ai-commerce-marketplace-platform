@@ -20,7 +20,7 @@ export function LoginPage() {
     setLoading(true);
     try {
       const result = await login(values.email, values.password);
-      auth.setSession(result.accessToken, result.user);
+      auth.setSession(result.accessToken, result.refreshToken);
       message.success('Đăng nhập thành công! Đang chuyển hướng...');
       navigate(ROUTES.DASHBOARD);
     } catch {

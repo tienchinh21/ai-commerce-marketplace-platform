@@ -1,38 +1,67 @@
+import { ReactNode } from 'react';
 import { Button, Space, Typography, Breadcrumb } from 'antd';
-import { PlusOutlined, ReloadOutlined, ExportOutlined } from '@ant-design/icons';
-import type { ReactNode } from 'react';
+import { PlusOutlined, ReloadOutlined, ExportOutlined, HomeOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '@/shared/constants/routes.constants';
+
+export interface CustomBreadcrumbItem {
+  title: ReactNode;
+  path?: string;
+}
 
 interface DataPageHeaderProps {
   title: string;
   description?: string;
+  breadcrumbs?: CustomBreadcrumbItem[];
   actions?: ReactNode;
   onRefresh?: () => void;
 }
 
-export function DataPageHeader({ title, description, actions, onRefresh }: DataPageHeaderProps) {
+export function DataPageHeader({
+  title,
+  description,
+  breadcrumbs,
+  actions,
+  onRefresh,
+}: DataPageHeaderProps) {
+  const defaultBreadcrumbs = [
+    {
+      title: (
+        <Link to={ROUTES.DASHBOARD}>
+          <Space size={4}>
+            <HomeOutlined />
+            <span>Trang chủ</span>
+          </Space>
+        </Link>
+      ),
+    },
+    {
+      title: <span>{title}</span>,
+    },
+  ];
+
+  const breadcrumbItems = breadcrumbs
+    ? breadcrumbs.map((item) => ({
+        title: item.path ? <Link to={item.path}>{item.title}</Link> : item.title,
+      }))
+    : defaultBreadcrumbs;
+
   return (
-    <div style={{ marginBottom: 24, background: '#ffffff', padding: '20px 24px', borderRadius: 12, border: '1px solid #e2e8f0' }}>
-      <Breadcrumb
-        style={{ marginBottom: 12, fontSize: 12 }}
-        items={[
-          { title: 'Trang chủ' },
-          { title: 'Quản trị Admin' },
-          { title: title },
-        ]}
-      />
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+    <div style={{ marginBottom: 20 }}>
+      <Breadcrumb style={{ marginBottom: 12 }} items={breadcrumbItems} />
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
         <div>
-          <Typography.Title level={3} style={{ margin: 0, fontWeight: 700, color: '#0f172a' }}>
+          <Typography.Title level={3} style={{ margin: 0 }}>
             {title}
           </Typography.Title>
-          {description ? (
-            <Typography.Text type="secondary" style={{ fontSize: 13, color: '#64748b' }}>
+          {description && (
+            <Typography.Text type="secondary" style={{ marginTop: 4, display: 'inline-block' }}>
               {description}
             </Typography.Text>
-          ) : null}
+          )}
         </div>
 
-        <Space size={12}>
+        <Space size={8}>
           {onRefresh && (
             <Button icon={<ReloadOutlined />} onClick={onRefresh}>
               Làm mới
@@ -43,7 +72,7 @@ export function DataPageHeader({ title, description, actions, onRefresh }: DataP
           ) : (
             <>
               <Button icon={<ExportOutlined />}>Xuất dữ liệu</Button>
-              <Button type="primary" icon={<PlusOutlined />} style={{ background: '#4f46e5', fontWeight: 600 }}>
+              <Button type="primary" icon={<PlusOutlined />}>
                 Tạo mới
               </Button>
             </>
