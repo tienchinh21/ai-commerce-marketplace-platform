@@ -10,11 +10,11 @@ import {
   LoginResponseDto,
   MePermissionsResponseDto,
   MeResponseDto,
-} from './dto/auth-response.dto';
-import { LoginDto } from './dto/login.dto';
+} from './dto/cms/auth-response.dto';
+import { LoginDto } from './dto/cms/login.dto';
 
 @Controller('cms/auth')
-export class AuthController {
+export class CmsAuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()

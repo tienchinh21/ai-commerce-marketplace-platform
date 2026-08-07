@@ -22,14 +22,14 @@ import {
 } from '../../shared/api/mutation-response.dto';
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 import { toResponseDtoList } from '../../shared/api/response-serialization';
-import { UserResponseDto } from './dto/user-response.dto';
-import { PermissionResponseDto } from './dto/permission-response.dto';
-import { CreateUserDto } from './dto/create-user.dto';
-import { SetPermissionsDto } from './dto/set-permissions.dto';
+import { UserResponseDto } from './dto/cms/user-response.dto';
+import { PermissionResponseDto } from './dto/cms/permission-response.dto';
+import { CreateUserDto } from './dto/cms/create-user.dto';
+import { SetPermissionsDto } from './dto/cms/set-permissions.dto';
 
 @ApiBearerAuth()
 @Controller('cms')
-export class UsersPermissionsController {
+export class CmsUsersPermissionsController {
   constructor(
     private readonly usersPermissionsService: UsersPermissionsService,
   ) {}

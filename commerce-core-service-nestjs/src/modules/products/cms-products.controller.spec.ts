@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
-import { ProductsController } from './products.controller';
+import { CmsProductsController } from './cms-products.controller';
 import { ProductsService } from './products.service';
 
-describe('ProductsController response shape', () => {
-  let controller: ProductsController;
+describe('CmsProductsController response shape', () => {
+  let controller: CmsProductsController;
   const productsService = {
     list: jest.fn(),
     create: jest.fn(),
@@ -18,10 +18,10 @@ describe('ProductsController response shape', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
-      controllers: [ProductsController],
+      controllers: [CmsProductsController],
       providers: [{ provide: ProductsService, useValue: productsService }],
     }).compile();
-    controller = moduleRef.get(ProductsController);
+    controller = moduleRef.get(CmsProductsController);
   });
 
   it('create returns only success acknowledgement with no title/specsJson', async () => {

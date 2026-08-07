@@ -30,14 +30,18 @@ Expected file roles:
 
 ```txt
 *.module.ts       -> Nest module wiring
-*.controller.ts   -> HTTP route surface
+cms-*.controller.ts -> internal admin/CMS HTTP route surface
+client-*.controller.ts -> future public buyer/seller/client HTTP route surface
 *.service.ts      -> business/application logic
 *.entity.ts       -> TypeORM persistence model
-dto/*.dto.ts      -> input and response contracts
+dto/cms/*.dto.ts  -> CMS input and response contracts
+dto/client/*.dto.ts -> future client-facing contracts
 *.spec.ts         -> focused tests
 ```
 
 Domain folders should not be treated as API-audience folders. For example, `src/modules/products/` is the product domain; CMS/client separation should happen inside the module through controller and DTO naming.
+
+When adding a future client route, add `client-*.controller.ts` and `dto/client/*` beside the existing CMS files. Keep shared persistence and application logic in the domain service unless the client behavior requires a clearly separate service method.
 
 ## Database Ownership
 
@@ -109,4 +113,3 @@ rawDataJson
 normalizedDataJson
 metadata that is not needed by the caller
 ```
-

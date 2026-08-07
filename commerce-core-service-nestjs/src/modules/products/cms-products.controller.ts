@@ -34,17 +34,17 @@ import {
   toResponseDto,
   toResponseDtoList,
 } from '../../shared/api/response-serialization';
-import { ProductResponseDto } from './dto/product-response.dto';
-import { ProductDetailResponseDto } from './dto/product-detail-response.dto';
-import { ProductVariantResponseDto } from './dto/product-variant-response.dto';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { CreateVariantDto } from './dto/create-variant.dto';
-import { AddImagesDto } from './dto/add-images.dto';
+import { ProductResponseDto } from './dto/cms/product-response.dto';
+import { ProductDetailResponseDto } from './dto/cms/product-detail-response.dto';
+import { ProductVariantResponseDto } from './dto/cms/product-variant-response.dto';
+import { CreateProductDto } from './dto/cms/create-product.dto';
+import { UpdateProductDto } from './dto/cms/update-product.dto';
+import { CreateVariantDto } from './dto/cms/create-variant.dto';
+import { AddImagesDto } from './dto/cms/add-images.dto';
 
 @ApiBearerAuth()
 @Controller('cms/products')
-export class ProductsController {
+export class CmsProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Permissions('product:read')

@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Buyer } from './buyer.entity';
 import { BuyersService } from './buyers.service';
-import { BuyersController } from './buyers.controller';
+import { CmsBuyersController } from './cms-buyers.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Buyer])],
-  controllers: [BuyersController],
+  controllers: [CmsBuyersController],
   providers: [BuyersService],
   exports: [BuyersService],
 })

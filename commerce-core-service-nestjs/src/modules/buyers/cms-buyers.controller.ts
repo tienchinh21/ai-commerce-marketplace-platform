@@ -13,7 +13,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { SellersService } from './sellers.service';
+import { BuyersService } from './buyers.service';
 import { Permissions } from '../auth/permissions.decorator';
 import { PaginatedResponseDto } from '../../shared/api/paginated-response.dto';
 import {
@@ -28,21 +28,21 @@ import {
   toResponseDto,
 } from '../../shared/api/response-serialization';
 import {
-  SellerResponseDto,
-  SellerDetailResponseDto,
-} from './dto/seller-response.dto';
-import { CreateSellerDto } from './dto/create-seller.dto';
-import { UpdateSellerDto } from './dto/update-seller.dto';
+  BuyerResponseDto,
+  BuyerDetailResponseDto,
+} from './dto/cms/buyer-response.dto';
+import { CreateBuyerDto } from './dto/cms/create-buyer.dto';
+import { UpdateBuyerDto } from './dto/cms/update-buyer.dto';
 
 @ApiBearerAuth()
-@Controller('cms/sellers')
-export class SellersController {
-  constructor(private readonly sellersService: SellersService) {}
+@Controller('cms/buyers')
+export class CmsBuyersController {
+  constructor(private readonly buyersService: BuyersService) {}
 
-  @Permissions('seller:read')
+  @Permissions('buyer:read')
   @ApiOkResponse({
-    description: 'Danh sách nhà bán hàng có phân trang',
-    type: () => PaginatedResponseDto<SellerResponseDto>,
+    description: 'Danh sách người mua có phân trang',
+    type: () => PaginatedResponseDto<BuyerResponseDto>,
   })
   @Get()
   async list(
@@ -50,53 +50,53 @@ export class SellersController {
     @Query('status') status?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
-  ): Promise<PaginatedResponseDto<SellerResponseDto>> {
-    const result = await this.sellersService.list({
+  ): Promise<PaginatedResponseDto<BuyerResponseDto>> {
+    const result = await this.buyersService.list({
       search,
       status,
       page: page ? Number(page) : undefined,
       pageSize: pageSize ? Number(pageSize) : undefined,
     });
-    return toPaginatedResponseDto(SellerResponseDto, result);
+    return toPaginatedResponseDto(BuyerResponseDto, result);
   }
 
-  @Permissions('seller:write')
+  @Permissions('buyer:write')
   @ApiCreatedResponse({
-    description: 'Tạo nhà bán hàng thành công',
+    description: 'Tạo người mua thành công',
     type: CreatedResourceResponseDto,
   })
   @Post()
   async create(
-    @Body() body: CreateSellerDto,
+    @Body() body: CreateBuyerDto,
   ): Promise<CreatedResourceResponseDto> {
-    const seller = await this.sellersService.create(body);
-    return createCreated(seller.id, VI_API_MESSAGES.success.SELLER_CREATED);
+    const buyer = await this.buyersService.create(body);
+    return createCreated(buyer.id, VI_API_MESSAGES.success.BUYER_CREATED);
   }
 
-  @Permissions('seller:read')
+  @Permissions('buyer:read')
   @ApiOkResponse({
-    description: 'Chi tiết nhà bán hàng',
-    type: SellerDetailResponseDto,
+    description: 'Chi tiết người mua',
+    type: BuyerDetailResponseDto,
   })
   @Get(':id')
   async get(
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<SellerDetailResponseDto> {
-    const seller = await this.sellersService.get(id);
-    return toResponseDto(SellerDetailResponseDto, seller);
+  ): Promise<BuyerDetailResponseDto> {
+    const buyer = await this.buyersService.get(id);
+    return toResponseDto(BuyerDetailResponseDto, buyer);
   }
 
-  @Permissions('seller:write')
+  @Permissions('buyer:write')
   @ApiOkResponse({
-    description: 'Cập nhật nhà bán hàng thành công',
+    description: 'Cập nhật người mua thành công',
     type: MutationSuccessResponseDto,
   })
   @Patch(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() body: UpdateSellerDto,
+    @Body() body: UpdateBuyerDto,
   ): Promise<MutationSuccessResponseDto> {
-    await this.sellersService.update(id, body);
-    return createSuccess(VI_API_MESSAGES.success.SELLER_UPDATED);
+    await this.buyersService.update(id, body);
+    return createSuccess(VI_API_MESSAGES.success.BUYER_UPDATED);
   }
 }

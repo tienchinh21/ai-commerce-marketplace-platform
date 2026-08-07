@@ -4,11 +4,11 @@ import { Product } from './product.entity';
 import { ProductVariant } from './product-variant.entity';
 import { ProductImage } from './product-image.entity';
 import { ProductsService } from './products.service';
-import { ProductsController } from './products.controller';
+import { CmsProductsController } from './cms-products.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Product, ProductVariant, ProductImage])],
-  controllers: [ProductsController],
+  controllers: [CmsProductsController],
   providers: [ProductsService],
   exports: [ProductsService],
 })

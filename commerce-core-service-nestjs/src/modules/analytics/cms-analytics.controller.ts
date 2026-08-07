@@ -2,11 +2,11 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { AnalyticsService } from './analytics.service';
 import { Permissions } from '../auth/permissions.decorator';
-import { AnalyticsResponseDto } from './dto/analytics-response.dto';
+import { AnalyticsResponseDto } from './dto/cms/analytics-response.dto';
 
 @ApiBearerAuth()
 @Controller('cms/analytics')
-export class AnalyticsController {
+export class CmsAnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
   @Permissions('ai:analyst:chat')

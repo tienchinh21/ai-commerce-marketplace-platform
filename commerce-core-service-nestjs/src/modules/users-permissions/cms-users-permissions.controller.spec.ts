@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
-import { UsersPermissionsController } from './users-permissions.controller';
+import { CmsUsersPermissionsController } from './cms-users-permissions.controller';
 import { UsersPermissionsService } from './users-permissions.service';
 
-describe('UsersPermissionsController response shape', () => {
-  let controller: UsersPermissionsController;
+describe('CmsUsersPermissionsController response shape', () => {
+  let controller: CmsUsersPermissionsController;
   const usersPermissionsService = {
     listUsers: jest.fn(),
     createUser: jest.fn(),
@@ -15,12 +15,12 @@ describe('UsersPermissionsController response shape', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
-      controllers: [UsersPermissionsController],
+      controllers: [CmsUsersPermissionsController],
       providers: [
         { provide: UsersPermissionsService, useValue: usersPermissionsService },
       ],
     }).compile();
-    controller = moduleRef.get(UsersPermissionsController);
+    controller = moduleRef.get(CmsUsersPermissionsController);
   });
 
   it('does not expose passwordHash when creating a user', async () => {

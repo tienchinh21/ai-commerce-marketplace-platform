@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
-import { IngestionController } from './ingestion.controller';
+import { CmsIngestionController } from './cms-ingestion.controller';
 import { IngestionService } from './ingestion.service';
 
-describe('IngestionController response shape', () => {
-  let controller: IngestionController;
+describe('CmsIngestionController response shape', () => {
+  let controller: CmsIngestionController;
   const ingestionService = {
     listDataSources: jest.fn(),
     createDataSource: jest.fn(),
@@ -20,10 +20,10 @@ describe('IngestionController response shape', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
-      controllers: [IngestionController],
+      controllers: [CmsIngestionController],
       providers: [{ provide: IngestionService, useValue: ingestionService }],
     }).compile();
-    controller = moduleRef.get(IngestionController);
+    controller = moduleRef.get(CmsIngestionController);
   });
 
   it('does not expose configJson in data source list', async () => {

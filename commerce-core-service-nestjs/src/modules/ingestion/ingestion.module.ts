@@ -6,7 +6,7 @@ import { RawSnapshot } from './raw-snapshot.entity';
 import { SourceProduct } from './source-product.entity';
 import { SourceReview } from './source-review.entity';
 import { IngestionService } from './ingestion.service';
-import { IngestionController } from './ingestion.controller';
+import { CmsIngestionController } from './cms-ingestion.controller';
 import { ProductsModule } from '../products/products.module';
 import { ReviewsModule } from '../reviews/reviews.module';
 
@@ -22,7 +22,7 @@ import { ReviewsModule } from '../reviews/reviews.module';
     ProductsModule,
     ReviewsModule,
   ],
-  controllers: [IngestionController],
+  controllers: [CmsIngestionController],
   providers: [IngestionService],
   exports: [IngestionService],
 })

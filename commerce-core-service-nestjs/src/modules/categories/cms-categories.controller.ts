@@ -29,16 +29,16 @@ import {
 } from '../../shared/api/response-serialization';
 import { CategoriesService } from './categories.service';
 import { Permissions } from '../auth/permissions.decorator';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { CreateAttributeDto } from './dto/create-attribute.dto';
-import { UpdateAttributeDto } from './dto/update-attribute.dto';
-import { CategoryResponseDto } from './dto/category-response.dto';
-import { CategoryAttributeResponseDto } from './dto/category-attribute-response.dto';
+import { CreateCategoryDto } from './dto/cms/create-category.dto';
+import { UpdateCategoryDto } from './dto/cms/update-category.dto';
+import { CreateAttributeDto } from './dto/cms/create-attribute.dto';
+import { UpdateAttributeDto } from './dto/cms/update-attribute.dto';
+import { CategoryResponseDto } from './dto/cms/category-response.dto';
+import { CategoryAttributeResponseDto } from './dto/cms/category-attribute-response.dto';
 
 @ApiBearerAuth()
 @Controller('cms/categories')
-export class CategoriesController {
+export class CmsCategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Permissions('category:read')

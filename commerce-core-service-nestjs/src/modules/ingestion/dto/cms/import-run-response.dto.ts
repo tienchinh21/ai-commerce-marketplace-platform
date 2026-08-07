@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { VI_API_MESSAGES } from '../../../shared/api/api-messages.vi';
+import { VI_API_MESSAGES } from '../../../../shared/api/api-messages.vi';
 
 export class ImportRunResponseDto {
   @ApiProperty({ example: true })

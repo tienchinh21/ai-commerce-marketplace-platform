@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
-import { BuyersController } from './buyers.controller';
+import { CmsBuyersController } from './cms-buyers.controller';
 import { BuyersService } from './buyers.service';
 
-describe('BuyersController response shape', () => {
-  let controller: BuyersController;
+describe('CmsBuyersController response shape', () => {
+  let controller: CmsBuyersController;
   const buyersService = {
     list: jest.fn(),
     create: jest.fn(),
@@ -14,10 +14,10 @@ describe('BuyersController response shape', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
-      controllers: [BuyersController],
+      controllers: [CmsBuyersController],
       providers: [{ provide: BuyersService, useValue: buyersService }],
     }).compile();
-    controller = moduleRef.get(BuyersController);
+    controller = moduleRef.get(CmsBuyersController);
   });
 
   it('create returns only success acknowledgement with no metadataJson', async () => {

@@ -28,21 +28,21 @@ import {
   toResponseDto,
   toResponseDtoList,
 } from '../../shared/api/response-serialization';
-import { DataSourceResponseDto } from './dto/data-source-response.dto';
-import { SyncRunResponseDto } from './dto/sync-run-response.dto';
-import { RawSnapshotResponseDto } from './dto/raw-snapshot-response.dto';
+import { DataSourceResponseDto } from './dto/cms/data-source-response.dto';
+import { SyncRunResponseDto } from './dto/cms/sync-run-response.dto';
+import { RawSnapshotResponseDto } from './dto/cms/raw-snapshot-response.dto';
 import {
   ImportRunResponseDto,
   toImportRunResponse,
-} from './dto/import-run-response.dto';
-import { CreateDataSourceDto } from './dto/create-data-source.dto';
-import { UpdateDataSourceDto } from './dto/update-data-source.dto';
-import { ImportProductsDto } from './dto/import-products.dto';
-import { ImportReviewsDto } from './dto/import-reviews.dto';
+} from './dto/cms/import-run-response.dto';
+import { CreateDataSourceDto } from './dto/cms/create-data-source.dto';
+import { UpdateDataSourceDto } from './dto/cms/update-data-source.dto';
+import { ImportProductsDto } from './dto/cms/import-products.dto';
+import { ImportReviewsDto } from './dto/cms/import-reviews.dto';
 
 @ApiBearerAuth()
 @Controller('cms')
-export class IngestionController {
+export class CmsIngestionController {
   constructor(private readonly ingestionService: IngestionService) {}
 
   @Permissions('source:read')

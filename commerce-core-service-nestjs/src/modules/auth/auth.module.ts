@@ -8,7 +8,7 @@ import { User } from './user.entity';
 import { Permission } from './permission.entity';
 import { UserPermission } from './user-permission.entity';
 import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { CmsAuthController } from './cms-auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { PermissionsGuard } from './permissions.guard';
@@ -28,7 +28,7 @@ import { PermissionsGuard } from './permissions.guard';
       }),
     }),
   ],
-  controllers: [AuthController],
+  controllers: [CmsAuthController],
   providers: [
     AuthService,
     JwtStrategy,

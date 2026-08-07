@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
-import { ReviewsController } from './reviews.controller';
+import { CmsReviewsController } from './cms-reviews.controller';
 import { ReviewsService } from './reviews.service';
 
-describe('ReviewsController response shape', () => {
-  let controller: ReviewsController;
+describe('CmsReviewsController response shape', () => {
+  let controller: CmsReviewsController;
   const reviewsService = {
     list: jest.fn(),
     create: jest.fn(),
@@ -14,10 +14,10 @@ describe('ReviewsController response shape', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
-      controllers: [ReviewsController],
+      controllers: [CmsReviewsController],
       providers: [{ provide: ReviewsService, useValue: reviewsService }],
     }).compile();
-    controller = moduleRef.get(ReviewsController);
+    controller = moduleRef.get(CmsReviewsController);
   });
 
   it('update returns only success acknowledgement with no review content', async () => {

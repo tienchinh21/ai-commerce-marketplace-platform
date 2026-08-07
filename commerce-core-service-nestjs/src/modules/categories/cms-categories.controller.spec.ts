@@ -1,9 +1,9 @@
 import { Test } from '@nestjs/testing';
-import { CategoriesController } from './categories.controller';
+import { CmsCategoriesController } from './cms-categories.controller';
 import { CategoriesService } from './categories.service';
 
-describe('CategoriesController response shape', () => {
-  let controller: CategoriesController;
+describe('CmsCategoriesController response shape', () => {
+  let controller: CmsCategoriesController;
   const categoriesService = {
     list: jest.fn(),
     create: jest.fn(),
@@ -19,10 +19,10 @@ describe('CategoriesController response shape', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
-      controllers: [CategoriesController],
+      controllers: [CmsCategoriesController],
       providers: [{ provide: CategoriesService, useValue: categoriesService }],
     }).compile();
-    controller = moduleRef.get(CategoriesController);
+    controller = moduleRef.get(CmsCategoriesController);
   });
 
   it('create returns only success acknowledgement with no category fields', async () => {

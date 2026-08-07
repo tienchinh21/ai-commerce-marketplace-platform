@@ -6,6 +6,7 @@ This file lists local plans that may guide future agents. Read the plan before i
 
 ```txt
 docs/superpowers/plans/2026-08-05-cms-route-segmentation.md
+docs/2026-08-06-cms-client-naming-cleanup-plan.md
 docs/2026-08-06-api-response-contract-cleanup-plan.md
 docs/2026-08-06-vietnamese-api-messages-plan.md
 ```
@@ -14,13 +15,14 @@ docs/2026-08-06-vietnamese-api-messages-plan.md
 
 - Routes are already segmented under `/api/cms/*`.
 - The service is still domain-folder based, for example `src/modules/products/`.
-- Several controller class/file names may still be generic, for example `ProductsController`.
-- The direction is to rename generic controllers to explicit `Cms*Controller` names before adding client controllers.
+- CMS controller class/file names are explicit, for example `cms-products.controller.ts` / `CmsProductsController`.
+- CMS DTOs live under `dto/cms/` in each touched domain module.
+- Architecture naming is guarded by `src/architecture-naming.spec.ts`.
 - Response cleanup and Vietnamese message cleanup have plan files in `docs/`.
 
-## Recommended Next Naming Cleanup
+## CMS Naming Baseline
 
-Rename CMS controllers and specs without changing routes:
+Keep CMS controllers and specs explicit without changing routes:
 
 ```txt
 auth.controller.ts                  -> cms-auth.controller.ts
@@ -58,7 +60,7 @@ Update each module's `controllers: [...]` array and matching `.spec.ts` imports 
 
 ## DTO Folder Cleanup Direction
 
-When a domain is touched, move CMS DTOs under `dto/cms/` and reserve `dto/client/` for future client contracts:
+CMS DTOs should remain under `dto/cms/`, and `dto/client/` is reserved for future client contracts:
 
 ```txt
 dto/create-product.dto.ts                 -> dto/cms/create-product.dto.ts
@@ -69,7 +71,7 @@ dto/client/client-product-list-response.dto.ts
 dto/client/client-product-detail-response.dto.ts
 ```
 
-Do this domain by domain. Avoid a repository-wide DTO move unless there is a dedicated plan and tests.
+Do not move shared domain modules into CMS-specific folders. Add future `client-*` controllers and `dto/client/*` files beside the existing CMS files.
 
 ## Client API Readiness Checklist
 
@@ -81,4 +83,3 @@ Before adding `/api/client/*`:
 - External-user auth plan exists for logged-in client routes.
 - Client response DTOs expose only public-safe fields.
 - Tests prove CMS-only fields are not returned by client endpoints.
-

@@ -27,13 +27,13 @@ import {
   toPaginatedResponseDto,
   toResponseDto,
 } from '../../shared/api/response-serialization';
-import { ReviewResponseDto } from './dto/review-response.dto';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
+import { ReviewResponseDto } from './dto/cms/review-response.dto';
+import { CreateReviewDto } from './dto/cms/create-review.dto';
+import { UpdateReviewDto } from './dto/cms/update-review.dto';
 
 @ApiBearerAuth()
 @Controller('cms/reviews')
-export class ReviewsController {
+export class CmsReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Permissions('review:read')

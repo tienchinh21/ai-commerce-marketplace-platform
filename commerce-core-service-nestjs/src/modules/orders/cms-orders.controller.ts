@@ -27,12 +27,12 @@ import {
 import {
   OrderResponseDto,
   OrderDetailResponseDto,
-} from './dto/order-response.dto';
-import { CreateOrderDto } from './dto/create-order.dto';
+} from './dto/cms/order-response.dto';
+import { CreateOrderDto } from './dto/cms/create-order.dto';
 
 @ApiBearerAuth()
 @Controller('cms/orders')
-export class OrdersController {
+export class CmsOrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Permissions('product:read')

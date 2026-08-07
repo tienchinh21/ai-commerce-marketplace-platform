@@ -54,6 +54,8 @@ cms-users-permissions.controller.ts
 
 CMS routes should keep `/api/cms/*`.
 
+CMS DTOs live under each module's `dto/cms/` folder. Do not place CMS request or response DTOs directly in `dto/`.
+
 ## Client APIs
 
 Client APIs are for storefront or external-user use cases.
@@ -68,6 +70,8 @@ client-orders.controller.ts
 ```
 
 Client routes should use `/api/client/*`.
+
+Client DTOs should be added under each module's `dto/client/` folder. Add client controllers beside CMS controllers inside the same domain module; do not rename `src/modules/<domain>/` to an audience-specific folder.
 
 Client APIs must not expose CMS-only fields such as internal status workflows, source/import data, raw snapshots, config JSON, or admin permission data unless explicitly approved.
 
@@ -96,6 +100,8 @@ src/modules/products/
 ```
 
 This keeps product persistence and shared product logic together while making API audience obvious.
+
+Do not add a generic `products.controller.ts` for a new audience. Use `cms-products.controller.ts` for internal admin/CMS routes and `client-products.controller.ts` for public buyer/seller/client routes.
 
 ## Service Method Naming
 
@@ -130,3 +136,4 @@ dto/client/client-product-detail-response.dto.ts
 
 Use serialization helpers to strip non-exposed fields.
 
+Shared DTOs should be rare and deliberate. A DTO is shared only when the contract is stable for both audiences and does not expose CMS-only fields.

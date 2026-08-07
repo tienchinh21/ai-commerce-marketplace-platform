@@ -20,6 +20,8 @@ Also keep the repo-level `../AGENTS.md` constraints in force.
 - Treat `src/modules/<domain>/` as a domain module, not as a CMS-only folder. Audience is expressed by controller names, route prefixes, DTO folders, and auth guards.
 - Current implemented APIs are CMS APIs under `/api/cms/*`.
 - Future client APIs must use `/api/client/*`, client-specific controllers, client-specific DTOs, and public/external-user auth rules.
+- CMS controllers must be named `cms-*.controller.ts` / `Cms*Controller`; future client controllers must be named `client-*.controller.ts` / `Client*Controller`.
+- CMS DTOs live under `dto/cms/`. Add future client DTOs under `dto/client/` without moving the domain module or shared service.
 - Do not expose TypeORM entities directly from controllers. Use response DTOs and serialization helpers.
 - Client-facing API messages should be Vietnamese. Error responses should include stable codes.
 - Do not edit `dist/`, `node_modules/`, generated build artifacts, or unrelated service directories.
@@ -41,12 +43,12 @@ npm run lint
 Run a focused Jest file:
 
 ```bash
-npm test -- products.controller.spec.ts
+npm test -- cms-products.controller.spec.ts
 ```
 
 ## Naming Direction
 
-The current controllers are route-prefixed as CMS but some class/file names are still generic, for example `ProductsController`. When touching a domain, prefer moving toward explicit names:
+Controllers are route-prefixed and audience-prefixed. Keep this structure when adding or changing routes:
 
 ```txt
 cms-products.controller.ts       -> CmsProductsController -> /api/cms/products
@@ -56,5 +58,4 @@ dto/cms/*                        -> CMS response/input DTOs
 dto/client/*                     -> client-facing DTOs
 ```
 
-Do not rename widely without tests and an implementation plan.
-
+Do not add generic `products.controller.ts` / `ProductsController` files for audience routes. Add a new `client-*` controller beside the existing `cms-*` controller when introducing `/api/client/*`.
