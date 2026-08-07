@@ -2,6 +2,18 @@
 
 These rules are the working contract for AI agents changing `commerce-core-service-nestjs/`. They turn the current project patterns into concrete do/don't checks.
 
+## Non-Negotiable Rules
+
+- Use CodeGraph before code analysis or edits; `sync/init` alone is not enough.
+- Read current source before trusting older plan files.
+- Keep `src/modules/<domain>/` as the domain folder; put CMS/client ownership in controller names, route prefixes, DTO folders, and auth policy.
+- Use `cms-*.controller.ts` / `Cms*Controller` for current CMS routes and reserve `client-*.controller.ts` / `Client*Controller` for future client routes.
+- Keep CMS DTOs under `dto/cms/` and future client DTOs under `dto/client/`.
+- Do not return TypeORM entities directly from controllers.
+- Use lean mutation responses and Vietnamese client-facing messages with stable error codes.
+- Do not mix CMS permissions with future client/external-user routes.
+- Run focused tests plus `npm run build` for code changes, or report the exact verification gap.
+
 ## Rule Priority
 
 If rules conflict, follow this order:
@@ -16,9 +28,11 @@ Never ignore a higher-priority instruction because a lower-priority doc is more 
 
 ## Context Rules
 
-### RULE-CONTEXT-001: Sync CodeGraph Before Analysis
+### RULE-CONTEXT-001: CodeGraph Is Mandatory Before Analysis
 
-Before analyzing or editing service code, run from the monorepo root:
+Before analyzing or editing service code, use CodeGraph from the monorepo root.
+
+First sync the index:
 
 ```bash
 codegraph sync
@@ -30,7 +44,29 @@ If CodeGraph has not been initialized, run:
 codegraph init -i
 ```
 
+Sync/init is not enough by itself. For source tasks, use CodeGraph as the first source for structure, references, impact, and test selection before plain file reads.
+
+Use the command that matches the task:
+
+```bash
+codegraph files
+codegraph query "<symbol-or-route-name>"
+codegraph context "<task description>"
+codegraph affected <changed-files>
+```
+
+Examples:
+
+```bash
+codegraph query "CmsProductsController"
+codegraph query "ProductsService"
+codegraph context "change CMS product mutation response contract"
+codegraph affected commerce-core-service-nestjs/src/modules/products/cms-products.controller.ts
+```
+
 Then inspect relevant files with `rg`, `rg --files`, and targeted reads.
+
+If CodeGraph cannot run, state the exact failure in the final response and continue with `rg` plus targeted reads as an explicit fallback. Do not silently skip CodeGraph for source analysis or edits.
 
 ### RULE-CONTEXT-002: Read The Local Agent Docs First
 

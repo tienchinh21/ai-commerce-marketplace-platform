@@ -17,7 +17,9 @@ Also keep the repo-level `../AGENTS.md` constraints in force.
 
 ## Core Rules
 
-- Run `codegraph sync` from the repository root before code analysis or edits. If CodeGraph is not initialized, run `codegraph init -i`.
+- CodeGraph is mandatory before code analysis or edits. Run `codegraph sync` from the repository root; if CodeGraph is not initialized, run `codegraph init -i`.
+- Do not treat `codegraph sync` as enough by itself. For source tasks, use CodeGraph commands such as `codegraph files`, `codegraph query "<symbol-or-route-name>"`, `codegraph context "<task description>"`, or `codegraph affected <changed-files>` to understand structure, references, impact, and test scope before editing.
+- If CodeGraph cannot run, state the exact failure and continue with `rg` plus targeted reads as an explicit fallback.
 - Treat `src/modules/<domain>/` as a domain module, not as a CMS-only folder. Audience is expressed by controller names, route prefixes, DTO folders, and auth guards.
 - Current implemented APIs are CMS APIs under `/api/cms/*`.
 - Future client APIs must use `/api/client/*`, client-specific controllers, client-specific DTOs, and public/external-user auth rules.

@@ -1,5 +1,7 @@
 # CMS Route Segmentation Implementation Plan
 
+> **Status:** Completed / historical. Current business routes are already under `/api/cms/*`, current controller files are `cms-*.controller.ts`, and future client routes remain unimplemented. Do not execute this plan as-is.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Move every existing commerce-core-service-nestjs business API behind `/api/cms/*` so the service can clearly separate CMS/admin APIs from future client-facing APIs.
@@ -22,9 +24,9 @@
 
 ---
 
-## Current Route Assessment
+## Historical Route Assessment
 
-The service currently has one API namespace, `/api`, and every controller is mounted directly under it:
+At the time this plan was written, the service had one API namespace, `/api`, and every controller was mounted directly under it:
 
 - `/api/auth/*`
 - `/api/users`, `/api/permissions`, `/api/users/:id/permissions`

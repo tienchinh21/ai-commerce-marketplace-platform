@@ -2,7 +2,9 @@
 
 ## Before Work
 
-From repository root:
+CodeGraph is mandatory before code analysis or edits.
+
+From repository root, sync the index:
 
 ```bash
 codegraph sync
@@ -14,7 +16,23 @@ If CodeGraph is missing:
 codegraph init -i
 ```
 
+Do not stop at sync/init. Use CodeGraph to understand the task before opening source files directly:
+
+```bash
+codegraph files
+codegraph query "<symbol-or-route-name>"
+codegraph context "<task description>"
+```
+
+When files have changed and you need to choose verification scope:
+
+```bash
+codegraph affected <changed-files>
+```
+
 Then inspect only relevant files with `rg`, `rg --files`, and targeted reads.
+
+If CodeGraph is unavailable or fails, record the exact failure and continue with `rg` plus targeted reads as the fallback.
 
 ## Install And Run
 
@@ -45,7 +63,7 @@ curl -X POST http://localhost:8080/api/cms/auth/login \
 Use the narrowest meaningful test first:
 
 ```bash
-npm test -- products.controller.spec.ts
+npm test -- cms-products.controller.spec.ts
 ```
 
 Then broader verification:
@@ -79,7 +97,7 @@ Note: `npm run lint` uses `--fix`, so it may edit files. Check the diff after ru
 2. Add input DTO under `dto/cms/` if needed.
 3. Add response DTO under `dto/cms/`.
 4. Add a service method with CMS naming if rules differ from client behavior.
-5. Protect the route with `@Permissions(...)`.
+5. Protect the route with `@Permissions('product:write')` or the matching permission code.
 6. Add controller/service tests.
 7. Run targeted tests and `npm run build`.
 
@@ -103,4 +121,3 @@ When renaming generic controllers to explicit CMS names:
 3. Keep response DTOs and service behavior unchanged unless part of the same planned task.
 4. Run the matching controller spec.
 5. Run `npm run build`.
-

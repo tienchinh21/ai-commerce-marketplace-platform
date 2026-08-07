@@ -1,28 +1,31 @@
-# Known Plans And Cleanup Priorities
+# Known Plans And Current State
 
-This file lists local plans that may guide future agents. Read the plan before implementing related changes.
+This file lists local plans and their current status. Current source code and `docs/agent/rules.md` are the source of truth. Older plans are historical records unless this file marks them as open.
 
-## Existing Plans
+## Plan Status
 
-```txt
-docs/superpowers/plans/2026-08-05-cms-route-segmentation.md
-docs/2026-08-06-cms-client-naming-cleanup-plan.md
-docs/2026-08-06-api-response-contract-cleanup-plan.md
-docs/2026-08-06-vietnamese-api-messages-plan.md
-```
+| Plan | Status | How to use now |
+| --- | --- | --- |
+| `docs/superpowers/plans/2026-08-05-cms-route-segmentation.md` | Completed / historical | Do not execute as-is. Routes are already under `/api/cms/*`. |
+| `docs/2026-08-06-cms-client-naming-cleanup-plan.md` | Completed / historical | Do not execute as-is. CMS controllers/specs and `dto/cms/` already exist. |
+| `docs/2026-08-06-api-response-contract-cleanup-plan.md` | Implemented baseline / historical | Use only for rationale. Current filenames are `cms-*` and DTOs are under `dto/cms/`. |
+| `docs/2026-08-06-vietnamese-api-messages-plan.md` | Implemented baseline / historical | Use only for rationale. Current source uses `VI_API_MESSAGES`, `ApiErrorCode`, and `ApiExceptionFilter`. |
 
 ## Current State
 
 - Routes are already segmented under `/api/cms/*`.
 - The service is still domain-folder based, for example `src/modules/products/`.
 - CMS controller class/file names are explicit, for example `cms-products.controller.ts` / `CmsProductsController`.
-- CMS DTOs live under `dto/cms/` in each touched domain module.
+- CMS DTOs live under `dto/cms/` in every implemented domain module.
 - Architecture naming is guarded by `src/architecture-naming.spec.ts`.
-- Response cleanup and Vietnamese message cleanup have plan files in `docs/`.
+- Lean mutation responses are implemented through `src/shared/api/mutation-response.dto.ts`.
+- Vietnamese success/error messages are centralized in `src/shared/api/api-messages.vi.ts`.
+- Stable error codes and normalized exception responses are implemented in `src/shared/api/api-error-code.ts` and `src/shared/api/api-exception.filter.ts`.
+- Future `/api/client/*` routes and client auth are not implemented yet.
 
-## CMS Naming Baseline
+## Historical CMS Naming Baseline
 
-Keep CMS controllers and specs explicit without changing routes:
+The following migration has already been applied. Keep CMS controllers and specs explicit without changing routes:
 
 ```txt
 auth.controller.ts                  -> cms-auth.controller.ts
@@ -56,11 +59,11 @@ analytics.controller.ts             -> cms-analytics.controller.ts
 AnalyticsController                 -> CmsAnalyticsController
 ```
 
-Update each module's `controllers: [...]` array and matching `.spec.ts` imports in the same task.
+Current modules already import the `Cms*Controller` classes and matching `cms-*.controller.spec.ts` files.
 
-## DTO Folder Cleanup Direction
+## DTO Folder Baseline
 
-CMS DTOs should remain under `dto/cms/`, and `dto/client/` is reserved for future client contracts:
+CMS DTOs already live under `dto/cms/`, and `dto/client/` is reserved for future client contracts:
 
 ```txt
 dto/create-product.dto.ts                 -> dto/cms/create-product.dto.ts

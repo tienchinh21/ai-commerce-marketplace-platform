@@ -1,12 +1,14 @@
 # CMS Client Naming Cleanup Implementation Plan
 
+> **Status:** Completed / historical. The current source already uses `cms-*.controller.ts`, `Cms*Controller`, matching `cms-*.controller.spec.ts`, and `dto/cms/` folders. Do not execute this plan as-is; use it only for rationale and use current source paths when making new changes.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:executing-plans` to execute this plan step-by-step.
 
 ## Goal
 
-Make the current NestJS Core service naming explicit for CMS APIs while keeping domain modules reusable for future Client APIs.
+Make the NestJS Core service naming explicit for CMS APIs while keeping domain modules reusable for future Client APIs.
 
-Current behavior is already CMS-first at the route level, for example `/api/cms/products`, but many source files/classes still use generic names such as `ProductsController`, `products.controller.ts`, and flat `dto` folders. That makes future Client APIs ambiguous because `src/modules/products/` looks CMS-owned even though it should be the product domain boundary.
+At the time this plan was written, route behavior was already CMS-first, for example `/api/cms/products`, but many source files/classes still used generic names such as `ProductsController`, `products.controller.ts`, and flat `dto` folders. The current source has already completed this migration.
 
 The target structure is:
 
@@ -59,7 +61,7 @@ src/modules/products/
 
 This keeps shared business logic in `products.service.ts`, while each API audience owns its own request/response shape.
 
-## Current Rename Map
+## Historical Rename Map
 
 | Domain | Current file/class | Target file/class |
 | --- | --- | --- |

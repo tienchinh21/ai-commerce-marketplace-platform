@@ -1,5 +1,7 @@
 # API Response Contract Cleanup Implementation Plan
 
+> **Status:** Implemented baseline / historical. Current source uses `cms-*.controller.ts`, DTOs under `dto/cms/`, shared mutation response helpers, response serialization helpers, and focused specs. Do not execute old file paths or class names from this plan without translating them to the current source structure.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Make CMS API responses return only the data each HTTP method needs, with safe DTO serialization and lean mutation acknowledgements instead of returning full TypeORM entities after create/update/delete.
@@ -23,13 +25,13 @@
 
 ---
 
-## Current Problems To Fix
+## Historical Problems This Plan Fixed
 
-- `POST` and `PATCH` in `categories`, `products`, `sellers`, `buyers`, `reviews`, `orders`, and `ingestion/data-sources` currently return full entities from service `save()` calls.
-- `POST /api/cms/users` can return the newly created `User` object containing `passwordHash` because the object is created in memory before response serialization.
-- `DELETE /api/cms/categories/*` and `DELETE /api/cms/products/:id` return `void` but keep Nest's default `200 OK`; the intended contract is `204 No Content`.
-- Existing Swagger decorators document entity types as API response types, making the generated contract wider than needed.
-- Existing DTO files mostly document Swagger schemas; there is no consistent runtime response mapping using `plainToInstance(..., { excludeExtraneousValues: true })`.
+- Earlier `POST` and `PATCH` handlers in `categories`, `products`, `sellers`, `buyers`, `reviews`, `orders`, and `ingestion/data-sources` returned full entities from service `save()` calls.
+- Earlier `POST /api/cms/users` could return the newly created `User` object containing `passwordHash` because the object was created in memory before response serialization.
+- Earlier `DELETE /api/cms/categories/*` and `DELETE /api/cms/products/:id` returned `void` but kept Nest's default `200 OK`; the intended contract was `204 No Content`.
+- Earlier Swagger decorators documented entity types as API response types, making the generated contract wider than needed.
+- Earlier DTO files mostly documented Swagger schemas; there was no consistent runtime response mapping using `plainToInstance(..., { excludeExtraneousValues: true })`.
 
 ## Target Contract Matrix
 
@@ -128,14 +130,14 @@ POST /api/cms/imports/reviews -> ImportRunResponseDto
   - Convert mutation handlers to acknowledgement DTOs.
   - Add `@HttpCode(HttpStatus.NO_CONTENT)` to delete handlers.
 - Create controller tests next to each controller:
-  - `categories.controller.spec.ts`
-  - `products.controller.spec.ts`
-  - `sellers.controller.spec.ts`
-  - `buyers.controller.spec.ts`
-  - `reviews.controller.spec.ts`
-  - `orders.controller.spec.ts`
-  - `ingestion.controller.spec.ts`
-  - `users-permissions.controller.spec.ts`
+  - `cms-categories.controller.spec.ts`
+  - `cms-products.controller.spec.ts`
+  - `cms-sellers.controller.spec.ts`
+  - `cms-buyers.controller.spec.ts`
+  - `cms-reviews.controller.spec.ts`
+  - `cms-orders.controller.spec.ts`
+  - `cms-ingestion.controller.spec.ts`
+  - `cms-users-permissions.controller.spec.ts`
 
 ## Implementation Tasks
 
@@ -1214,14 +1216,14 @@ git commit -m "feat(core): add marketplace response DTOs"
 ### Task 5: Convert Controllers To DTO Mapping And Lean Mutation Responses
 
 **Files:**
-- Modify: `commerce-core-service-nestjs/src/modules/categories/categories.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/products/products.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/sellers/sellers.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/buyers/buyers.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/reviews/reviews.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/orders/orders.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/ingestion/ingestion.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/users-permissions/users-permissions.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/categories/cms-categories.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/products/cms-products.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/sellers/cms-sellers.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/buyers/cms-buyers.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/reviews/cms-reviews.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/orders/cms-orders.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/ingestion/cms-ingestion.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/users-permissions/cms-users-permissions.controller.ts`
 
 **Interfaces:**
 - Consumes: DTOs from Tasks 1-4 and existing service methods.
@@ -1229,7 +1231,7 @@ git commit -m "feat(core): add marketplace response DTOs"
 
 - [ ] **Step 1: Update category controller**
 
-Apply this structure to `categories.controller.ts`:
+Apply this structure to `cms-categories.controller.ts`:
 
 ```ts
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
@@ -1331,7 +1333,7 @@ async removeAttribute(
 
 - [ ] **Step 2: Update product controller**
 
-Use these method mappings in `products.controller.ts`:
+Use these method mappings in `cms-products.controller.ts`:
 
 ```ts
 // GET list
@@ -1384,24 +1386,24 @@ Also update Swagger response types:
 Use these exact mapping rules:
 
 ```txt
-SellersController.list -> toPaginatedResponseDto(SellerResponseDto, result)
-SellersController.create -> createCreated(seller.id, 'Seller created successfully')
-SellersController.get -> toResponseDto(SellerDetailResponseDto, seller)
-SellersController.update -> createSuccess('Seller updated successfully')
+CmsSellersController.list -> toPaginatedResponseDto(SellerResponseDto, result)
+CmsSellersController.create -> createCreated(seller.id, 'Seller created successfully')
+CmsSellersController.get -> toResponseDto(SellerDetailResponseDto, seller)
+CmsSellersController.update -> createSuccess('Seller updated successfully')
 
-BuyersController.list -> toPaginatedResponseDto(BuyerResponseDto, result)
-BuyersController.create -> createCreated(buyer.id, 'Buyer created successfully')
-BuyersController.get -> toResponseDto(BuyerDetailResponseDto, buyer)
-BuyersController.update -> createSuccess('Buyer updated successfully')
+CmsBuyersController.list -> toPaginatedResponseDto(BuyerResponseDto, result)
+CmsBuyersController.create -> createCreated(buyer.id, 'Buyer created successfully')
+CmsBuyersController.get -> toResponseDto(BuyerDetailResponseDto, buyer)
+CmsBuyersController.update -> createSuccess('Buyer updated successfully')
 
-ReviewsController.list -> toPaginatedResponseDto(ReviewResponseDto, result)
-ReviewsController.create -> createCreated(review.id, 'Review created successfully')
-ReviewsController.get -> toResponseDto(ReviewResponseDto, review)
-ReviewsController.update -> createSuccess('Review updated successfully')
+CmsReviewsController.list -> toPaginatedResponseDto(ReviewResponseDto, result)
+CmsReviewsController.create -> createCreated(review.id, 'Review created successfully')
+CmsReviewsController.get -> toResponseDto(ReviewResponseDto, review)
+CmsReviewsController.update -> createSuccess('Review updated successfully')
 
-OrdersController.list -> toPaginatedResponseDto(OrderResponseDto, result)
-OrdersController.create -> createCreated(order.id, 'Order created successfully')
-OrdersController.get -> toResponseDto(OrderDetailResponseDto, order)
+CmsOrdersController.list -> toPaginatedResponseDto(OrderResponseDto, result)
+CmsOrdersController.create -> createCreated(order.id, 'Order created successfully')
+CmsOrdersController.get -> toResponseDto(OrderDetailResponseDto, order)
 ```
 
 Update Swagger response types so no mutation endpoint documents `Seller`, `Buyer`, `Review`, or `Order` as the response type.
@@ -1486,14 +1488,14 @@ git commit -m "refactor(core): return DTOs and lean mutation responses"
 ### Task 6: Add Controller Response Shape Tests
 
 **Files:**
-- Create: `commerce-core-service-nestjs/src/modules/users-permissions/users-permissions.controller.spec.ts`
-- Create: `commerce-core-service-nestjs/src/modules/products/products.controller.spec.ts`
-- Create: `commerce-core-service-nestjs/src/modules/ingestion/ingestion.controller.spec.ts`
-- Create: `commerce-core-service-nestjs/src/modules/categories/categories.controller.spec.ts`
-- Create: `commerce-core-service-nestjs/src/modules/sellers/sellers.controller.spec.ts`
-- Create: `commerce-core-service-nestjs/src/modules/buyers/buyers.controller.spec.ts`
-- Create: `commerce-core-service-nestjs/src/modules/reviews/reviews.controller.spec.ts`
-- Create: `commerce-core-service-nestjs/src/modules/orders/orders.controller.spec.ts`
+- Create: `commerce-core-service-nestjs/src/modules/users-permissions/cms-users-permissions.controller.spec.ts`
+- Create: `commerce-core-service-nestjs/src/modules/products/cms-products.controller.spec.ts`
+- Create: `commerce-core-service-nestjs/src/modules/ingestion/cms-ingestion.controller.spec.ts`
+- Create: `commerce-core-service-nestjs/src/modules/categories/cms-categories.controller.spec.ts`
+- Create: `commerce-core-service-nestjs/src/modules/sellers/cms-sellers.controller.spec.ts`
+- Create: `commerce-core-service-nestjs/src/modules/buyers/cms-buyers.controller.spec.ts`
+- Create: `commerce-core-service-nestjs/src/modules/reviews/cms-reviews.controller.spec.ts`
+- Create: `commerce-core-service-nestjs/src/modules/orders/cms-orders.controller.spec.ts`
 
 **Interfaces:**
 - Consumes: controller classes and mocked service objects.
@@ -1501,15 +1503,15 @@ git commit -m "refactor(core): return DTOs and lean mutation responses"
 
 - [ ] **Step 1: Add high-risk users-permissions controller tests**
 
-Create `src/modules/users-permissions/users-permissions.controller.spec.ts`:
+Create `src/modules/users-permissions/cms-users-permissions.controller.spec.ts`:
 
 ```ts
 import { Test } from '@nestjs/testing';
-import { UsersPermissionsController } from './users-permissions.controller';
+import { CmsUsersPermissionsController } from './users-permissions.controller';
 import { UsersPermissionsService } from './users-permissions.service';
 
-describe('UsersPermissionsController response shape', () => {
-  let controller: UsersPermissionsController;
+describe('CmsUsersPermissionsController response shape', () => {
+  let controller: CmsUsersPermissionsController;
   const usersPermissionsService = {
     listUsers: jest.fn(),
     createUser: jest.fn(),
@@ -1521,12 +1523,12 @@ describe('UsersPermissionsController response shape', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
-      controllers: [UsersPermissionsController],
+      controllers: [CmsUsersPermissionsController],
       providers: [
         { provide: UsersPermissionsService, useValue: usersPermissionsService },
       ],
     }).compile();
-    controller = moduleRef.get(UsersPermissionsController);
+    controller = moduleRef.get(CmsUsersPermissionsController);
   });
 
   it('does not expose passwordHash when creating a user', async () => {
@@ -1597,7 +1599,7 @@ describe('UsersPermissionsController response shape', () => {
 
 - [ ] **Step 2: Add high-risk ingestion controller tests**
 
-Create `src/modules/ingestion/ingestion.controller.spec.ts` with these assertions:
+Create `src/modules/ingestion/cms-ingestion.controller.spec.ts` with these assertions:
 
 ```ts
 it('does not expose configJson in data source list', async () => {
@@ -1668,15 +1670,15 @@ Include the same `Test.createTestingModule` mock setup pattern as the users-perm
 For each controller, add at least these assertions:
 
 ```txt
-CategoriesController.create -> { success, id, message }; no category name/slug in body.
-CategoriesController.update -> { success, message }; no updated entity fields.
-ProductsController.create -> { success, id, message }; no title/specsJson in body.
-ProductsController.update -> { success, message }; no product entity fields.
-ProductsController.addImages -> { success, ids, count, message }; no image url/altText in body.
-SellersController.create -> { success, id, message }; no metadataJson in mutation body.
-BuyersController.create -> { success, id, message }; no metadataJson in mutation body.
-ReviewsController.update -> { success, message }; no review content in mutation body.
-OrdersController.create -> { success, id, message }; no order items in mutation body.
+CmsCategoriesController.create -> { success, id, message }; no category name/slug in body.
+CmsCategoriesController.update -> { success, message }; no updated entity fields.
+CmsProductsController.create -> { success, id, message }; no title/specsJson in body.
+CmsProductsController.update -> { success, message }; no product entity fields.
+CmsProductsController.addImages -> { success, ids, count, message }; no image url/altText in body.
+CmsSellersController.create -> { success, id, message }; no metadataJson in mutation body.
+CmsBuyersController.create -> { success, id, message }; no metadataJson in mutation body.
+CmsReviewsController.update -> { success, message }; no review content in mutation body.
+CmsOrdersController.create -> { success, id, message }; no order items in mutation body.
 ```
 
 Use mocked service return values that include extra fields to prove the controller strips or ignores them.
@@ -1687,7 +1689,7 @@ Run:
 
 ```bash
 cd commerce-core-service-nestjs
-npm test -- users-permissions.controller.spec.ts ingestion.controller.spec.ts products.controller.spec.ts categories.controller.spec.ts sellers.controller.spec.ts buyers.controller.spec.ts reviews.controller.spec.ts orders.controller.spec.ts
+npm test -- cms-users-permissions.controller.spec.ts cms-ingestion.controller.spec.ts cms-products.controller.spec.ts cms-categories.controller.spec.ts cms-sellers.controller.spec.ts cms-buyers.controller.spec.ts cms-reviews.controller.spec.ts cms-orders.controller.spec.ts
 ```
 
 Expected: PASS.
@@ -1752,8 +1754,8 @@ Add this section to `commerce-core-service-nestjs/README.md`:
 ## CMS API Response Policy
 
 - GET endpoints return explicit response DTOs, not TypeORM entities.
-- POST create endpoints return `201 Created` with `{ "success": true, "id": "...", "message": "..." }`.
-- PATCH and PUT endpoints return `200 OK` with `{ "success": true, "message": "..." }`.
+- POST create endpoints return `201 Created` with `{ "success": true, "id": "550e8400-e29b-41d4-a716-446655440000", "message": "Tạo sản phẩm thành công." }`.
+- PATCH and PUT endpoints return `200 OK` with `{ "success": true, "message": "Cập nhật sản phẩm thành công." }`.
 - DELETE endpoints return `204 No Content`.
 - Import endpoints return a compact sync run summary with `syncRunId`, `status`, `totalRecords`, `successCount`, and `failedCount`.
 - Sensitive or heavy persistence fields such as `passwordHash`, `configJson`, and `rawJson` are not returned from CMS API responses by default.

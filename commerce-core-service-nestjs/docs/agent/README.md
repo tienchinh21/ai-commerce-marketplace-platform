@@ -44,16 +44,21 @@ commerce-core-service-nestjs/docs/agent/known-plans.md
 - Client/external users are represented by `identity.external_users`, but client auth/routes are not implemented yet.
 - Domain modules currently include auth, users-permissions, categories, sellers, buyers, products, reviews, orders, ingestion, analytics, database, and seeder.
 
-## Current Cleanup Direction
+## Current Implementation State
 
-The service is moving toward:
+Completed:
 
-- explicit CMS controller names;
-- separate CMS and client DTO folders;
-- lean mutation responses;
-- Vietnamese client-facing messages;
-- normalized error responses.
+- explicit CMS controller names (`cms-*.controller.ts` / `Cms*Controller` across all 10 domain modules);
+- CMS DTO folders (`dto/cms/` in every implemented domain module);
+- lean mutation response helpers in `src/shared/api/mutation-response.dto.ts`;
+- Vietnamese API message constants in `src/shared/api/api-messages.vi.ts`;
+- normalized API error codes and exception handling in `src/shared/api/*`;
+- architecture naming guard in `src/architecture-naming.spec.ts`.
 
-See `known-plans.md` for plan files already written.
+Not implemented yet:
+
+- `/api/client/*` controllers;
+- client auth based on `identity.external_users`;
+- client DTO folders with public/storefront response contracts.
 
 Use `rules.md` as the compact rulebook before changing controllers, DTOs, response contracts, auth boundaries, database access, or tests.

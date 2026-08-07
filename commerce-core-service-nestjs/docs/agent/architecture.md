@@ -92,13 +92,13 @@ GET endpoints should return explicit response DTOs, not TypeORM entities.
 Mutation endpoints should return lean acknowledgements:
 
 ```json
-{ "success": true, "id": "...", "message": "..." }
+{ "success": true, "id": "550e8400-e29b-41d4-a716-446655440000", "message": "Tạo sản phẩm thành công." }
 ```
 
 or:
 
 ```json
-{ "success": true, "message": "..." }
+{ "success": true, "message": "Cập nhật sản phẩm thành công." }
 ```
 
 DELETE endpoints should use `204 No Content`.

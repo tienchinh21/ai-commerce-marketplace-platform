@@ -1,5 +1,7 @@
 # Vietnamese API Messages Implementation Plan
 
+> **Status:** Implemented baseline / historical. Current source uses `src/shared/api/api-messages.vi.ts`, `ApiErrorCode`, `ApiExceptionFilter`, and CMS controller files named `cms-*.controller.ts`. Do not execute old file paths or class names from this plan without translating them to the current source structure.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Update every CMS API success message, validation message, and error response to use clear Vietnamese text with specific machine-readable error codes.
@@ -21,13 +23,13 @@
 
 ---
 
-## Current Problems To Fix
+## Historical Problems This Plan Fixed
 
-- Controllers currently return English success messages such as `Product created successfully`, `Category updated successfully`, and `Import finished with errors`.
-- Services currently throw English exceptions such as `Invalid credentials`, `User not found`, `Product not found`, and `Email already exists`.
-- `ValidationPipe` currently uses default Nest/class-validator English messages and default error shape.
-- Unhandled database errors can return generic or technical messages instead of a Vietnamese business message.
-- Swagger `description` values are still English for many endpoints, so generated API docs do not match the Vietnamese CMS contract.
+- Earlier controllers returned English success messages such as `Product created successfully`, `Category updated successfully`, and `Import finished with errors`.
+- Earlier services threw English exceptions such as `Invalid credentials`, `User not found`, `Product not found`, and `Email already exists`.
+- Earlier `ValidationPipe` used default Nest/class-validator English messages and default error shape.
+- Earlier unhandled database errors could return generic or technical messages instead of a Vietnamese business message.
+- Earlier Swagger `description` values were English for many endpoints, so generated API docs did not match the Vietnamese CMS contract.
 
 ## Target Error Response Shape
 
@@ -1080,14 +1082,14 @@ git commit -m "refactor(core): return coded Vietnamese service errors"
 ### Task 5: Convert Controller Success Messages And Swagger Descriptions
 
 **Files:**
-- Modify: `commerce-core-service-nestjs/src/modules/categories/categories.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/products/products.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/sellers/sellers.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/buyers/buyers.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/reviews/reviews.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/orders/orders.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/ingestion/ingestion.controller.ts`
-- Modify: `commerce-core-service-nestjs/src/modules/users-permissions/users-permissions.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/categories/cms-categories.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/products/cms-products.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/sellers/cms-sellers.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/buyers/cms-buyers.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/reviews/cms-reviews.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/orders/cms-orders.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/ingestion/cms-ingestion.controller.ts`
+- Modify: `commerce-core-service-nestjs/src/modules/users-permissions/cms-users-permissions.controller.ts`
 - Modify: matching controller specs.
 
 **Interfaces:**
@@ -1102,7 +1104,7 @@ Add this import to controllers that call `createSuccess`, `createCreated`, or `c
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 ```
 
-For `users-permissions.controller.ts` and `ingestion.controller.ts`, keep the same relative path:
+For `cms-users-permissions.controller.ts` and `cms-ingestion.controller.ts`, keep the same relative path:
 
 ```ts
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
@@ -1186,7 +1188,7 @@ export function toImportRunResponse(
 }
 ```
 
-Update `ingestion.controller.ts` calls:
+Update `cms-ingestion.controller.ts` calls:
 
 ```ts
 return toImportRunResponse(
@@ -1257,7 +1259,7 @@ Run:
 
 ```bash
 cd commerce-core-service-nestjs
-npm test -- users-permissions.controller.spec.ts ingestion.controller.spec.ts products.controller.spec.ts categories.controller.spec.ts sellers.controller.spec.ts buyers.controller.spec.ts reviews.controller.spec.ts orders.controller.spec.ts
+npm test -- cms-users-permissions.controller.spec.ts cms-ingestion.controller.spec.ts cms-products.controller.spec.ts cms-categories.controller.spec.ts cms-sellers.controller.spec.ts cms-buyers.controller.spec.ts cms-reviews.controller.spec.ts cms-orders.controller.spec.ts
 npm run build
 ```
 
