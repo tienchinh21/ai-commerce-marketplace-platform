@@ -135,50 +135,6 @@ export function AdminLayout() {
           zIndex: 100,
         }}
       >
-        {/* Brand Header */}
-        <div
-          style={{
-            height: 64,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'flex-start',
-            gap: 12,
-            padding: collapsed ? '0' : '0 20px',
-            borderBottom: '1px solid #e2e8f0',
-            background: '#ffffff',
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-          }}
-        >
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 8,
-              background: '#2563eb',
-              display: 'grid',
-              placeItems: 'center',
-              color: '#fff',
-              fontWeight: 800,
-              fontSize: 18,
-              flexShrink: 0,
-            }}
-          >
-            <ThunderboltFilled />
-          </div>
-          {!collapsed && (
-            <div>
-              <div style={{ color: '#0f172a', fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
-                OKZ Commerce
-              </div>
-              <div style={{ color: '#64748b', fontSize: 11, fontWeight: 500 }}>
-                AI Admin Platform
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Navigation Menu */}
         <div style={{ padding: '12px 8px' }}>
           <Menu
