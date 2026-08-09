@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Table, Card, Input, Space, Button, Tag, Tooltip, Popconfirm, message } from 'antd';
+import { Card, Input, Space, Button, Tag, Tooltip, Popconfirm, message } from 'antd';
 import { SearchOutlined, EditOutlined, DeleteOutlined, SettingOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
+import { CoreTable } from '@/shared/components/CoreTable';
 import { fetchCategories } from './category.api';
+import type { Category } from './category.types';
 
 export function CategoriesPage() {
   const [searchText, setSearchText] = useState('');
@@ -16,14 +18,14 @@ export function CategoriesPage() {
   );
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 20 }}>
       <DataPageHeader
         title="Danh Mục Sản Phẩm"
         description="Quản lý cây danh mục (Category Tree) và các thuộc tính động (Dynamic Category Attributes)."
         onRefresh={() => query.refetch()}
       />
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -40,7 +42,7 @@ export function CategoriesPage() {
           </Space>
         </div>
 
-        <Table
+        <CoreTable<Category>
           rowKey="id"
           loading={query.isLoading}
           dataSource={filteredData}
@@ -94,6 +96,6 @@ export function CategoriesPage() {
           ]}
         />
       </Card>
-    </Space>
+    </div>
   );
 }

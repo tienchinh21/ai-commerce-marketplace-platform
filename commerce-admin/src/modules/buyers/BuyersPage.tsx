@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Alert, Avatar, Card, Input, Space, Table, Tag } from 'antd';
+import { Alert, Avatar, Card, Input, Space, Tag } from 'antd';
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
+import { CoreTable } from '@/shared/components/CoreTable';
 import { useDebounce } from '@/shared/hooks';
 import { extractErrorMessage } from '@/shared/utils/error-handler';
 import { formatDateTime } from '@/shared/utils/formatters';
@@ -29,7 +30,7 @@ export function BuyersPage() {
   });
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 20 }}>
       <DataPageHeader
         title="Quản Lý Khách Hàng (Buyers)"
         description="Danh sách người mua hàng, tài khoản và lịch sử đơn hàng."
@@ -40,7 +41,7 @@ export function BuyersPage() {
         <Alert type="error" showIcon message="Không tải được danh sách khách hàng" description={extractErrorMessage(buyersQuery.error)} />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20 }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -55,7 +56,7 @@ export function BuyersPage() {
           />
         </div>
 
-        <Table<Buyer>
+        <CoreTable<Buyer>
           dataSource={buyersQuery.data?.items ?? []}
           rowKey="id"
           loading={buyersQuery.isLoading}
@@ -88,6 +89,6 @@ export function BuyersPage() {
           ]}
         />
       </Card>
-    </Space>
+    </div>
   );
 }

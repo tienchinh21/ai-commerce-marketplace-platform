@@ -1,4 +1,4 @@
-import { Card, Col, Row, Typography, Table, Space, Progress, Button } from 'antd';
+import { Card, Col, Row, Typography, Space, Progress, Button } from 'antd';
 import {
   ShoppingOutlined,
   CommentOutlined,
@@ -23,6 +23,7 @@ import {
 } from 'recharts';
 import { MetricCard } from '@/shared/components/MetricCard';
 import { StatusTag } from '@/shared/components/StatusTag';
+import { CoreTable } from '@/shared/components/CoreTable';
 import { formatNumber, formatCurrency } from '@/shared/utils/formatters';
 import { ROUTES } from '@/shared/constants/routes.constants';
 
@@ -241,16 +242,17 @@ export function DashboardPage() {
             title={<span style={{ fontWeight: 700, color: '#0f172a' }}>Hoạt Động Hệ Thống & AI Worker</span>}
             style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}
           >
-            <Table
+            <CoreTable<typeof mockRecentActivities[number]>
               dataSource={mockRecentActivities}
               rowKey="key"
               pagination={false}
               size="small"
+              scrollY={undefined}
               columns={[
                 {
                   title: 'Hoạt động',
                   dataIndex: 'action',
-                  render: (text, record) => (
+                  render: (text: string, record: typeof mockRecentActivities[number]) => (
                     <div>
                       <div style={{ fontWeight: 600, color: '#0f172a', fontSize: 13 }}>{text}</div>
                       <div style={{ fontSize: 12, color: '#64748b' }}>{record.detail}</div>
@@ -261,13 +263,13 @@ export function DashboardPage() {
                   title: 'Trạng thái',
                   dataIndex: 'status',
                   width: 120,
-                  render: (status) => <StatusTag status={status} />,
+                  render: (status: string) => <StatusTag status={status} />,
                 },
                 {
                   title: 'Thời gian',
                   dataIndex: 'time',
                   width: 110,
-                  render: (t) => <span style={{ fontSize: 12, color: '#94a3b8' }}>{t}</span>,
+                  render: (t: string) => <span style={{ fontSize: 12, color: '#94a3b8' }}>{t}</span>,
                 },
               ]}
             />

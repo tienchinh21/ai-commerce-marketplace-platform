@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Alert, Button, Card, Col, Row, Space, Statistic, Table, Tag } from 'antd';
+import { Alert, Button, Card, Col, Row, Space, Statistic, Tag } from 'antd';
 import { CloudUploadOutlined, DatabaseOutlined, FileTextOutlined, SyncOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
+import { CoreTable } from '@/shared/components/CoreTable';
 import { extractErrorMessage } from '@/shared/utils/error-handler';
 import { formatDateTime, formatNumber } from '@/shared/utils/formatters';
 import { fetchDataSources, fetchRawSnapshots, fetchSyncRuns } from './ingestion.api';
@@ -46,7 +47,7 @@ export function IngestionPage() {
   const error = dataSourcesQuery.error ?? syncRunsQuery.error ?? rawSnapshotsQuery.error;
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 20 }}>
       <DataPageHeader
         title="Quản Lý Nguồn Dữ Liệu & Tải Snapshots (Data Ingestion)"
         description="Source Registry, quản lý nạp dữ liệu thô (Raw Snapshots), các đợt đồng bộ (Sync Runs) và map sang dữ liệu chuẩn hóa."
@@ -96,8 +97,8 @@ export function IngestionPage() {
         </Col>
       </Row>
 
-      <Card title={<span style={{ fontWeight: 700 }}>Danh sách Nguồn Dữ Liệu (Data Sources)</span>} style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-        <Table<DataSource>
+      <Card title={<span style={{ fontWeight: 700 }}>Danh sách Nguồn Dữ Liệu (Data Sources)</span>} style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
+        <CoreTable<DataSource>
           dataSource={dataSourcesQuery.data ?? []}
           rowKey="id"
           loading={dataSourcesQuery.isLoading || syncRunsQuery.isLoading}
@@ -120,6 +121,6 @@ export function IngestionPage() {
           ]}
         />
       </Card>
-    </Space>
+    </div>
   );
 }

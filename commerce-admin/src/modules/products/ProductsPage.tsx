@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Alert, Badge, Button, Card, Input, Rate, Space, Table, Tag } from 'antd';
+import { Alert, Badge, Button, Card, Input, Rate, Space, Tag } from 'antd';
 import { DeleteOutlined, EyeOutlined, PlusOutlined, SearchOutlined, ShoppingOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
 import { ConfirmModal } from '@/shared/components/ConfirmModal';
+import { CoreTable } from '@/shared/components/CoreTable';
 import { formatCurrency } from '@/shared/utils/formatters';
 import { extractErrorMessage } from '@/shared/utils/error-handler';
 import { useDebounce, useModalState, useNotification } from '@/shared/hooks';
@@ -50,7 +51,7 @@ export function ProductsPage() {
   const products = productsQuery.data?.items ?? [];
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 20 }}>
       <DataPageHeader
         title="Quản Lý Sản Phẩm (Catalog Products)"
         description="Quản lý thông tin sản phẩm chuẩn hóa (Canonical Products), biến thể, hình ảnh và thuộc tính kỹ thuật specs_json."
@@ -66,7 +67,7 @@ export function ProductsPage() {
         />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -84,7 +85,7 @@ export function ProductsPage() {
           </Button>
         </div>
 
-        <Table<Product>
+        <CoreTable<Product>
           dataSource={products}
           rowKey="id"
           loading={productsQuery.isLoading || deleteMutation.isPending}
@@ -180,6 +181,6 @@ export function ProductsPage() {
         danger
         okText="Xóa sản phẩm"
       />
-    </Space>
+    </div>
   );
 }

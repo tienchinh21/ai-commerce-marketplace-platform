@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Alert, Card, Input, Rate, Space, Table, Typography } from 'antd';
+import { Alert, Card, Input, Rate, Space, Typography } from 'antd';
 import { CommentOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
+import { CoreTable } from '@/shared/components/CoreTable';
 import { useDebounce } from '@/shared/hooks';
 import { extractErrorMessage } from '@/shared/utils/error-handler';
 import { formatDateTime, truncateText } from '@/shared/utils/formatters';
@@ -42,7 +43,7 @@ export function ReviewsPage() {
   }, [reviewsQuery.data?.items, debouncedKeyword]);
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 20 }}>
       <DataPageHeader
         title="Quản Lý Đánh Giá & Phản Hồi (Reviews)"
         description="Quản lý dữ liệu đánh giá nguyên bản từ khách hàng và các trạng thái kiểm duyệt (Moderation)."
@@ -53,7 +54,7 @@ export function ReviewsPage() {
         <Alert type="error" showIcon message="Không tải được danh sách đánh giá" description={extractErrorMessage(reviewsQuery.error)} />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20 }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -65,7 +66,7 @@ export function ReviewsPage() {
           />
         </div>
 
-        <Table<Review>
+        <CoreTable<Review>
           dataSource={reviews}
           rowKey="id"
           loading={reviewsQuery.isLoading}
@@ -104,6 +105,6 @@ export function ReviewsPage() {
           ]}
         />
       </Card>
-    </Space>
+    </div>
   );
 }

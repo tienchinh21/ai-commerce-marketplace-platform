@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Alert, Avatar, Button, Card, Input, Space, Table, Tag } from 'antd';
+import { Alert, Avatar, Button, Card, Input, Space, Tag } from 'antd';
 import { PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
+import { CoreTable } from '@/shared/components/CoreTable';
 import { useDebounce } from '@/shared/hooks';
 import { extractErrorMessage } from '@/shared/utils/error-handler';
 import { formatDateTime } from '@/shared/utils/formatters';
@@ -34,7 +35,7 @@ export function UsersPermissionsPage() {
   }, [usersQuery.data, debouncedKeyword]);
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 20 }}>
       <DataPageHeader
         title="Quản Lý Người Dùng & Phân Quyền (Users & Permissions)"
         description="Quản lý tài khoản Admin internal và phân quyền truy cập theo cơ chế RBAC (Resource:Action Permissions)."
@@ -53,7 +54,7 @@ export function UsersPermissionsPage() {
         />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -68,7 +69,7 @@ export function UsersPermissionsPage() {
           </Button>
         </div>
 
-        <Table<AdminUserWithPermissions>
+        <CoreTable<AdminUserWithPermissions>
           dataSource={users}
           rowKey="id"
           loading={usersQuery.isLoading}
@@ -96,7 +97,7 @@ export function UsersPermissionsPage() {
       </Card>
 
       <Card title="Danh mục quyền hệ thống" style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-        <Table<Permission>
+        <CoreTable<Permission>
           dataSource={permissionsQuery.data ?? []}
           rowKey="id"
           loading={permissionsQuery.isLoading}
@@ -108,6 +109,6 @@ export function UsersPermissionsPage() {
           ]}
         />
       </Card>
-    </Space>
+    </div>
   );
 }

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Alert, Avatar, Button, Card, Input, Space, Table, Tag } from 'antd';
+import { Alert, Avatar, Button, Card, Input, Space, Tag } from 'antd';
 import { PlusOutlined, SearchOutlined, ShopOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
+import { CoreTable } from '@/shared/components/CoreTable';
 import { useDebounce } from '@/shared/hooks';
 import { extractErrorMessage } from '@/shared/utils/error-handler';
 import { formatDateTime } from '@/shared/utils/formatters';
@@ -29,7 +30,7 @@ export function SellersPage() {
   });
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 20 }}>
       <DataPageHeader
         title="Quản Lý Nhà Bán Hàng (Sellers)"
         description="Danh sách đối tác bán hàng, gian hàng và chỉ số đánh giá uy tín."
@@ -40,7 +41,7 @@ export function SellersPage() {
         <Alert type="error" showIcon message="Không tải được danh sách nhà bán hàng" description={extractErrorMessage(sellersQuery.error)} />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -58,7 +59,7 @@ export function SellersPage() {
           </Button>
         </div>
 
-        <Table<Seller>
+        <CoreTable<Seller>
           dataSource={sellersQuery.data?.items ?? []}
           rowKey="id"
           loading={sellersQuery.isLoading}
@@ -90,6 +91,6 @@ export function SellersPage() {
           ]}
         />
       </Card>
-    </Space>
+    </div>
   );
 }
