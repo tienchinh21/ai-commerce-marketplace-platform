@@ -25,7 +25,13 @@ function getInitialUser(): CurrentUser | null {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('accessToken'));
+  const [token, setToken] = useState<string | null>(() => {
+    const stored = localStorage.getItem('accessToken');
+    if (stored) {
+      setAuthToken(stored);
+    }
+    return stored;
+  });
   const [refreshToken, setRefreshToken] = useState<string | null>(() => localStorage.getItem('refreshToken'));
   const [user, setUser] = useState<CurrentUser | null>(getInitialUser);
 
@@ -76,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(u);
         })
         .catch((err: any) => {
+          // Chỉ xóa session khi nhận 401 Unauthorized thực sự từ API
           if (err.response?.status === 401) {
             clearSession();
           }

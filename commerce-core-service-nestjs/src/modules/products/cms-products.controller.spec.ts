@@ -149,4 +149,52 @@ describe('CmsProductsController response shape', () => {
     expect('description' in result.items[0]).toBe(false);
     expect('specsJson' in result.items[0]).toBe(false);
   });
+
+  it('get returns seller and category summaries in product detail', async () => {
+    productsService.getDetail.mockResolvedValue({
+      id: 'prod-1',
+      sellerId: 'seller-1',
+      categoryId: 'cat-1',
+      seller: {
+        id: 'seller-1',
+        name: 'Anker Official Store',
+      },
+      category: {
+        id: 'cat-1',
+        name: 'Tai nghe',
+      },
+      title: 'Tai nghe Anker',
+      slug: 'tai-nghe-anker',
+      brand: 'Anker',
+      description: 'Tai nghe bluetooth',
+      status: 'ACTIVE',
+      priceMin: '100000',
+      priceMax: '200000',
+      ratingAvg: '4.5',
+      reviewCount: 10,
+      specsJson: {},
+      variants: [],
+      images: [],
+      createdAt: new Date('2026-08-06T00:00:00.000Z'),
+      updatedAt: new Date('2026-08-06T00:00:00.000Z'),
+    });
+
+    const result = await controller.get(
+      '00000000-0000-0000-0000-000000000001',
+    );
+
+    expect(result).toMatchObject({
+      id: 'prod-1',
+      sellerId: 'seller-1',
+      categoryId: 'cat-1',
+      seller: {
+        id: 'seller-1',
+        name: 'Anker Official Store',
+      },
+      category: {
+        id: 'cat-1',
+        name: 'Tai nghe',
+      },
+    });
+  });
 });

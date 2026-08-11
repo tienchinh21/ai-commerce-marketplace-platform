@@ -208,7 +208,7 @@ export function AdminLayout() {
         </Header>
 
         {/* Content Area */}
-        <Content style={{ padding: '24px', background: '#f8fafc', height: 'calc(100vh - 64px)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <Content style={{ padding: '24px', background: '#f8fafc', height: 'calc(100vh - 64px)', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
           <Outlet />
         </Content>
       </Layout>

@@ -54,19 +54,21 @@ export class CategoriesService {
 
   async create(input: CreateCategoryInput): Promise<Category> {
     const parentId = input.parentId ?? null;
-    let path = '';
+    const slug = input.slug ?? slugify(input.name);
+    let path = `/${slug}`;
     let level = 0;
 
     if (parentId) {
       const parent = await this.get(parentId);
-      path = `${parent.path}/${parent.id}`;
+      const parentPath = parent.path || `/${parent.slug}`;
+      path = `${parentPath}/${slug}`;
       level = parent.level + 1;
     }
 
     const category = this.categories.create({
       parentId,
       name: input.name,
-      slug: input.slug ?? slugify(input.name),
+      slug,
       path,
       level,
       status: input.status ?? 'ACTIVE',

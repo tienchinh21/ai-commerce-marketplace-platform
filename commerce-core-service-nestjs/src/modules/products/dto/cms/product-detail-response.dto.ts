@@ -4,7 +4,27 @@ import { ProductImageResponseDto } from './product-image-response.dto';
 import { ProductResponseDto } from './product-response.dto';
 import { ProductVariantResponseDto } from './product-variant-response.dto';
 
+export class ProductRelationSummaryResponseDto {
+  @Expose()
+  @ApiProperty({ format: 'uuid' })
+  id: string;
+
+  @Expose()
+  @ApiProperty()
+  name: string;
+}
+
 export class ProductDetailResponseDto extends ProductResponseDto {
+  @Expose()
+  @Type(() => ProductRelationSummaryResponseDto)
+  @ApiProperty({ nullable: true, type: ProductRelationSummaryResponseDto })
+  seller: ProductRelationSummaryResponseDto | null;
+
+  @Expose()
+  @Type(() => ProductRelationSummaryResponseDto)
+  @ApiProperty({ nullable: true, type: ProductRelationSummaryResponseDto })
+  category: ProductRelationSummaryResponseDto | null;
+
   @Expose()
   @ApiProperty({ nullable: true, type: String })
   description: string | null;

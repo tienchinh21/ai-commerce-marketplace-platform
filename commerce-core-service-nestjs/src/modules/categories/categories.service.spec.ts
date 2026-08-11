@@ -53,7 +53,7 @@ describe('CategoriesService', () => {
     });
   });
 
-  it('should create a root category with level 0 and empty path', async () => {
+  it('should create a root category with level 0 and slug path', async () => {
     create.mockImplementation((category: DeepPartial<Category>) => ({
       ...category,
     }));
@@ -64,14 +64,19 @@ describe('CategoriesService', () => {
     const result = await service.create({ name: 'Electronics' });
 
     expect(result.level).toBe(0);
-    expect(result.path).toBe('');
+    expect(result.path).toBe('/electronics');
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({ parentId: null }),
     );
   });
 
-  it('should create a child category with incremented level and parent path', async () => {
-    findOne.mockResolvedValue({ id: 'p1', path: '/p0', level: 0 });
+  it('should create a child category with incremented level and readable slug path', async () => {
+    findOne.mockResolvedValue({
+      id: 'p1',
+      slug: 'electronics',
+      path: '/electronics',
+      level: 0,
+    });
     create.mockImplementation((category: DeepPartial<Category>) => ({
       ...category,
     }));
@@ -82,6 +87,6 @@ describe('CategoriesService', () => {
     const result = await service.create({ name: 'Phones', parentId: 'p1' });
 
     expect(result.level).toBe(1);
-    expect(result.path).toBe('/p0/p1');
+    expect(result.path).toBe('/electronics/phones');
   });
 });

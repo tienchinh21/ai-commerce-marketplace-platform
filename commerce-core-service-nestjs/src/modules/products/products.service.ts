@@ -4,6 +4,8 @@ import { In, Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { ProductVariant } from './product-variant.entity';
 import { ProductImage } from './product-image.entity';
+import { Seller } from '../sellers/seller.entity';
+import { Category } from '../categories/category.entity';
 import { ApiErrorCode } from '../../shared/api/api-error-code';
 import { VI_API_MESSAGES } from '../../shared/api/api-messages.vi';
 
@@ -69,6 +71,9 @@ export class ProductsService {
     private readonly variants: Repository<ProductVariant>,
     @InjectRepository(ProductImage)
     private readonly images: Repository<ProductImage>,
+    @InjectRepository(Seller) private readonly sellers: Repository<Seller>,
+    @InjectRepository(Category)
+    private readonly categories: Repository<Category>,
   ) {}
 
   async list(query: ListProductsQuery) {
@@ -155,7 +160,7 @@ export class ProductsService {
 
   async getDetail(id: string) {
     const product = await this.get(id);
-    const [variants, images] = await Promise.all([
+    const [variants, images, seller, category] = await Promise.all([
       this.variants.find({
         where: { product: { id } },
         order: { createdAt: 'ASC' },
@@ -164,8 +169,22 @@ export class ProductsService {
         where: { product: { id } },
         order: { sortOrder: 'ASC' },
       }),
+      this.sellers.findOne({
+        where: { id: product.sellerId },
+        select: { id: true, name: true },
+      }),
+      this.categories.findOne({
+        where: { id: product.categoryId },
+        select: { id: true, name: true },
+      }),
     ]);
-    return { ...product, variants, images };
+    return {
+      ...product,
+      seller: seller ? { id: seller.id, name: seller.name } : null,
+      category: category ? { id: category.id, name: category.name } : null,
+      variants,
+      images,
+    };
   }
 
   async listVariants(productId: string): Promise<ProductVariant[]> {
