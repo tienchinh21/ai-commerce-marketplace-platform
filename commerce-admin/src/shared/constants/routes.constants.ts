@@ -5,6 +5,7 @@ export const ROUTES = {
   PRODUCT_DETAIL: (id: string) => `/san-pham/${id}`,
   CATEGORIES: '/danh-muc',
   REVIEWS: '/danh-gia',
+  ORDERS: '/don-hang',
   SELLERS: '/nha-ban-hang',
   BUYERS: '/khach-hang',
   USERS_PERMISSIONS: '/nguoi-dung-phan-quyen',

@@ -1,23 +1,37 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Alert, Avatar, Card, Input, Space, Tag } from 'antd';
-import { SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Alert, Avatar, Button, Card, Descriptions, Drawer, Form, Input, Modal, Select, Space, Tag } from 'antd';
+import { EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
 import { CoreTable } from '@/shared/components/CoreTable';
-import { useDebounce } from '@/shared/hooks';
+import { useDebounce, useModalState, useNotification } from '@/shared/hooks';
 import { extractErrorMessage } from '@/shared/utils/error-handler';
 import { formatDateTime } from '@/shared/utils/formatters';
-import { fetchBuyers } from './buyer.api';
-import type { Buyer } from './buyer.types';
+import { parseJsonObject, stringifyJsonObject } from '@/shared/utils/json-object';
+import { createBuyer, fetchBuyerDetail, fetchBuyers, updateBuyer } from './buyer.api';
+import type { Buyer, BuyerPayload } from './buyer.types';
 
 const DEFAULT_PAGE_SIZE = 20;
+const statusOptions = [
+  { value: 'ACTIVE', label: 'ACTIVE' },
+  { value: 'INACTIVE', label: 'INACTIVE' },
+];
+
+interface BuyerFormValues extends Omit<BuyerPayload, 'metadataJson'> {
+  metadataJsonText?: string;
+}
 
 export function BuyersPage() {
+  const notify = useNotification();
+  const queryClient = useQueryClient();
+  const [buyerForm] = Form.useForm<BuyerFormValues>();
   const [searchKeyword, setSearchKeyword] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const debouncedKeyword = useDebounce(searchKeyword, 300);
+  const buyerModal = useModalState<Buyer>();
+  const detailDrawer = useModalState<Buyer>();
 
   const buyersQuery = useQuery({
     queryKey: ['cms-buyers', debouncedKeyword, page, pageSize],
@@ -29,12 +43,91 @@ export function BuyersPage() {
       }),
   });
 
+  const buyerDetailQuery = useQuery({
+    queryKey: ['cms-buyer-detail', detailDrawer.data?.id],
+    queryFn: () => fetchBuyerDetail(detailDrawer.data?.id as string),
+    enabled: detailDrawer.open && Boolean(detailDrawer.data?.id),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: createBuyer,
+    onSuccess: async () => {
+      notify.success('Đã tạo khách hàng.');
+      buyerForm.resetFields();
+      buyerModal.hideModal();
+      await queryClient.invalidateQueries({ queryKey: ['cms-buyers'] });
+    },
+    onError: (error) => notify.error(error, 'Tạo khách hàng thất bại.'),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: BuyerPayload }) => updateBuyer(id, payload),
+    onSuccess: async () => {
+      notify.success('Đã cập nhật khách hàng.');
+      buyerForm.resetFields();
+      buyerModal.hideModal();
+      await queryClient.invalidateQueries({ queryKey: ['cms-buyers'] });
+    },
+    onError: (error) => notify.error(error, 'Cập nhật khách hàng thất bại.'),
+  });
+
+  function openCreateModal() {
+    buyerForm.resetFields();
+    buyerForm.setFieldsValue({ status: 'ACTIVE', metadataJsonText: '{}' });
+    buyerModal.showModal();
+  }
+
+  function openEditModal(buyer: Buyer) {
+    buyerForm.setFieldsValue({
+      email: buyer.email,
+      displayName: buyer.displayName,
+      phone: buyer.phone,
+      status: buyer.status,
+      userId: buyer.userId,
+      metadataJsonText: stringifyJsonObject(buyer.metadataJson),
+    });
+    buyerModal.showModal(buyer);
+  }
+
+  function handleSubmit(values: BuyerFormValues) {
+    let metadataJson: Record<string, unknown>;
+    try {
+      metadataJson = parseJsonObject(values.metadataJsonText);
+    } catch (error) {
+      notify.error(error, 'Metadata JSON không hợp lệ.');
+      return;
+    }
+
+    const payload: BuyerPayload = {
+      email: values.email,
+      displayName: values.displayName,
+      phone: values.phone || null,
+      status: values.status ?? 'ACTIVE',
+      userId: values.userId || null,
+      metadataJson,
+    };
+
+    if (buyerModal.data) {
+      updateMutation.mutate({ id: buyerModal.data.id, payload });
+      return;
+    }
+    createMutation.mutate(payload);
+  }
+
+  const activeBuyer = buyerDetailQuery.data ?? detailDrawer.data;
+  const isEditing = Boolean(buyerModal.data);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 20 }}>
       <DataPageHeader
         title="Quản Lý Khách Hàng (Buyers)"
-        description="Danh sách người mua hàng, tài khoản và lịch sử đơn hàng."
+        description="Danh sách người mua hàng, tài khoản liên kết và metadata chăm sóc khách hàng."
         onRefresh={() => buyersQuery.refetch()}
+        actions={
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal} style={{ background: '#4f46e5' }}>
+            Thêm Khách Hàng
+          </Button>
+        }
       />
 
       {buyersQuery.isError && (
@@ -86,9 +179,78 @@ export function BuyersPage() {
             { title: 'User ID', dataIndex: 'userId', render: (userId: string | null) => userId ? <Tag>{userId.slice(0, 8)}</Tag> : '-' },
             { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
             { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
+            {
+              title: 'Thao tác',
+              key: 'actions',
+              render: (_, record) => (
+                <Space size={4}>
+                  <Button type="text" icon={<EyeOutlined />} onClick={() => detailDrawer.showModal(record)}>
+                    Chi tiết
+                  </Button>
+                  <Button type="text" icon={<EditOutlined />} onClick={() => openEditModal(record)}>
+                    Sửa
+                  </Button>
+                </Space>
+              ),
+            },
           ]}
         />
       </Card>
+
+      <Modal
+        open={buyerModal.open}
+        title={isEditing ? 'Cập nhật khách hàng' : 'Thêm khách hàng'}
+        okText={isEditing ? 'Cập nhật' : 'Tạo mới'}
+        cancelText="Hủy"
+        confirmLoading={createMutation.isPending || updateMutation.isPending}
+        onOk={() => buyerForm.submit()}
+        onCancel={buyerModal.hideModal}
+        destroyOnHidden
+      >
+        <Form<BuyerFormValues> form={buyerForm} layout="vertical" onFinish={handleSubmit}>
+          <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Nhập email.' }, { type: 'email', message: 'Email không hợp lệ.' }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="displayName" label="Tên hiển thị" rules={[{ required: true, message: 'Nhập tên hiển thị.' }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="phone" label="Số điện thoại">
+            <Input />
+          </Form.Item>
+          <Form.Item name="userId" label="External User ID">
+            <Input allowClear />
+          </Form.Item>
+          <Form.Item name="status" label="Trạng thái">
+            <Select options={statusOptions} />
+          </Form.Item>
+          <Form.Item name="metadataJsonText" label="Metadata nội bộ">
+            <Input.TextArea rows={4} placeholder='{"address":"123 Main St"}' />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Drawer
+        title="Chi tiết khách hàng"
+        open={detailDrawer.open}
+        onClose={detailDrawer.hideModal}
+        width={520}
+      >
+        {buyerDetailQuery.isError && <Alert type="error" showIcon message="Không tải được chi tiết" description={extractErrorMessage(buyerDetailQuery.error)} />}
+        {activeBuyer && (
+          <Descriptions column={1} bordered size="small">
+            <Descriptions.Item label="Tên">{activeBuyer.displayName}</Descriptions.Item>
+            <Descriptions.Item label="Email">{activeBuyer.email}</Descriptions.Item>
+            <Descriptions.Item label="Số điện thoại">{activeBuyer.phone || '-'}</Descriptions.Item>
+            <Descriptions.Item label="User ID">{activeBuyer.userId || '-'}</Descriptions.Item>
+            <Descriptions.Item label="Trạng thái"><StatusTag status={activeBuyer.status} /></Descriptions.Item>
+            <Descriptions.Item label="Metadata">
+              <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{stringifyJsonObject(activeBuyer.metadataJson)}</pre>
+            </Descriptions.Item>
+            <Descriptions.Item label="Ngày tạo">{formatDateTime(activeBuyer.createdAt)}</Descriptions.Item>
+            <Descriptions.Item label="Cập nhật">{formatDateTime(activeBuyer.updatedAt)}</Descriptions.Item>
+          </Descriptions>
+        )}
+      </Drawer>
     </div>
   );
 }

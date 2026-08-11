@@ -15,3 +15,24 @@ export interface SellerListParams {
   page?: number;
   pageSize?: number;
 }
+
+export interface SellerPayload {
+  name: string;
+  slug?: string;
+  status?: string;
+  userId?: string | null;
+  metadataJson?: Record<string, unknown>;
+}
+
+export type UpdateSellerPayload = Partial<SellerPayload>;
+
+export interface CreatedResourceResponse {
+  success: true;
+  id: string;
+  message: string;
+}
+
+export interface MutationSuccessResponse {
+  success: true;
+  message: string;
+}

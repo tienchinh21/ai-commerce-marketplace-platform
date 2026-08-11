@@ -92,7 +92,7 @@ export function ProductDetailPage() {
     <Space direction="vertical" size={20} style={{ width: '100%' }}>
       <DataPageHeader
         title="Chi Tiết Sản Phẩm"
-        description="Chi tiết product, variants, images, specs và reviews."
+        description="Chi tiết product, variants và images. Thuộc tính kỹ thuật nội bộ được xử lý qua dữ liệu ngành hàng/import."
         breadcrumbs={[
           { title: 'Trang chủ', path: ROUTES.DASHBOARD },
           { title: 'Sản phẩm', path: ROUTES.PRODUCTS },
@@ -195,19 +195,6 @@ export function ProductDetailPage() {
             />
           </Card>
 
-          <Card title="Specs JSON" style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
-            {Object.keys(product.specsJson).length > 0 ? (
-              <Space wrap>
-                {Object.entries(product.specsJson).map(([key, value]) => (
-                  <Tag key={key} color="blue">
-                    {key}: {String(value)}
-                  </Tag>
-                ))}
-              </Space>
-            ) : (
-              <Typography.Text type="secondary">Chưa có thông số kỹ thuật.</Typography.Text>
-            )}
-          </Card>
         </>
       )}
 

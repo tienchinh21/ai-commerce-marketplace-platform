@@ -8,6 +8,7 @@ import { SellersPage } from '@/modules/sellers/SellersPage';
 import { BuyersPage } from '@/modules/buyers/BuyersPage';
 import { ProductsPage } from '@/modules/products/ProductsPage';
 import { ProductDetailPage } from '@/modules/products/ProductDetailPage';
+import { OrdersPage } from '@/modules/orders/OrdersPage';
 import { ReviewsPage } from '@/modules/reviews/ReviewsPage';
 import { IngestionPage } from '@/modules/ingestion/IngestionPage';
 import { AiSearchPage } from '@/modules/ai-search/AiSearchPage';
@@ -36,6 +37,7 @@ export function AppRoutes() {
           <Route path={ROUTES.BUYERS} element={<BuyersPage />} />
           <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
           <Route path={`${ROUTES.PRODUCTS}/:productId`} element={<ProductDetailPage />} />
+          <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
           <Route path={ROUTES.REVIEWS} element={<ReviewsPage />} />
           <Route path={ROUTES.INGESTION} element={<IngestionPage />} />
           <Route path={ROUTES.AI_SEARCH} element={<AiSearchPage />} />

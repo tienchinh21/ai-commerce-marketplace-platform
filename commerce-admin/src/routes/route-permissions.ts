@@ -14,6 +14,7 @@ export const adminRoutes: AdminRouteConfig[] = [
   { path: ROUTES.PRODUCTS, label: 'Quản lý Sản phẩm', group: 'Marketplace Core', permission: 'product:read' },
   { path: ROUTES.SELLERS, label: 'Nhà bán hàng (Sellers)', group: 'Marketplace Core', permission: 'seller:read' },
   { path: ROUTES.BUYERS, label: 'Khách hàng (Buyers)', group: 'Marketplace Core', permission: 'buyer:read' },
+  { path: ROUTES.ORDERS, label: 'Đơn hàng', group: 'Marketplace Core', permission: 'product:read' },
   { path: ROUTES.REVIEWS, label: 'Đánh giá & Phản hồi', group: 'Marketplace Core', permission: 'review:read' },
   { path: ROUTES.INGESTION, label: 'Nguồn & Tải dữ liệu', group: 'Data Ingestion', permission: 'source:read' },
   { path: ROUTES.AI_SEARCH, label: 'Tìm kiếm Semantic AI', group: 'AI Platform', permission: 'ai:search' },

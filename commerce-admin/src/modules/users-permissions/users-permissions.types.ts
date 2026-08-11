@@ -17,3 +17,22 @@ export interface Permission {
   description: string | null;
   createdAt: string;
 }
+
+export interface CreateUserPayload {
+  email: string;
+  password: string;
+  displayName: string;
+  status?: string;
+  permissionCodes?: string[];
+}
+
+export interface CreatedResourceResponse {
+  success: true;
+  id: string;
+  message: string;
+}
+
+export interface MutationSuccessResponse {
+  success: true;
+  message: string;
+}

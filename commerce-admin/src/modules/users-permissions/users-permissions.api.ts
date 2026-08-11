@@ -1,5 +1,12 @@
 import { cmsPath, coreApi } from '@/shared/api/http-client';
-import type { AdminUser, AdminUserWithPermissions, Permission } from './users-permissions.types';
+import type {
+  AdminUser,
+  AdminUserWithPermissions,
+  CreatedResourceResponse,
+  CreateUserPayload,
+  MutationSuccessResponse,
+  Permission,
+} from './users-permissions.types';
 
 export async function fetchUsers(): Promise<AdminUser[]> {
   const response = await coreApi.get<AdminUser[]>(cmsPath('/users'));
@@ -23,4 +30,17 @@ export async function fetchUsersWithPermissions(): Promise<AdminUserWithPermissi
     ...user,
     permissions: permissionsByUser[index] ?? [],
   }));
+}
+
+export async function createUser(payload: CreateUserPayload): Promise<CreatedResourceResponse> {
+  const response = await coreApi.post<CreatedResourceResponse>(cmsPath('/users'), payload);
+  return response.data;
+}
+
+export async function setUserPermissions(
+  userId: string,
+  codes: string[],
+): Promise<MutationSuccessResponse> {
+  const response = await coreApi.put<MutationSuccessResponse>(cmsPath(`/users/${userId}/permissions`), { codes });
+  return response.data;
 }

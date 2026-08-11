@@ -13,7 +13,13 @@ import { useDebounce, useModalState, useNotification } from '@/shared/hooks';
 import { ROUTES } from '@/shared/constants/routes.constants';
 import { fetchCategories } from '@/modules/categories/category.api';
 import { fetchSellers } from '@/modules/sellers/seller.api';
-import { createProduct, deleteProduct, fetchProducts, updateProduct } from './product.api';
+import {
+  createProduct,
+  deleteProduct,
+  fetchProductDetail,
+  fetchProducts,
+  updateProduct,
+} from './product.api';
 import type { Product, ProductPayload } from './product.types';
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -23,18 +29,7 @@ const statusOptions = [
   { value: 'DRAFT', label: 'DRAFT' },
 ];
 
-interface ProductFormValues extends Omit<ProductPayload, 'specsJson'> {
-  specsJsonText?: string;
-}
-
-function parseSpecsJson(input?: string): Record<string, unknown> {
-  if (!input?.trim()) return {};
-  const value = JSON.parse(input) as unknown;
-  if (!value || Array.isArray(value) || typeof value !== 'object') {
-    throw new Error('Specs JSON phải là object.');
-  }
-  return value as Record<string, unknown>;
-}
+type ProductFormValues = Omit<ProductPayload, 'specsJson'>;
 
 export function ProductsPage() {
   const navigate = useNavigate();
@@ -128,34 +123,34 @@ export function ProductsPage() {
 
   function openCreateModal() {
     productForm.resetFields();
-    productForm.setFieldsValue({ status: 'ACTIVE', specsJsonText: '{}' });
+    productForm.setFieldsValue({ status: 'ACTIVE' });
     productModal.showModal();
   }
 
-  function openEditModal(product: Product) {
+  async function openEditModal(product: Product) {
+    // Lấy chi tiết sản phẩm để điền đầy đủ description/specs (API danh sách không trả về các trường này)
+    let detail;
+    try {
+      detail = await fetchProductDetail(product.id);
+    } catch (error) {
+      notify.error(error, 'Không tải được chi tiết sản phẩm.');
+      return;
+    }
     productForm.setFieldsValue({
-      sellerId: product.sellerId,
-      categoryId: product.categoryId,
-      title: product.title,
-      slug: product.slug,
-      brand: product.brand,
-      status: product.status,
-      priceMin: Number(product.priceMin),
-      priceMax: Number(product.priceMax),
-      specsJsonText: '{}',
+      sellerId: detail.sellerId,
+      categoryId: detail.categoryId,
+      title: detail.title,
+      slug: detail.slug,
+      brand: detail.brand ?? undefined,
+      description: detail.description ?? undefined,
+      status: detail.status,
+      priceMin: Number(detail.priceMin),
+      priceMax: Number(detail.priceMax),
     });
     productModal.showModal(product);
   }
 
   function handleSubmitProduct(values: ProductFormValues) {
-    let specsJson: Record<string, unknown>;
-    try {
-      specsJson = parseSpecsJson(values.specsJsonText);
-    } catch (error) {
-      notify.error(error, 'Specs JSON không hợp lệ.');
-      return;
-    }
-
     const payload: ProductPayload = {
       sellerId: values.sellerId,
       categoryId: values.categoryId,
@@ -166,7 +161,6 @@ export function ProductsPage() {
       status: values.status ?? 'ACTIVE',
       priceMin: values.priceMin,
       priceMax: values.priceMax,
-      specsJson,
     };
 
     if (productModal.data) {
@@ -180,7 +174,7 @@ export function ProductsPage() {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 20 }}>
       <DataPageHeader
         title="Quản Lý Sản Phẩm (Catalog Products)"
-        description="Quản lý thông tin sản phẩm chuẩn hóa (Canonical Products), biến thể, hình ảnh và thuộc tính kỹ thuật specs_json."
+        description="Quản lý thông tin sản phẩm chuẩn hóa, biến thể và hình ảnh. Thuộc tính kỹ thuật nội bộ được xử lý qua dữ liệu ngành hàng/import."
         onRefresh={() => productsQuery.refetch()}
       />
 
@@ -423,9 +417,6 @@ export function ProductsPage() {
               <Select options={statusOptions} />
             </Form.Item>
           </Space>
-          <Form.Item name="specsJsonText" label="Specs JSON">
-            <Input.TextArea rows={4} placeholder='{"color":"black","storage":"256GB"}' />
-          </Form.Item>
         </Form>
       </Modal>
     </div>
