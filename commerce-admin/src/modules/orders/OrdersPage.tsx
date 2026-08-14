@@ -156,14 +156,14 @@ export function OrdersPage() {
             },
           }}
           columns={[
-            { title: 'Mã đơn', dataIndex: 'id', render: (id: string) => <Tag color="blue">{id.slice(0, 8)}</Tag> },
-            { title: 'Buyer', dataIndex: 'buyerId', render: (id: string) => buyerNameById.get(id) ?? id.slice(0, 8) },
-            { title: 'Seller', dataIndex: 'sellerId', render: (id: string) => sellerNameById.get(id) ?? id.slice(0, 8) },
-            { title: 'Tổng tiền', dataIndex: 'totalAmount', render: (value: string) => <strong>{formatCurrency(value)}</strong> },
-            { title: 'Thanh toán', dataIndex: 'paymentStatus', render: (status: string) => <StatusTag status={status} /> },
-            { title: 'Ngày đặt', dataIndex: 'orderedAt', render: (value: string) => formatDateTime(value) },
-            { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
-            { title: 'Thao tác', key: 'actions', render: (_, record) => <Button type="text" icon={<EyeOutlined />} onClick={() => detailDrawer.showModal(record)}>Chi tiết</Button> },
+            { title: 'Mã đơn', dataIndex: 'id', width: 130, render: (id: string) => <Tag color="blue">{id.slice(0, 8)}</Tag> },
+            { title: 'Buyer', dataIndex: 'buyerId', width: 180, render: (id: string) => buyerNameById.get(id) ?? id.slice(0, 8) },
+            { title: 'Seller', dataIndex: 'sellerId', width: 180, render: (id: string) => sellerNameById.get(id) ?? id.slice(0, 8) },
+            { title: 'Tổng tiền', dataIndex: 'totalAmount', width: 160, render: (value: string) => <strong>{formatCurrency(value)}</strong> },
+            { title: 'Thanh toán', dataIndex: 'paymentStatus', width: 140, render: (status: string) => <StatusTag status={status} /> },
+            { title: 'Ngày đặt', dataIndex: 'orderedAt', width: 180, render: (value: string) => formatDateTime(value) },
+            { title: 'Trạng thái', dataIndex: 'status', width: 130, render: (status: string) => <StatusTag status={status} /> },
+            { title: 'Thao tác', key: 'actions', fixed: 'right', width: 120, render: (_, record) => <Button type="text" icon={<EyeOutlined />} onClick={() => detailDrawer.showModal(record)}>Chi tiết</Button> },
           ]}
         />
       </Card>

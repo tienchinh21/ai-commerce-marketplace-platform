@@ -265,18 +265,21 @@ export function IngestionPage() {
                     {
                       title: 'Tên nguồn dữ liệu',
                       dataIndex: 'name',
+                      width: 220,
                       render: (name: string) => (
                         <span style={{ fontWeight: 600 }}>{name}</span>
                       ),
                     },
-                    { title: 'Loại nguồn', dataIndex: 'type', render: (type: string) => <Tag color="purple">{type}</Tag> },
-                    { title: 'Base URL', dataIndex: 'baseUrl', render: (baseUrl: string | null) => baseUrl || '-' },
-                    { title: 'Sync gần nhất', dataIndex: 'id', render: (id: string) => formatDateTime(latestSyncBySourceId.get(id)) },
-                    { title: 'Số bản ghi', dataIndex: 'id', render: (id: string) => <strong>{formatNumber(recordsBySourceId.get(id) ?? 0)} bản ghi</strong> },
-                    { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
+                    { title: 'Loại nguồn', dataIndex: 'type', width: 140, render: (type: string) => <Tag color="purple">{type}</Tag> },
+                    { title: 'Base URL', dataIndex: 'baseUrl', width: 220, render: (baseUrl: string | null) => baseUrl || '-' },
+                    { title: 'Sync gần nhất', dataIndex: 'id', width: 180, render: (id: string) => formatDateTime(latestSyncBySourceId.get(id)) },
+                    { title: 'Số bản ghi', dataIndex: 'id', width: 160, render: (id: string) => <strong>{formatNumber(recordsBySourceId.get(id) ?? 0)} bản ghi</strong> },
+                    { title: 'Trạng thái', dataIndex: 'status', width: 130, render: (status: string) => <StatusTag status={status} /> },
                     {
                       title: 'Thao tác',
                       key: 'actions',
+                      fixed: 'right',
+                      width: 170,
                       render: (_, record) => (
                         <Space size={4}>
                           <Button type="text" icon={<EyeOutlined />} onClick={() => sourceDrawer.showModal(record)}>Chi tiết</Button>
@@ -299,14 +302,14 @@ export function IngestionPage() {
                   rowKey="id"
                   loading={syncRunsQuery.isLoading}
                   columns={[
-                    { title: 'Nguồn', dataIndex: 'dataSourceId', render: (id: string) => sourceNameById.get(id) ?? id },
-                    { title: 'Tổng', dataIndex: 'totalRecords', render: formatNumber },
-                    { title: 'Thành công', dataIndex: 'successCount', render: formatNumber },
-                    { title: 'Lỗi', dataIndex: 'failedCount', render: formatNumber },
-                    { title: 'Bắt đầu', dataIndex: 'startedAt', render: (value: string | null) => formatDateTime(value) },
-                    { title: 'Kết thúc', dataIndex: 'finishedAt', render: (value: string | null) => formatDateTime(value) },
-                    { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
-                    { title: 'Thao tác', key: 'actions', render: (_, record) => <Button type="text" icon={<EyeOutlined />} onClick={() => syncDrawer.showModal(record)}>Chi tiết</Button> },
+                    { title: 'Nguồn', dataIndex: 'dataSourceId', width: 180, render: (id: string) => sourceNameById.get(id) ?? id },
+                    { title: 'Tổng', dataIndex: 'totalRecords', width: 120, render: formatNumber },
+                    { title: 'Thành công', dataIndex: 'successCount', width: 120, render: formatNumber },
+                    { title: 'Lỗi', dataIndex: 'failedCount', width: 120, render: formatNumber },
+                    { title: 'Bắt đầu', dataIndex: 'startedAt', width: 180, render: (value: string | null) => formatDateTime(value) },
+                    { title: 'Kết thúc', dataIndex: 'finishedAt', width: 180, render: (value: string | null) => formatDateTime(value) },
+                    { title: 'Trạng thái', dataIndex: 'status', width: 130, render: (status: string) => <StatusTag status={status} /> },
+                    { title: 'Thao tác', key: 'actions', fixed: 'right', width: 120, render: (_, record) => <Button type="text" icon={<EyeOutlined />} onClick={() => syncDrawer.showModal(record)}>Chi tiết</Button> },
                   ]}
                 />
               </Card>
@@ -322,12 +325,12 @@ export function IngestionPage() {
                   rowKey="id"
                   loading={rawSnapshotsQuery.isLoading}
                   columns={[
-                    { title: 'Nguồn', dataIndex: 'dataSourceId', render: (id: string) => sourceNameById.get(id) ?? id },
-                    { title: 'Sync run', dataIndex: 'syncRunId', render: (id: string | null) => id || '-' },
-                    { title: 'Content type', dataIndex: 'contentType' },
-                    { title: 'Parse', dataIndex: 'parseStatus', render: (status: string) => <StatusTag status={status} /> },
-                    { title: 'Ngày tạo', dataIndex: 'createdAt', render: (value: string) => formatDateTime(value) },
-                    { title: 'Thao tác', key: 'actions', render: (_, record) => <Button type="text" icon={<EyeOutlined />} onClick={() => snapshotDrawer.showModal(record)}>Chi tiết</Button> },
+                    { title: 'Nguồn', dataIndex: 'dataSourceId', width: 180, render: (id: string) => sourceNameById.get(id) ?? id },
+                    { title: 'Sync run', dataIndex: 'syncRunId', width: 150, render: (id: string | null) => id || '-' },
+                    { title: 'Content type', dataIndex: 'contentType', width: 140 },
+                    { title: 'Parse', dataIndex: 'parseStatus', width: 130, render: (status: string) => <StatusTag status={status} /> },
+                    { title: 'Ngày tạo', dataIndex: 'createdAt', width: 180, render: (value: string) => formatDateTime(value) },
+                    { title: 'Thao tác', key: 'actions', fixed: 'right', width: 120, render: (_, record) => <Button type="text" icon={<EyeOutlined />} onClick={() => snapshotDrawer.showModal(record)}>Chi tiết</Button> },
                   ]}
                 />
               </Card>

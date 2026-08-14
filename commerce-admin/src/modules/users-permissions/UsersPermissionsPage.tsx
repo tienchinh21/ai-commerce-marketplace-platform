@@ -136,21 +136,25 @@ export function UsersPermissionsPage() {
             {
               title: 'Người dùng',
               dataIndex: 'displayName',
+              width: 200,
               render: (displayName: string) => (
                 <span style={{ fontWeight: 600 }}>{displayName}</span>
               ),
             },
-            { title: 'Email', dataIndex: 'email' },
+            { title: 'Email', dataIndex: 'email', width: 220 },
             {
               title: 'Mã quyền RBAC',
               dataIndex: 'permissions',
+              width: 260,
               render: (permissions: string[]) => permissions.length > 0 ? permissions.map((permission) => <Tag key={permission} color="blue">{permission}</Tag>) : '-',
             },
-            { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
-            { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
+            { title: 'Ngày tạo', dataIndex: 'createdAt', width: 180, render: (createdAt: string) => formatDateTime(createdAt) },
+            { title: 'Trạng thái', dataIndex: 'status', width: 130, render: (status: string) => <StatusTag status={status} /> },
             {
               title: 'Thao tác',
               key: 'actions',
+              fixed: 'right',
+              width: 140,
               render: (_, record) => (
                 <Button type="text" icon={<EditOutlined />} onClick={() => openPermissionsModal(record)}>
                   Sửa quyền

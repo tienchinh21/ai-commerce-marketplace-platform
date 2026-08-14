@@ -269,6 +269,7 @@ export function ProductsPage() {
             {
               title: 'Sản phẩm',
               dataIndex: 'title',
+              width: 260,
               render: (title: string, record) => (
                 <div>
                   <div style={{ fontWeight: 600 }}>{title}</div>
@@ -279,6 +280,7 @@ export function ProductsPage() {
             {
               title: 'Shop',
               dataIndex: 'sellerId',
+              width: 150,
               render: (sellerId: string) => (
                 <Tag color="geekblue">{sellerLookup.get(sellerId) ?? sellerId.slice(0, 8)}</Tag>
               ),
@@ -286,6 +288,7 @@ export function ProductsPage() {
             {
               title: 'Danh mục',
               dataIndex: 'categoryId',
+              width: 160,
               render: (categoryId: string) => (
                 <Tag color="blue">{categoryLookup.get(categoryId) ?? categoryId.slice(0, 8)}</Tag>
               ),
@@ -293,6 +296,7 @@ export function ProductsPage() {
             {
               title: 'Giá hiển thị',
               key: 'price',
+              width: 190,
               render: (_, record) => (
                 <span style={{ fontWeight: 700, color: '#16a34a' }}>
                   {formatCurrency(record.priceMin)}
@@ -303,6 +307,7 @@ export function ProductsPage() {
             {
               title: 'Đánh giá & Phản hồi',
               key: 'rating',
+              width: 230,
               render: (_, record) => {
                 const rating = Number.parseFloat(record.ratingAvg);
                 return (
@@ -314,10 +319,12 @@ export function ProductsPage() {
                 );
               },
             },
-            { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
+            { title: 'Trạng thái', dataIndex: 'status', width: 130, render: (status: string) => <StatusTag status={status} /> },
             {
               title: 'Thao tác',
-              key: 'action',
+              key: 'actions',
+              fixed: 'right',
+              width: 200,
               render: (_, record) => (
                 <Space size={4}>
                   <Button

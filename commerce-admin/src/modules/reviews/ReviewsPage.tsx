@@ -183,24 +183,28 @@ export function ReviewsPage() {
             {
               title: 'Sản phẩm',
               dataIndex: 'productId',
+              width: 180,
               render: (productId: string) => (
                 <Typography.Text copyable style={{ fontWeight: 600 }}>{productId}</Typography.Text>
               ),
             },
-            { title: 'Người viết', dataIndex: 'buyerId', render: (buyerId: string | null) => buyerId || '-' },
+            { title: 'Người viết', dataIndex: 'buyerId', width: 160, render: (buyerId: string | null) => buyerId || '-' },
             {
               title: 'Điểm đánh giá',
               dataIndex: 'rating',
+              width: 160,
               render: (rating: number) => <Rate disabled defaultValue={rating} style={{ fontSize: 13 }} />,
             },
-            { title: 'Tiêu đề', dataIndex: 'title', render: (title: string | null) => title || '-' },
-            { title: 'Nội dung phản hồi', dataIndex: 'content', width: 360, render: (content: string | null) => truncateText(content, 120) || '-' },
-            { title: 'Nguồn', dataIndex: 'sourceType' },
-            { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
-            { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
+            { title: 'Tiêu đề', dataIndex: 'title', width: 200, render: (title: string | null) => title || '-' },
+            { title: 'Nội dung phản hồi', dataIndex: 'content', width: 340, render: (content: string | null) => truncateText(content, 120) || '-' },
+            { title: 'Nguồn', dataIndex: 'sourceType', width: 120 },
+            { title: 'Ngày tạo', dataIndex: 'createdAt', width: 180, render: (createdAt: string) => formatDateTime(createdAt) },
+            { title: 'Trạng thái', dataIndex: 'status', width: 130, render: (status: string) => <StatusTag status={status} /> },
             {
               title: 'Thao tác',
               key: 'actions',
+              fixed: 'right',
+              width: 170,
               render: (_, record) => (
                 <Space size={4}>
                   <Button type="text" icon={<EyeOutlined />} onClick={() => detailDrawer.showModal(record)}>

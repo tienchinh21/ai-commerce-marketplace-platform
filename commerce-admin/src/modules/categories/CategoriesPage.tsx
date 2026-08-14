@@ -356,6 +356,7 @@ export function CategoriesPage() {
             {
               title: 'Tên danh mục',
               dataIndex: 'name',
+              width: 240,
               render: (text: string, record) => (
                 <Space>
                   <span style={{ fontWeight: 600 }}>{text}</span>
@@ -366,6 +367,7 @@ export function CategoriesPage() {
             {
               title: 'Parent',
               dataIndex: 'parentId',
+              width: 180,
               render: (_parentId: string | null, record) => {
                 const parentLabel = getCategoryParentLabel(record, categoriesQuery.data ?? []);
                 return parentLabel === '-' ? '-' : <Tag color="default">{parentLabel}</Tag>;
@@ -374,16 +376,20 @@ export function CategoriesPage() {
             {
               title: 'Cấp độ',
               dataIndex: 'level',
+              width: 120,
               render: (level: number) => <Tag color="purple">Cấp {level}</Tag>,
             },
             {
               title: 'Trạng thái',
               dataIndex: 'status',
+              width: 130,
               render: (status: string) => <StatusTag status={status} />,
             },
             {
               title: 'Thao tác',
               key: 'actions',
+              fixed: 'right',
+              width: 220,
               align: 'right',
               render: (_, record) => (
                 <Space size={4}>
@@ -470,16 +476,18 @@ export function CategoriesPage() {
           pagination={false}
           scrollY={520}
           columns={[
-            { title: 'Code', dataIndex: 'code', render: (code: string) => <Typography.Text copyable>{code}</Typography.Text> },
-            { title: 'Nhãn', dataIndex: 'label' },
-            { title: 'Kiểu dữ liệu', dataIndex: 'dataType', render: (dataType: string) => <Tag color="geekblue">{dataType}</Tag> },
-            { title: 'Filter', dataIndex: 'isFilterable', render: (value: boolean) => value ? <Tag color="green">Có</Tag> : '-' },
-            { title: 'Search', dataIndex: 'isSearchable', render: (value: boolean) => value ? <Tag color="green">Có</Tag> : '-' },
-            { title: 'Bắt buộc', dataIndex: 'isRequired', render: (value: boolean) => value ? <Tag color="red">Có</Tag> : '-' },
-            { title: 'Đơn vị', dataIndex: 'unit', render: (unit: string | null) => unit || '-' },
+            { title: 'Code', dataIndex: 'code', width: 140, render: (code: string) => <Typography.Text copyable>{code}</Typography.Text> },
+            { title: 'Nhãn', dataIndex: 'label', width: 160 },
+            { title: 'Kiểu dữ liệu', dataIndex: 'dataType', width: 130, render: (dataType: string) => <Tag color="geekblue">{dataType}</Tag> },
+            { title: 'Filter', dataIndex: 'isFilterable', width: 90, render: (value: boolean) => value ? <Tag color="green">Có</Tag> : '-' },
+            { title: 'Search', dataIndex: 'isSearchable', width: 90, render: (value: boolean) => value ? <Tag color="green">Có</Tag> : '-' },
+            { title: 'Bắt buộc', dataIndex: 'isRequired', width: 100, render: (value: boolean) => value ? <Tag color="red">Có</Tag> : '-' },
+            { title: 'Đơn vị', dataIndex: 'unit', width: 100, render: (unit: string | null) => unit || '-' },
             {
               title: 'Thao tác',
               key: 'actions',
+              fixed: 'right',
+              width: 140,
               align: 'right',
               render: (_, record) => (
                 <Space size={4}>

@@ -167,15 +167,17 @@ export function BuyersPage() {
             {
               title: 'Tên khách hàng',
               dataIndex: 'displayName',
+              width: 220,
               render: (text: string) => (
                 <span style={{ fontWeight: 600 }}>{text}</span>
               ),
             },
-            { title: 'Email', dataIndex: 'email' },
-            { title: 'Số điện thoại', dataIndex: 'phone', render: (phone: string | null) => phone || '-' },
+            { title: 'Email', dataIndex: 'email', width: 220 },
+            { title: 'Số điện thoại', dataIndex: 'phone', width: 150, render: (phone: string | null) => phone || '-' },
             {
               title: 'Tài khoản user',
               dataIndex: 'user',
+              width: 200,
               render: (user: Buyer['user']) =>
                 user ? (
                   <div>
@@ -186,11 +188,13 @@ export function BuyersPage() {
                   '-'
                 ),
             },
-            { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
-            { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
+            { title: 'Ngày tạo', dataIndex: 'createdAt', width: 180, render: (createdAt: string) => formatDateTime(createdAt) },
+            { title: 'Trạng thái', dataIndex: 'status', width: 130, render: (status: string) => <StatusTag status={status} /> },
             {
               title: 'Thao tác',
               key: 'actions',
+              fixed: 'right',
+              width: 170,
               render: (_, record) => (
                 <Space size={4}>
                   <Button type="text" icon={<EyeOutlined />} onClick={() => detailDrawer.showModal(record)}>

@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Table, TableProps } from 'antd';
+import type { ColumnGroupType, ColumnType } from 'antd/es/table';
 
 export interface CoreTableProps<T extends object = Record<string, any>> extends TableProps<T> {
   /**
@@ -11,14 +12,20 @@ export interface CoreTableProps<T extends object = Record<string, any>> extends 
    * chiều cao còn lại của container cha để cuộn Y khớp 100% với màn hình.
    */
   scrollY?: number | string;
+  /**
+   * Tự động ghim (fixed: 'right') cột Thao tác/actions nếu chưa được chỉ định. Mặc định là true.
+   */
+  autoFixActions?: boolean;
 }
 
 export function CoreTable<T extends object = Record<string, any>>({
+  columns,
   scroll,
   containerStyle,
   scrollY,
   pagination,
   style,
+  autoFixActions = true,
   ...restProps
 }: CoreTableProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -74,6 +81,27 @@ export function CoreTable<T extends object = Record<string, any>>({
 
   const finalScrollY = scrollY !== undefined ? scrollY : calcY;
 
+  const processedColumns = useMemo(() => {
+    if (!columns || !autoFixActions) return columns;
+
+    return columns.map((col: ColumnType<T> | ColumnGroupType<T>) => {
+      const isActionCol =
+        col.key === 'actions' ||
+        col.key === 'action' ||
+        ('dataIndex' in col && (col.dataIndex === 'actions' || col.dataIndex === 'action')) ||
+        (typeof col.title === 'string' && (col.title === 'Thao tác' || col.title === 'Hành động'));
+
+      if (isActionCol && !('fixed' in col)) {
+        return {
+          fixed: 'right' as const,
+          width: ('width' in col && col.width) ? col.width : 150,
+          ...col,
+        };
+      }
+      return col;
+    });
+  }, [columns, autoFixActions]);
+
   const mergedScroll = {
     x: 'max-content',
     ...(finalScrollY ? { y: finalScrollY } : {}),
@@ -120,6 +148,7 @@ export function CoreTable<T extends object = Record<string, any>>({
       }}
     >
       <Table<T>
+        columns={processedColumns}
         scroll={mergedScroll}
         pagination={mergedPagination}
         style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, ...style }}
