@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Alert, Avatar, Button, Card, Form, Input, Modal, Select, Space, Tag } from 'antd';
-import { EditOutlined, PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { Alert, Button, Card, Form, Input, Modal, Select, Space, Tag } from 'antd';
+import { EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
 import { CoreTable } from '@/shared/components/CoreTable';
@@ -137,10 +137,7 @@ export function UsersPermissionsPage() {
               title: 'Người dùng',
               dataIndex: 'displayName',
               render: (displayName: string) => (
-                <Space>
-                  <Avatar icon={<UserOutlined />} style={{ backgroundColor: '#4f46e5' }} />
-                  <span style={{ fontWeight: 600 }}>{displayName}</span>
-                </Space>
+                <span style={{ fontWeight: 600, color: '#0f172a' }}>{displayName}</span>
               ),
             },
             { title: 'Email', dataIndex: 'email' },

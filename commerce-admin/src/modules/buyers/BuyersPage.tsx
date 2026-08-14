@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Alert, Avatar, Button, Card, Descriptions, Drawer, Form, Input, Modal, Select, Space, Tag } from 'antd';
-import { EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { Alert, Button, Card, Descriptions, Drawer, Form, Input, Modal, Select, Space, Tag } from 'antd';
+import { EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
 import { CoreTable } from '@/shared/components/CoreTable';
@@ -168,10 +168,7 @@ export function BuyersPage() {
               title: 'Tên khách hàng',
               dataIndex: 'displayName',
               render: (text: string) => (
-                <Space>
-                  <Avatar icon={<UserOutlined />} style={{ backgroundColor: '#f0fdf4', color: '#16a34a' }} />
-                  <span style={{ fontWeight: 600 }}>{text}</span>
-                </Space>
+                <span style={{ fontWeight: 600, color: '#0f172a' }}>{text}</span>
               ),
             },
             { title: 'Email', dataIndex: 'email' },

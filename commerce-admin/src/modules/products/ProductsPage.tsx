@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Alert, Badge, Button, Card, Form, Input, InputNumber, Modal, Rate, Select, Space, Tag } from 'antd';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined, ShoppingOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
@@ -270,15 +270,10 @@ export function ProductsPage() {
               title: 'Sản phẩm',
               dataIndex: 'title',
               render: (title: string, record) => (
-                <Space>
-                  <div style={{ width: 38, height: 38, borderRadius: 8, background: '#f1f5f9', display: 'grid', placeItems: 'center', color: '#6366f1' }}>
-                    <ShoppingOutlined />
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 600, color: '#0f172a' }}>{title}</div>
-                    <Tag color="cyan" style={{ fontSize: 11 }}>Hãng: {record.brand || '-'}</Tag>
-                  </div>
-                </Space>
+                <div>
+                  <div style={{ fontWeight: 600, color: '#0f172a' }}>{title}</div>
+                  <Tag color="cyan" style={{ fontSize: 11, marginTop: 4 }}>Hãng: {record.brand || '-'}</Tag>
+                </div>
               ),
             },
             {

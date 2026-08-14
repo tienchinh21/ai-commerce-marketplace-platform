@@ -1,5 +1,5 @@
 import { useState, ReactNode } from 'react';
-import { Layout, Menu, Typography, Button, Avatar, Dropdown, Space, Tag, Input, Badge } from 'antd';
+import { Layout, Menu, Typography, Button, Avatar, Dropdown, Space, Input, Badge } from 'antd';
 import {
   DashboardOutlined,
   AppstoreOutlined,
@@ -164,11 +164,12 @@ export function AdminLayout() {
             alignItems: 'center',
             justifyContent: 'space-between',
             height: 64,
+            lineHeight: 'normal',
             boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.05)',
             borderBottom: '1px solid #e2e8f0',
           }}
         >
-          <Space size={16}>
+          <Space size={16} align="center">
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined style={{ fontSize: 18 }} /> : <MenuFoldOutlined style={{ fontSize: 18 }} />}
@@ -178,26 +179,23 @@ export function AdminLayout() {
             <Input
               prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
               placeholder="Tìm kiếm danh mục, sản phẩm, dữ liệu..."
-              style={{ width: 300, borderRadius: 8, background: '#f8fafc' }}
+              style={{ width: 320, borderRadius: 8, background: '#f8fafc' }}
               variant="filled"
             />
-            <Tag color="blue" style={{ borderRadius: 12, fontWeight: 600, padding: '2px 10px' }}>
-              Phase 1 Admin Mode
-            </Tag>
           </Space>
 
-          <Space size={20}>
+          <Space size={20} align="center">
             <Badge count={3} size="small" offset={[-2, 4]}>
               <Button type="text" shape="circle" icon={<BellOutlined style={{ fontSize: 18, color: '#64748b' }} />} />
             </Badge>
 
             <Dropdown menu={userMenu} placement="bottomRight" trigger={['click']}>
-              <Space style={{ cursor: 'pointer', padding: '4px 8px', borderRadius: 8 }}>
+              <Space align="center" style={{ cursor: 'pointer', padding: '4px 8px', borderRadius: 8 }}>
                 <Avatar style={{ backgroundColor: '#2563eb', fontWeight: 600 }}>
                   {(auth.user?.displayName ?? 'Admin')[0].toUpperCase()}
                 </Avatar>
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: '#0f172a', lineHeight: 1.2 }}>
+                <div style={{ textAlign: 'left', lineHeight: 1.3 }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: '#0f172a' }}>
                     {auth.user?.displayName ?? 'Quản trị viên'}
                   </div>
                   <div style={{ fontSize: 11, color: '#64748b' }}>

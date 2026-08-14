@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConfigProvider, App as AntApp, theme } from 'antd';
+import viVN from 'antd/locale/vi_VN';
 import type { ReactNode } from 'react';
 import { AuthProvider } from '@/modules/auth/auth.store';
 
@@ -15,6 +16,7 @@ const queryClient = new QueryClient({
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <ConfigProvider
+      locale={viVN}
       theme={{
         algorithm: theme.defaultAlgorithm,
         token: {

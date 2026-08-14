@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Alert, Avatar, Button, Card, Descriptions, Drawer, Form, Input, Modal, Select, Space, Tag } from 'antd';
-import { EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined, ShopOutlined } from '@ant-design/icons';
+import { Alert, Button, Card, Descriptions, Drawer, Form, Input, Modal, Select, Space, Tag } from 'antd';
+import { EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
 import { CoreTable } from '@/shared/components/CoreTable';
@@ -166,10 +166,7 @@ export function SellersPage() {
               title: 'Nhà bán hàng',
               dataIndex: 'name',
               render: (text: string) => (
-                <Space>
-                  <Avatar icon={<ShopOutlined />} style={{ backgroundColor: '#e0e7ff', color: '#4f46e5' }} />
-                  <span style={{ fontWeight: 600 }}>{text}</span>
-                </Space>
+                <span style={{ fontWeight: 600, color: '#0f172a' }}>{text}</span>
               ),
             },
             { title: 'Slug gian hàng', dataIndex: 'slug', render: (slug: string) => <Tag color="blue">{slug}</Tag> },

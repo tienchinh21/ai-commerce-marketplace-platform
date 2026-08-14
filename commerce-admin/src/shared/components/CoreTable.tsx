@@ -29,29 +29,38 @@ export function CoreTable<T extends object = Record<string, any>>({
 
     const updateHeight = () => {
       if (!containerRef.current) return;
-      
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const headerEl = containerRef.current.querySelector<HTMLElement>('.ant-table-header, .ant-table-thead');
-      const paginationEl = containerRef.current.querySelector<HTMLElement>('.ant-table-pagination');
-      
-      const headerHeight = headerEl ? headerEl.offsetHeight : 55;
-      const paginationHeight = paginationEl ? paginationEl.offsetHeight + 32 : 64; // include margins
-      
-      // Calculate available space inside container for body rows
-      // Account for card padding / boundaries bottom
-      const windowHeight = window.innerHeight;
-      const availableBottomSpace = windowHeight - containerRect.top - 24; // 24px bottom spacing
-      const calculatedBodyHeight = availableBottomSpace - headerHeight - paginationHeight;
-      
-      if (calculatedBodyHeight > 100) {
-        setCalcY(calculatedBodyHeight);
+
+      const containerEl = containerRef.current;
+      const headerEl = containerEl.querySelector<HTMLElement>('.ant-table-header, .ant-table-thead');
+      const paginationEl = containerEl.querySelector<HTMLElement>('.ant-table-pagination');
+
+      const headerHeight = headerEl ? headerEl.offsetHeight : 45;
+      const hasPagination = pagination !== false;
+      const paginationHeight = hasPagination
+        ? paginationEl
+          ? paginationEl.offsetHeight + 24
+          : 60
+        : 0;
+      const buffer = 16; // Khoảng đệm an toàn tránh làm tràn và cắt viền trên phân trang
+
+      let availableBodyHeight: number;
+
+      if (containerEl.clientHeight > 120) {
+        availableBodyHeight = containerEl.clientHeight - headerHeight - paginationHeight - buffer;
+      } else {
+        const containerRect = containerEl.getBoundingClientRect();
+        const availableBottomSpace = window.innerHeight - containerRect.top - 48;
+        availableBodyHeight = availableBottomSpace - headerHeight - paginationHeight - buffer;
+      }
+
+      if (availableBodyHeight > 80) {
+        setCalcY(availableBodyHeight);
       }
     };
 
     updateHeight();
     window.addEventListener('resize', updateHeight);
-    
-    // ResizeObserver to detect parent card or container size changes
+
     const resizeObserver = new ResizeObserver(updateHeight);
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
@@ -61,7 +70,7 @@ export function CoreTable<T extends object = Record<string, any>>({
       window.removeEventListener('resize', updateHeight);
       resizeObserver.disconnect();
     };
-  }, [scrollY]);
+  }, [scrollY, pagination]);
 
   const finalScrollY = scrollY !== undefined ? scrollY : calcY;
 
@@ -75,8 +84,25 @@ export function CoreTable<T extends object = Record<string, any>>({
     pagination !== false
       ? {
           showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50', '100'],
           showTotal: (total: number, range: [number, number]) =>
             `${range[0]}-${range[1]} của ${total} bản ghi`,
+          locale: {
+            items_per_page: '/ trang',
+            jump_to: 'Đến',
+            jump_to_confirm: 'xác nhận',
+            page: 'Trang',
+            prev_page: 'Trang trước',
+            next_page: 'Trang sau',
+            prev_5: 'Về 5 trang trước',
+            next_5: 'Đến 5 trang sau',
+            page_size: 'Kích thước trang',
+          },
+          style: {
+            margin: '16px 0 0 0',
+            paddingTop: 4,
+            ...((pagination && typeof pagination === 'object' && pagination.style) || {}),
+          },
           ...pagination,
         }
       : false;
@@ -90,7 +116,6 @@ export function CoreTable<T extends object = Record<string, any>>({
         display: 'flex',
         flexDirection: 'column',
         minHeight: 0,
-        overflow: 'hidden',
         ...containerStyle,
       }}
     >

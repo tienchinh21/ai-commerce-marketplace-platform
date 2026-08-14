@@ -16,7 +16,6 @@ import {
   Typography,
 } from 'antd';
 import {
-  AppstoreOutlined,
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
@@ -359,7 +358,6 @@ export function CategoriesPage() {
               dataIndex: 'name',
               render: (text: string, record) => (
                 <Space>
-                  <AppstoreOutlined style={{ color: '#6366f1' }} />
                   <span style={{ fontWeight: 600, color: '#0f172a' }}>{text}</span>
                   <Tag color="blue" style={{ fontSize: 11 }}>{record.slug}</Tag>
                 </Space>

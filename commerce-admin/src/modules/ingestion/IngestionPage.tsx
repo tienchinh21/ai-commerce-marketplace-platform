@@ -266,10 +266,7 @@ export function IngestionPage() {
                       title: 'Tên nguồn dữ liệu',
                       dataIndex: 'name',
                       render: (name: string) => (
-                        <Space>
-                          <DatabaseOutlined style={{ color: '#6366f1' }} />
-                          <span style={{ fontWeight: 600 }}>{name}</span>
-                        </Space>
+                        <span style={{ fontWeight: 600, color: '#0f172a' }}>{name}</span>
                       ),
                     },
                     { title: 'Loại nguồn', dataIndex: 'type', render: (type: string) => <Tag color="purple">{type}</Tag> },

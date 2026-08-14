@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Alert, Button, Card, Descriptions, Drawer, Form, Input, InputNumber, Modal, Rate, Select, Space, Typography } from 'antd';
-import { CommentOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { DataPageHeader } from '@/shared/components/DataPageHeader';
 import { StatusTag } from '@/shared/components/StatusTag';
 import { CoreTable } from '@/shared/components/CoreTable';
@@ -184,10 +184,7 @@ export function ReviewsPage() {
               title: 'Sản phẩm',
               dataIndex: 'productId',
               render: (productId: string) => (
-                <Space>
-                  <CommentOutlined style={{ color: '#6366f1' }} />
-                  <Typography.Text copyable style={{ fontWeight: 600 }}>{productId}</Typography.Text>
-                </Space>
+                <Typography.Text copyable style={{ fontWeight: 600 }}>{productId}</Typography.Text>
               ),
             },
             { title: 'Người viết', dataIndex: 'buyerId', render: (buyerId: string | null) => buyerId || '-' },
