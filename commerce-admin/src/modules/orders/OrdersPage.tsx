@@ -127,7 +127,7 @@ export function OrdersPage() {
         <Alert type="error" showIcon message="Không tải được danh sách đơn hàng" description={extractErrorMessage(ordersQuery.error)} />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
+      <Card style={{ borderRadius: 12, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20 }}>
           <Select
             allowClear

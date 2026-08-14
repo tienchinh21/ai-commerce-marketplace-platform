@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { LinkedUserResponseDto } from '../../../../shared/api/linked-user-response.dto';
 
 export class BuyerResponseDto {
   @Expose()
@@ -37,6 +38,11 @@ export class BuyerResponseDto {
   @Expose()
   @ApiProperty({ type: Date })
   updatedAt: Date;
+
+  @Expose()
+  @Type(() => LinkedUserResponseDto)
+  @ApiProperty({ nullable: true, type: () => LinkedUserResponseDto })
+  user: LinkedUserResponseDto | null;
 }
 
 export class BuyerDetailResponseDto extends BuyerResponseDto {}

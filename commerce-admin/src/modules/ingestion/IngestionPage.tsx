@@ -256,7 +256,7 @@ export function IngestionPage() {
             key: 'sources',
             label: 'Nguồn dữ liệu',
             children: (
-              <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+              <Card style={{ borderRadius: 12 }}>
                 <CoreTable<DataSource>
                   dataSource={dataSourcesQuery.data ?? []}
                   rowKey="id"
@@ -266,7 +266,7 @@ export function IngestionPage() {
                       title: 'Tên nguồn dữ liệu',
                       dataIndex: 'name',
                       render: (name: string) => (
-                        <span style={{ fontWeight: 600, color: '#0f172a' }}>{name}</span>
+                        <span style={{ fontWeight: 600 }}>{name}</span>
                       ),
                     },
                     { title: 'Loại nguồn', dataIndex: 'type', render: (type: string) => <Tag color="purple">{type}</Tag> },
@@ -293,7 +293,7 @@ export function IngestionPage() {
             key: 'sync-runs',
             label: 'Sync runs',
             children: (
-              <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+              <Card style={{ borderRadius: 12 }}>
                 <CoreTable<SyncRun>
                   dataSource={syncRunsQuery.data?.items ?? []}
                   rowKey="id"
@@ -316,7 +316,7 @@ export function IngestionPage() {
             key: 'raw-snapshots',
             label: 'Raw snapshots',
             children: (
-              <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+              <Card style={{ borderRadius: 12 }}>
                 <CoreTable<RawSnapshot>
                   dataSource={rawSnapshotsQuery.data?.items ?? []}
                   rowKey="id"

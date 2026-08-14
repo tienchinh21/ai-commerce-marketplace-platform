@@ -134,7 +134,7 @@ export function BuyersPage() {
         <Alert type="error" showIcon message="Không tải được danh sách khách hàng" description={extractErrorMessage(buyersQuery.error)} />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
+      <Card style={{ borderRadius: 12, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20 }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -168,12 +168,24 @@ export function BuyersPage() {
               title: 'Tên khách hàng',
               dataIndex: 'displayName',
               render: (text: string) => (
-                <span style={{ fontWeight: 600, color: '#0f172a' }}>{text}</span>
+                <span style={{ fontWeight: 600 }}>{text}</span>
               ),
             },
             { title: 'Email', dataIndex: 'email' },
             { title: 'Số điện thoại', dataIndex: 'phone', render: (phone: string | null) => phone || '-' },
-            { title: 'User ID', dataIndex: 'userId', render: (userId: string | null) => userId ? <Tag>{userId.slice(0, 8)}</Tag> : '-' },
+            {
+              title: 'Tài khoản user',
+              dataIndex: 'user',
+              render: (user: Buyer['user']) =>
+                user ? (
+                  <div>
+                    <div style={{ fontWeight: 500 }}>{user.displayName}</div>
+                    <Tag>{user.id.slice(0, 8)}</Tag>
+                  </div>
+                ) : (
+                  '-'
+                ),
+            },
             { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
             { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
             {
@@ -238,7 +250,16 @@ export function BuyersPage() {
             <Descriptions.Item label="Tên">{activeBuyer.displayName}</Descriptions.Item>
             <Descriptions.Item label="Email">{activeBuyer.email}</Descriptions.Item>
             <Descriptions.Item label="Số điện thoại">{activeBuyer.phone || '-'}</Descriptions.Item>
-            <Descriptions.Item label="User ID">{activeBuyer.userId || '-'}</Descriptions.Item>
+            <Descriptions.Item label="Tài khoản user">
+              {activeBuyer.user ? (
+                <div>
+                  <div style={{ fontWeight: 500 }}>{activeBuyer.user.displayName}</div>
+                  <Tag>{activeBuyer.user.id.slice(0, 8)}</Tag>
+                </div>
+              ) : (
+                '-'
+              )}
+            </Descriptions.Item>
             <Descriptions.Item label="Trạng thái"><StatusTag status={activeBuyer.status} /></Descriptions.Item>
             <Descriptions.Item label="Metadata">
               <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{stringifyJsonObject(activeBuyer.metadataJson)}</pre>

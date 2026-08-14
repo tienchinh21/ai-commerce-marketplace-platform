@@ -1,3 +1,5 @@
+import type { LinkedUser } from '@/shared/types/linked-user';
+
 export interface Buyer {
   id: string;
   userId: string | null;
@@ -8,6 +10,7 @@ export interface Buyer {
   metadataJson: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
+  user: LinkedUser | null;
 }
 
 export interface BuyerListParams {

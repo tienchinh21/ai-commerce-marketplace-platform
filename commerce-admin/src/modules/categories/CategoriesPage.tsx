@@ -326,7 +326,7 @@ export function CategoriesPage() {
       )}
 
       <Card
-        style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}
+        style={{ borderRadius: 12, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}
         bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}
       >
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -358,7 +358,7 @@ export function CategoriesPage() {
               dataIndex: 'name',
               render: (text: string, record) => (
                 <Space>
-                  <span style={{ fontWeight: 600, color: '#0f172a' }}>{text}</span>
+                  <span style={{ fontWeight: 600 }}>{text}</span>
                   <Tag color="blue" style={{ fontSize: 11 }}>{record.slug}</Tag>
                 </Space>
               ),

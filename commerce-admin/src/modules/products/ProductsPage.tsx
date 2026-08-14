@@ -187,7 +187,7 @@ export function ProductsPage() {
         />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
+      <Card style={{ borderRadius: 12, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -271,7 +271,7 @@ export function ProductsPage() {
               dataIndex: 'title',
               render: (title: string, record) => (
                 <div>
-                  <div style={{ fontWeight: 600, color: '#0f172a' }}>{title}</div>
+                  <div style={{ fontWeight: 600 }}>{title}</div>
                   <Tag color="cyan" style={{ fontSize: 11, marginTop: 4 }}>Hãng: {record.brand || '-'}</Tag>
                 </div>
               ),

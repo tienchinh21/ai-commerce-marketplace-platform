@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Alert, Card, Col, Empty, Progress, Row, Typography, Space, Button } from 'antd';
+import { Alert, Card, Col, Empty, Progress, Row, Typography, Space, Button, theme } from 'antd';
 import {
   ShoppingOutlined,
   CommentOutlined,
@@ -28,6 +28,7 @@ import { CoreTable } from '@/shared/components/CoreTable';
 import { extractErrorMessage } from '@/shared/utils/error-handler';
 import { formatNumber, formatCurrency } from '@/shared/utils/formatters';
 import { ROUTES } from '@/shared/constants/routes.constants';
+import { useTheme } from '@/shared/theme';
 
 function numberValue(record: AnalyticsRecord, key: string): number {
   const value = record[key];
@@ -39,82 +40,95 @@ function numberValue(record: AnalyticsRecord, key: string): number {
   return 0;
 }
 
-function stringValue(record: AnalyticsRecord, key: string, fallback = '-'): string {
+function stringValue(record: AnalyticsRecord, key: string): string {
   const value = record[key];
-  return typeof value === 'string' && value ? value : fallback;
+  return typeof value === 'string' ? value : String(value ?? '');
 }
 
 export function DashboardPage() {
   const navigate = useNavigate();
+  const { token } = theme.useToken();
+  const { isDark } = useTheme();
 
   const productPerformanceQuery = useQuery({
     queryKey: ['cms-analytics-product-performance', 8],
     queryFn: () => fetchProductPerformance({ limit: 8 }),
   });
+
   const categorySummaryQuery = useQuery({
     queryKey: ['cms-analytics-category-summary'],
     queryFn: () => fetchCategorySummary(),
   });
+
   const reviewSentimentQuery = useQuery({
     queryKey: ['cms-analytics-review-sentiment'],
     queryFn: () => fetchReviewSentiment(),
   });
+
   const sellerPerformanceQuery = useQuery({
     queryKey: ['cms-analytics-seller-performance', 8],
     queryFn: () => fetchSellerPerformance({ limit: 8 }),
   });
 
-  const analyticsError =
-    productPerformanceQuery.error ??
-    categorySummaryQuery.error ??
-    reviewSentimentQuery.error ??
-    sellerPerformanceQuery.error;
-
-  const productPerformance = productPerformanceQuery.data ?? [];
   const categorySummary = categorySummaryQuery.data ?? [];
+  const productPerformance = productPerformanceQuery.data ?? [];
+  const reviewSentiment = reviewSentimentQuery.data ?? [];
   const sellerPerformance = sellerPerformanceQuery.data ?? [];
-  const totalProducts = categorySummary.reduce((sum, item) => sum + numberValue(item, 'product_count'), 0);
-  const totalReviews = categorySummary.reduce((sum, item) => sum + numberValue(item, 'review_count'), 0);
-  const activeSellers = sellerPerformance.filter((seller) => stringValue(seller, 'status') === 'ACTIVE').length;
-  const totalRevenue = categorySummary.reduce((sum, item) => sum + numberValue(item, 'revenue'), 0);
 
-  const topProducts = productPerformance.map((item) => ({
-    name: stringValue(item, 'title'),
-    revenue: numberValue(item, 'revenue'),
-    orders: numberValue(item, 'order_count'),
-  }));
+  const totalProducts = categorySummary.reduce((sum, item) => sum + numberValue(item, 'product_count'), 0);
+  const totalRevenue = categorySummary.reduce((sum, item) => sum + numberValue(item, 'total_revenue'), 0);
+  const totalReviews = reviewSentiment.reduce((sum, item) => sum + numberValue(item, 'review_count'), 0);
+  const activeSellers = sellerPerformance.length;
+
+  const topProducts = productPerformance
+    .slice(0, 5)
+    .map((item) => ({
+      name: stringValue(item, 'title') || stringValue(item, 'product_id'),
+      revenue: numberValue(item, 'revenue'),
+      sales: numberValue(item, 'order_count'),
+    }));
 
   const categoryData = categorySummary.map((item) => ({
-    name: stringValue(item, 'name'),
+    name: stringValue(item, 'name') || stringValue(item, 'category_id'),
     count: numberValue(item, 'product_count'),
+    revenue: numberValue(item, 'total_revenue'),
   }));
 
-  const ratingCounts = (reviewSentimentQuery.data ?? []).reduce<{ positive: number; neutral: number; negative: number }>(
-    (acc, item) => {
-      const rating = numberValue(item, 'rating');
-      const count = numberValue(item, 'review_count');
-      if (rating >= 4) acc.positive += count;
-      else if (rating >= 3) acc.neutral += count;
-      else acc.negative += count;
-      return acc;
-    },
-    { positive: 0, neutral: 0, negative: 0 },
-  );
-  const sentimentTotal = ratingCounts.positive + ratingCounts.neutral + ratingCounts.negative;
-  const sentimentData = [
-    { name: 'Tích cực', value: sentimentTotal ? Math.round((ratingCounts.positive / sentimentTotal) * 100) : 0, color: '#22c55e' },
-    { name: 'Trung tính', value: sentimentTotal ? Math.round((ratingCounts.neutral / sentimentTotal) * 100) : 0, color: '#eab308' },
-    { name: 'Tiêu cực', value: sentimentTotal ? Math.round((ratingCounts.negative / sentimentTotal) * 100) : 0, color: '#ef4444' },
-  ];
+  const sentimentTotal = reviewSentiment.reduce((sum, item) => sum + numberValue(item, 'review_count'), 0);
+  const sentimentData = reviewSentiment.map((item) => {
+    const label = stringValue(item, 'sentiment_label') || 'NEUTRAL';
+    const count = numberValue(item, 'review_count');
+    const color = label === 'POSITIVE' ? '#16a34a' : label === 'NEGATIVE' ? '#dc2626' : '#f59e0b';
+    return {
+      name: label,
+      value: sentimentTotal > 0 ? Math.round((count / sentimentTotal) * 100) : 0,
+      color,
+    };
+  });
+
+  const analyticsError =
+    productPerformanceQuery.error ||
+    categorySummaryQuery.error ||
+    reviewSentimentQuery.error ||
+    sellerPerformanceQuery.error;
+
+  const chartGridStroke = isDark ? '#334155' : '#f1f5f9';
+  const tooltipContentStyle = {
+    backgroundColor: token.colorBgContainer,
+    borderColor: token.colorBorder,
+    borderRadius: 8,
+    color: token.colorText,
+    boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.5)' : '0 2px 8px rgba(0,0,0,0.1)',
+  };
 
   return (
     <Space direction="vertical" size={24} style={{ width: '100%' }}>
-      <div style={{ background: '#ffffff', padding: '20px 24px', borderRadius: 12, border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
+      <div style={{ background: token.colorBgContainer, padding: '20px 24px', borderRadius: 12, border: `1px solid ${token.colorBorder}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
         <div>
-          <Typography.Title level={3} style={{ margin: 0, fontWeight: 700, color: '#0f172a' }}>
+          <Typography.Title level={3} style={{ margin: 0, fontWeight: 700, color: token.colorText }}>
             Tổng Quan Hệ Thống Marketplace
           </Typography.Title>
-          <Typography.Text type="secondary" style={{ fontSize: 13, color: '#64748b' }}>
+          <Typography.Text type="secondary" style={{ fontSize: 13, color: token.colorTextSecondary }}>
             Báo cáo catalog, doanh thu, review và seller từ Core Analytics API.
           </Typography.Text>
         </div>
@@ -134,30 +148,30 @@ export function DashboardPage() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>
-          <MetricCard title="Tổng Sản Phẩm Catalog" value={formatNumber(totalProducts)} icon={<ShoppingOutlined />} iconColor="#2563eb" iconBg="#eff6ff" />
+          <MetricCard title="Tổng Sản Phẩm Catalog" value={formatNumber(totalProducts)} icon={<ShoppingOutlined />} iconColor="#2563eb" iconBg={isDark ? 'rgba(37, 99, 235, 0.2)' : '#eff6ff'} />
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <MetricCard title="Đánh Giá (Reviews)" value={formatNumber(totalReviews)} icon={<CommentOutlined />} iconColor="#16a34a" iconBg="#f0fdf4" />
+          <MetricCard title="Đánh Giá (Reviews)" value={formatNumber(totalReviews)} icon={<CommentOutlined />} iconColor="#16a34a" iconBg={isDark ? 'rgba(22, 163, 74, 0.2)' : '#f0fdf4'} />
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <MetricCard title="Sellers trong báo cáo" value={formatNumber(activeSellers)} icon={<ShopOutlined />} iconColor="#9333ea" iconBg="#faf5ff" />
+          <MetricCard title="Sellers trong báo cáo" value={formatNumber(activeSellers)} icon={<ShopOutlined />} iconColor="#9333ea" iconBg={isDark ? 'rgba(147, 51, 234, 0.2)' : '#faf5ff'} />
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <MetricCard title="Doanh thu ghi nhận" value={formatCurrency(totalRevenue)} icon={<RobotOutlined />} iconColor="#0284c7" iconBg="#f0f9ff" subTitle="Từ analytics.category-summary" />
+          <MetricCard title="Doanh thu ghi nhận" value={formatCurrency(totalRevenue)} icon={<RobotOutlined />} iconColor="#0284c7" iconBg={isDark ? 'rgba(2, 132, 199, 0.2)' : '#f0f9ff'} subTitle="Từ analytics.category-summary" />
         </Col>
       </Row>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
-          <Card title={<span style={{ fontWeight: 700, color: '#0f172a' }}>Top Sản Phẩm Theo Doanh Thu</span>} style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+          <Card title={<span style={{ fontWeight: 700, color: token.colorText }}>Top Sản Phẩm Theo Doanh Thu</span>} style={{ borderRadius: 12, border: `1px solid ${token.colorBorder}` }}>
             <div style={{ height: 320 }}>
               {topProducts.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={topProducts} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="name" stroke="#64748b" style={{ fontSize: 12 }} />
-                    <YAxis stroke="#64748b" style={{ fontSize: 12 }} tickFormatter={(val) => `${Number(val) / 1000000}M`} />
-                    <Tooltip formatter={(value) => [formatCurrency(String(value)), 'Doanh thu']} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chartGridStroke} />
+                    <XAxis dataKey="name" stroke={token.colorTextSecondary} style={{ fontSize: 12 }} />
+                    <YAxis stroke={token.colorTextSecondary} style={{ fontSize: 12 }} tickFormatter={(val) => `${Number(val) / 1000000}M`} />
+                    <Tooltip contentStyle={tooltipContentStyle} formatter={(value) => [formatCurrency(String(value)), 'Doanh thu']} />
                     <Bar dataKey="revenue" fill="#2563eb" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -169,7 +183,7 @@ export function DashboardPage() {
         </Col>
 
         <Col xs={24} lg={8}>
-          <Card title={<span style={{ fontWeight: 700, color: '#0f172a' }}>Phân Bố Rating Review</span>} style={{ borderRadius: 12, border: '1px solid #e2e8f0', height: '100%' }}>
+          <Card title={<span style={{ fontWeight: 700, color: token.colorText }}>Phân Bố Rating Review</span>} style={{ borderRadius: 12, border: `1px solid ${token.colorBorder}`, height: '100%' }}>
             <div style={{ height: 220, display: 'grid', placeItems: 'center' }}>
               {sentimentTotal > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
@@ -179,7 +193,7 @@ export function DashboardPage() {
                         <Cell key={entry.name} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => [`${value}%`, 'Tỷ lệ']} />
+                    <Tooltip contentStyle={tooltipContentStyle} formatter={(value) => [`${value}%`, 'Tỷ lệ']} />
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
@@ -190,8 +204,8 @@ export function DashboardPage() {
               {sentimentData.map((item) => (
                 <div key={item.name} style={{ marginBottom: 8 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-                    <span>{item.name}</span>
-                    <span style={{ fontWeight: 700 }}>{item.value}%</span>
+                    <span style={{ color: token.colorText }}>{item.name}</span>
+                    <span style={{ fontWeight: 700, color: token.colorText }}>{item.value}%</span>
                   </div>
                   <Progress percent={item.value} strokeColor={item.color} showInfo={false} size="small" />
                 </div>
@@ -203,15 +217,15 @@ export function DashboardPage() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={12}>
-          <Card title={<span style={{ fontWeight: 700, color: '#0f172a' }}>Phân Bổ Sản Phẩm Theo Danh Mục</span>} style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+          <Card title={<span style={{ fontWeight: 700, color: token.colorText }}>Phân Bổ Sản Phẩm Theo Danh Mục</span>} style={{ borderRadius: 12, border: `1px solid ${token.colorBorder}` }}>
             <div style={{ height: 260 }}>
               {categoryData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={categoryData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                    <XAxis type="number" stroke="#64748b" style={{ fontSize: 12 }} />
-                    <YAxis dataKey="name" type="category" stroke="#64748b" style={{ fontSize: 12 }} />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={chartGridStroke} />
+                    <XAxis type="number" stroke={token.colorTextSecondary} style={{ fontSize: 12 }} />
+                    <YAxis dataKey="name" type="category" stroke={token.colorTextSecondary} style={{ fontSize: 12 }} />
+                    <Tooltip contentStyle={tooltipContentStyle} />
                     <Bar dataKey="count" fill="#4f46e5" radius={[0, 4, 4, 0]} barSize={20} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -223,7 +237,7 @@ export function DashboardPage() {
         </Col>
 
         <Col xs={24} lg={12}>
-          <Card title={<span style={{ fontWeight: 700, color: '#0f172a' }}>Hiệu Suất Seller</span>} style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+          <Card title={<span style={{ fontWeight: 700, color: token.colorText }}>Hiệu Suất Seller</span>} style={{ borderRadius: 12, border: `1px solid ${token.colorBorder}` }}>
             <CoreTable<AnalyticsRecord>
               dataSource={sellerPerformance}
               rowKey={(record) => stringValue(record, 'id')}

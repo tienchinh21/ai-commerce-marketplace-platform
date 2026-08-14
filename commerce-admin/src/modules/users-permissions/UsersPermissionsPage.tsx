@@ -116,7 +116,7 @@ export function UsersPermissionsPage() {
         />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
+      <Card style={{ borderRadius: 12, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20 }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -137,7 +137,7 @@ export function UsersPermissionsPage() {
               title: 'Người dùng',
               dataIndex: 'displayName',
               render: (displayName: string) => (
-                <span style={{ fontWeight: 600, color: '#0f172a' }}>{displayName}</span>
+                <span style={{ fontWeight: 600 }}>{displayName}</span>
               ),
             },
             { title: 'Email', dataIndex: 'email' },
@@ -161,7 +161,7 @@ export function UsersPermissionsPage() {
         />
       </Card>
 
-      <Card title="Danh mục quyền hệ thống" style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+      <Card title="Danh mục quyền hệ thống" style={{ borderRadius: 12 }}>
         <CoreTable<Permission>
           dataSource={permissionsQuery.data ?? []}
           rowKey="id"

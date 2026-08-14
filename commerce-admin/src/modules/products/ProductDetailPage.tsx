@@ -114,7 +114,7 @@ export function ProductDetailPage() {
 
       {product && (
         <>
-          <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}>
+          <Card style={{ borderRadius: 12 }}>
             <Descriptions column={2} bordered size="small">
               <Descriptions.Item label="Tên sản phẩm" span={2}>{product.title}</Descriptions.Item>
               <Descriptions.Item label="Thương hiệu">{product.brand || '-'}</Descriptions.Item>
@@ -152,7 +152,7 @@ export function ProductDetailPage() {
                 Thêm biến thể
               </Button>
             }
-            style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}
+            style={{ borderRadius: 12 }}
           >
             <CoreTable<ProductVariant>
               dataSource={product.variants}
@@ -179,7 +179,7 @@ export function ProductDetailPage() {
                 Thêm ảnh
               </Button>
             }
-            style={{ borderRadius: 12, border: '1px solid #e2e8f0' }}
+            style={{ borderRadius: 12 }}
           >
             <CoreTable<ProductImage>
               dataSource={product.images}

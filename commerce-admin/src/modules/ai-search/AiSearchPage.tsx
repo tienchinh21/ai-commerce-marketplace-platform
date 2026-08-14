@@ -21,7 +21,7 @@ export function AiSearchPage() {
         description="Page này đã bỏ dữ liệu giả. Khi commerce-ai-platform cung cấp endpoint, thêm API wrapper thật rồi render kết quả từ response."
       />
 
-      <Card style={{ borderRadius: 16, border: '1px solid #e2e8f0', background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}>
+      <Card style={{ borderRadius: 16 }}>
         <Space direction="vertical" size={16} style={{ width: '100%' }}>
           <div style={{ display: 'flex', gap: 12 }}>
             <Input

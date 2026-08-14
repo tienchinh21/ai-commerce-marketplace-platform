@@ -132,7 +132,7 @@ export function SellersPage() {
         <Alert type="error" showIcon message="Không tải được danh sách nhà bán hàng" description={extractErrorMessage(sellersQuery.error)} />
       )}
 
-      <Card style={{ borderRadius: 12, border: '1px solid #e2e8f0', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
+      <Card style={{ borderRadius: 12, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
         <div style={{ marginBottom: 20 }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
@@ -166,11 +166,23 @@ export function SellersPage() {
               title: 'Nhà bán hàng',
               dataIndex: 'name',
               render: (text: string) => (
-                <span style={{ fontWeight: 600, color: '#0f172a' }}>{text}</span>
+                <span style={{ fontWeight: 600 }}>{text}</span>
               ),
             },
             { title: 'Slug gian hàng', dataIndex: 'slug', render: (slug: string) => <Tag color="blue">{slug}</Tag> },
-            { title: 'User ID', dataIndex: 'userId', render: (userId: string | null) => userId ? <Tag>{userId.slice(0, 8)}</Tag> : '-' },
+            {
+              title: 'Tài khoản user',
+              dataIndex: 'user',
+              render: (user: Seller['user']) =>
+                user ? (
+                  <div>
+                    <div style={{ fontWeight: 500 }}>{user.displayName}</div>
+                    <Tag>{user.id.slice(0, 8)}</Tag>
+                  </div>
+                ) : (
+                  '-'
+                ),
+            },
             { title: 'Ngày tạo', dataIndex: 'createdAt', render: (createdAt: string) => formatDateTime(createdAt) },
             { title: 'Trạng thái', dataIndex: 'status', render: (status: string) => <StatusTag status={status} /> },
             {
@@ -231,7 +243,16 @@ export function SellersPage() {
           <Descriptions column={1} bordered size="small">
             <Descriptions.Item label="Tên">{activeSeller.name}</Descriptions.Item>
             <Descriptions.Item label="Slug">{activeSeller.slug}</Descriptions.Item>
-            <Descriptions.Item label="User ID">{activeSeller.userId || '-'}</Descriptions.Item>
+            <Descriptions.Item label="Tài khoản user">
+              {activeSeller.user ? (
+                <div>
+                  <div style={{ fontWeight: 500 }}>{activeSeller.user.displayName}</div>
+                  <Tag>{activeSeller.user.id.slice(0, 8)}</Tag>
+                </div>
+              ) : (
+                '-'
+              )}
+            </Descriptions.Item>
             <Descriptions.Item label="Trạng thái"><StatusTag status={activeSeller.status} /></Descriptions.Item>
             <Descriptions.Item label="Metadata">
               <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{stringifyJsonObject(activeSeller.metadataJson)}</pre>

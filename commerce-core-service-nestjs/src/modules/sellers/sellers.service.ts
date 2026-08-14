@@ -56,6 +56,7 @@ export class SellersService {
     }
 
     const [items, total] = await qb
+      .leftJoinAndSelect('seller.user', 'user')
       .orderBy('seller.createdAt', 'DESC')
       .skip((page - 1) * pageSize)
       .take(pageSize)
@@ -65,7 +66,10 @@ export class SellersService {
   }
 
   async get(id: string): Promise<Seller> {
-    const seller = await this.sellers.findOne({ where: { id } });
+    const seller = await this.sellers.findOne({
+      where: { id },
+      relations: { user: true },
+    });
     if (!seller) {
       throw new NotFoundException({
         code: ApiErrorCode.SELLER_NOT_FOUND,

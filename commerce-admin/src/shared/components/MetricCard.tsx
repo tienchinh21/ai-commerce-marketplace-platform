@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card, Space, Typography } from 'antd';
+import { Card, Space, Typography, theme } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { useTheme } from '@/shared/theme';
 
 export interface MetricCardProps {
   title: string;
@@ -24,25 +25,31 @@ export function MetricCard({
   trend,
   subTitle,
   cardStyle,
-  iconColor = '#2563eb',
-  iconBg = '#eff6ff',
+  iconColor,
+  iconBg,
 }: MetricCardProps) {
+  const { token } = theme.useToken();
+  const { isDark } = useTheme();
+
+  const effectiveIconColor = iconColor ?? token.colorPrimary;
+  const effectiveIconBg = iconBg ?? (isDark ? 'rgba(59, 130, 246, 0.15)' : '#eff6ff');
+
   return (
     <Card
       style={{
         borderRadius: 12,
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
+        border: `1px solid ${token.colorBorder}`,
+        boxShadow: isDark ? '0 1px 3px 0 rgba(0, 0, 0, 0.3)' : '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
         ...cardStyle,
       }}
       bodyStyle={{ padding: 20 }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <Typography.Text type="secondary" style={{ fontSize: 13, fontWeight: 500, color: '#64748b' }}>
+          <Typography.Text type="secondary" style={{ fontSize: 13, fontWeight: 500, color: token.colorTextSecondary }}>
             {title}
           </Typography.Text>
-          <div style={{ fontSize: 26, fontWeight: 700, color: '#0f172a', marginTop: 4, marginBottom: 4 }}>
+          <div style={{ fontSize: 26, fontWeight: 700, color: token.colorText, marginTop: 4, marginBottom: 4 }}>
             {value}
           </div>
 
@@ -77,8 +84,8 @@ export function MetricCard({
               width: 44,
               height: 44,
               borderRadius: 10,
-              background: iconBg,
-              color: iconColor,
+              background: effectiveIconBg,
+              color: effectiveIconColor,
               display: 'grid',
               placeItems: 'center',
               fontSize: 20,

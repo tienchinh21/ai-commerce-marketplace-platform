@@ -21,7 +21,7 @@ export function AnalystChatPage() {
         showIcon
       />
 
-      <Card style={{ borderRadius: 16, border: '1px solid #e2e8f0' }}>
+      <Card style={{ borderRadius: 16 }}>
         <Space direction="vertical" size={16} style={{ width: '100%' }}>
           <Alert
             message="Chế độ SQL Guardrail Bảo Mật: chỉ cho phép câu lệnh SELECT read-only trên database views analytics."

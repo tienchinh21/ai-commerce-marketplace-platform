@@ -2,10 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { ExternalUser } from '../auth/external-user.entity';
 
 @Entity({ schema: 'marketplace', name: 'sellers' })
 export class Seller {
@@ -20,6 +23,15 @@ export class Seller {
   })
   @Column({ name: 'user_id', type: 'uuid', nullable: true })
   userId: string | null;
+
+  @ApiProperty({
+    nullable: true,
+    type: () => ExternalUser,
+    description: 'Associated user',
+  })
+  @ManyToOne(() => ExternalUser, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'user_id' })
+  user: ExternalUser | null;
 
   @ApiProperty({ description: 'Seller name' })
   @Column({ type: 'varchar', length: 255 })
