@@ -221,8 +221,8 @@ export function IngestionPage() {
             <Button icon={<PlusOutlined />} onClick={openCreateSourceModal}>
               Thêm nguồn
             </Button>
-            <Button type="primary" icon={<CloudUploadOutlined />} onClick={() => importModal.showModal()} style={{ background: '#4f46e5' }}>
-              Import batch
+            <Button type="primary" icon={<CloudUploadOutlined />} onClick={() => importModal.showModal()}>
+              Import Snapshot
             </Button>
           </Space>
         }
@@ -282,8 +282,8 @@ export function IngestionPage() {
                       width: 170,
                       render: (_, record) => (
                         <Space size={4}>
-                          <Button type="text" icon={<EyeOutlined />} onClick={() => sourceDrawer.showModal(record)}>Chi tiết</Button>
-                          <Button type="text" icon={<EditOutlined />} onClick={() => openEditSourceModal(record)}>Sửa</Button>
+                          <Button type="text" icon={<EyeOutlined style={{ color: '#2563eb' }} />} onClick={() => sourceDrawer.showModal(record)}>Chi tiết</Button>
+                          <Button type="text" icon={<EditOutlined style={{ color: '#0284c7' }} />} onClick={() => openEditSourceModal(record)}>Sửa</Button>
                         </Space>
                       ),
                     },
@@ -309,7 +309,7 @@ export function IngestionPage() {
                     { title: 'Bắt đầu', dataIndex: 'startedAt', width: 180, render: (value: string | null) => formatDateTime(value) },
                     { title: 'Kết thúc', dataIndex: 'finishedAt', width: 180, render: (value: string | null) => formatDateTime(value) },
                     { title: 'Trạng thái', dataIndex: 'status', width: 130, render: (status: string) => <StatusTag status={status} /> },
-                    { title: 'Thao tác', key: 'actions', fixed: 'right', width: 120, render: (_, record) => <Button type="text" icon={<EyeOutlined />} onClick={() => syncDrawer.showModal(record)}>Chi tiết</Button> },
+                    { title: 'Thao tác', key: 'actions', fixed: 'right', width: 120, render: (_, record) => <Button type="text" icon={<EyeOutlined style={{ color: '#2563eb' }} />} onClick={() => syncDrawer.showModal(record)}>Chi tiết</Button> },
                   ]}
                 />
               </Card>
@@ -330,7 +330,7 @@ export function IngestionPage() {
                     { title: 'Content type', dataIndex: 'contentType', width: 140 },
                     { title: 'Parse', dataIndex: 'parseStatus', width: 130, render: (status: string) => <StatusTag status={status} /> },
                     { title: 'Ngày tạo', dataIndex: 'createdAt', width: 180, render: (value: string) => formatDateTime(value) },
-                    { title: 'Thao tác', key: 'actions', fixed: 'right', width: 120, render: (_, record) => <Button type="text" icon={<EyeOutlined />} onClick={() => snapshotDrawer.showModal(record)}>Chi tiết</Button> },
+                    { title: 'Thao tác', key: 'actions', fixed: 'right', width: 120, render: (_, record) => <Button type="text" icon={<EyeOutlined style={{ color: '#2563eb' }} />} onClick={() => snapshotDrawer.showModal(record)}>Chi tiết</Button> },
                   ]}
                 />
               </Card>

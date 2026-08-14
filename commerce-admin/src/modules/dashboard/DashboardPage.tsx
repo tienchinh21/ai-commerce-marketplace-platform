@@ -133,7 +133,7 @@ export function DashboardPage() {
           </Typography.Text>
         </div>
         <Space size={12}>
-          <Button type="primary" icon={<SearchOutlined />} onClick={() => navigate(ROUTES.AI_SEARCH)} style={{ borderRadius: 8, background: '#2563eb', fontWeight: 600 }}>
+          <Button type="primary" icon={<SearchOutlined />} onClick={() => navigate(ROUTES.AI_SEARCH)} style={{ borderRadius: 8, fontWeight: 600 }}>
             Thử AI Search
           </Button>
           <Button icon={<RobotOutlined />} onClick={() => navigate(ROUTES.ANALYST_CHAT)} style={{ borderRadius: 8, fontWeight: 600 }}>

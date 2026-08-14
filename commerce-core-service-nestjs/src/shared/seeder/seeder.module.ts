@@ -2,6 +2,7 @@ import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../../modules/auth/user.entity';
+import { ExternalUser } from '../../modules/auth/external-user.entity';
 import { Permission } from '../../modules/auth/permission.entity';
 import { UserPermission } from '../../modules/auth/user-permission.entity';
 import { Category } from '../../modules/categories/category.entity';
@@ -16,6 +17,7 @@ import { SeederService } from './seeder.service';
   imports: [
     TypeOrmModule.forFeature([
       User,
+      ExternalUser,
       Permission,
       UserPermission,
       Category,

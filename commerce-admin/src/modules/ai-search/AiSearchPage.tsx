@@ -37,7 +37,7 @@ export function AiSearchPage() {
               size="large"
               icon={<SearchOutlined />}
               disabled
-              style={{ borderRadius: 10, padding: '0 28px', background: '#4f46e5', fontWeight: 600, height: 46 }}
+              style={{ borderRadius: 10, padding: '0 28px', fontWeight: 600, height: 46 }}
             >
               Tìm Kiếm AI
             </Button>

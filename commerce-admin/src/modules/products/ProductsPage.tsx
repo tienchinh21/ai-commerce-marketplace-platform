@@ -176,6 +176,11 @@ export function ProductsPage() {
         title="Quản Lý Sản Phẩm (Catalog Products)"
         description="Quản lý thông tin sản phẩm chuẩn hóa, biến thể và hình ảnh. Thuộc tính kỹ thuật nội bộ được xử lý qua dữ liệu ngành hàng/import."
         onRefresh={() => productsQuery.refetch()}
+        actions={
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
+            Tạo Sản Phẩm Mới
+          </Button>
+        }
       />
 
       {productsQuery.isError && (
@@ -188,7 +193,7 @@ export function ProductsPage() {
       )}
 
       <Card style={{ borderRadius: 12, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} bodyStyle={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, padding: 20 }}>
-        <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
           <Input
             prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
             placeholder="Tìm theo tên sản phẩm, thương hiệu..."
@@ -241,14 +246,6 @@ export function ProductsPage() {
               style={{ width: 140 }}
             />
           </Space>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={openCreateModal}
-            style={{ background: '#2563eb', fontWeight: 600 }}
-          >
-            Tạo Sản Phẩm Mới
-          </Button>
         </div>
 
         <CoreTable<Product>
@@ -324,16 +321,9 @@ export function ProductsPage() {
               title: 'Thao tác',
               key: 'actions',
               fixed: 'right',
-              width: 200,
+              width: 210,
               render: (_, record) => (
                 <Space size={4}>
-                  <Button
-                    type="text"
-                    icon={<EditOutlined style={{ color: '#0284c7' }} />}
-                    onClick={() => openEditModal(record)}
-                  >
-                    Sửa
-                  </Button>
                   <Button
                     type="text"
                     icon={<EyeOutlined style={{ color: '#2563eb' }} />}
@@ -343,8 +333,15 @@ export function ProductsPage() {
                   </Button>
                   <Button
                     type="text"
+                    icon={<EditOutlined style={{ color: '#0284c7' }} />}
+                    onClick={() => openEditModal(record)}
+                  >
+                    Sửa
+                  </Button>
+                  <Button
+                    type="text"
                     danger
-                    icon={<DeleteOutlined />}
+                    icon={<DeleteOutlined style={{ color: '#ef4444' }} />}
                     onClick={() => deleteModal.showModal(record)}
                   >
                     Xóa

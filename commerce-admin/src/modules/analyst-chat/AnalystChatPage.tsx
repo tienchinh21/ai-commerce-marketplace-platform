@@ -43,7 +43,7 @@ export function AnalystChatPage() {
               type="primary"
               icon={<SendOutlined />}
               disabled
-              style={{ height: 'auto', padding: '0 24px', borderRadius: 10, background: '#4f46e5', fontWeight: 600 }}
+              style={{ height: 'auto', padding: '0 24px', borderRadius: 10, fontWeight: 600 }}
             >
               Gửi câu hỏi
             </Button>

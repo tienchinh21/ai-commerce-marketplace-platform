@@ -117,7 +117,7 @@ export function OrdersPage() {
         description="Theo dõi đơn hàng cơ bản phục vụ CMS và analytics."
         onRefresh={() => ordersQuery.refetch()}
         actions={
-          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal} style={{ background: '#4f46e5' }}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
             Tạo Đơn Hàng
           </Button>
         }
@@ -163,7 +163,7 @@ export function OrdersPage() {
             { title: 'Thanh toán', dataIndex: 'paymentStatus', width: 140, render: (status: string) => <StatusTag status={status} /> },
             { title: 'Ngày đặt', dataIndex: 'orderedAt', width: 180, render: (value: string) => formatDateTime(value) },
             { title: 'Trạng thái', dataIndex: 'status', width: 130, render: (status: string) => <StatusTag status={status} /> },
-            { title: 'Thao tác', key: 'actions', fixed: 'right', width: 120, render: (_, record) => <Button type="text" icon={<EyeOutlined />} onClick={() => detailDrawer.showModal(record)}>Chi tiết</Button> },
+            { title: 'Thao tác', key: 'actions', fixed: 'right', width: 120, render: (_, record) => <Button type="text" icon={<EyeOutlined style={{ color: '#2563eb' }} />} onClick={() => detailDrawer.showModal(record)}>Chi tiết</Button> },
           ]}
         />
       </Card>

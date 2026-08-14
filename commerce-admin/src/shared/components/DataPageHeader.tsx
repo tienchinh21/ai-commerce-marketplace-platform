@@ -67,16 +67,7 @@ export function DataPageHeader({
               Làm mới
             </Button>
           )}
-          {actions !== undefined ? (
-            actions
-          ) : (
-            <>
-              <Button icon={<ExportOutlined />}>Xuất dữ liệu</Button>
-              <Button type="primary" icon={<PlusOutlined />}>
-                Tạo mới
-              </Button>
-            </>
-          )}
+          {actions}
         </Space>
       </div>
     </div>

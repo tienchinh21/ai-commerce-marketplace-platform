@@ -101,8 +101,8 @@ export function UsersPermissionsPage() {
         description="Quản lý tài khoản Admin internal và quyền truy cập theo cơ chế RBAC."
         onRefresh={refresh}
         actions={
-          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateUserModal} style={{ background: '#4f46e5' }}>
-            Tạo Tài Khoản
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateUserModal}>
+            Tạo User Admin
           </Button>
         }
       />
@@ -156,7 +156,7 @@ export function UsersPermissionsPage() {
               fixed: 'right',
               width: 140,
               render: (_, record) => (
-                <Button type="text" icon={<EditOutlined />} onClick={() => openPermissionsModal(record)}>
+                <Button type="text" icon={<EditOutlined style={{ color: '#0284c7' }} />} onClick={() => openPermissionsModal(record)}>
                   Sửa quyền
                 </Button>
               ),

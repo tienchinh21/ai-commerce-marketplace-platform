@@ -124,7 +124,7 @@ export function BuyersPage() {
         description="Danh sách người mua hàng, tài khoản liên kết và metadata chăm sóc khách hàng."
         onRefresh={() => buyersQuery.refetch()}
         actions={
-          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal} style={{ background: '#4f46e5' }}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
             Thêm Khách Hàng
           </Button>
         }
@@ -197,10 +197,10 @@ export function BuyersPage() {
               width: 170,
               render: (_, record) => (
                 <Space size={4}>
-                  <Button type="text" icon={<EyeOutlined />} onClick={() => detailDrawer.showModal(record)}>
+                  <Button type="text" icon={<EyeOutlined style={{ color: '#2563eb' }} />} onClick={() => detailDrawer.showModal(record)}>
                     Chi tiết
                   </Button>
-                  <Button type="text" icon={<EditOutlined />} onClick={() => openEditModal(record)}>
+                  <Button type="text" icon={<EditOutlined style={{ color: '#0284c7' }} />} onClick={() => openEditModal(record)}>
                     Sửa
                   </Button>
                 </Space>

@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, IsNull, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../../modules/auth/user.entity';
+import { ExternalUser } from '../../modules/auth/external-user.entity';
 import { Permission } from '../../modules/auth/permission.entity';
 import { UserPermission } from '../../modules/auth/user-permission.entity';
 import { PERMISSIONS } from '../../modules/auth/permissions.const';
@@ -377,6 +378,8 @@ export class SeederService {
 
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
+    @InjectRepository(ExternalUser)
+    private readonly externalUsers: Repository<ExternalUser>,
     @InjectRepository(Permission)
     private readonly permissions: Repository<Permission>,
     @InjectRepository(UserPermission)
@@ -395,11 +398,44 @@ export class SeederService {
   async seed(): Promise<void> {
     await this.seedPermissions();
     await this.seedAdminUser();
+    await this.seedLinkedSellers();
     if ((await this.categories.count()) === 0) {
       await this.seedCatalog();
       await this.seedReviewsAndBuyers();
     }
     this.logger.log('Seeding completed');
+  }
+
+  private async seedLinkedSellers(): Promise<void> {
+    const sellersWithoutUser = await this.sellers.find({
+      where: { userId: IsNull() },
+    });
+    if (sellersWithoutUser.length === 0) {
+      this.logger.log('All sellers already linked to external users');
+      return;
+    }
+
+    for (const seller of sellersWithoutUser) {
+      const email = `${seller.slug}@example.com`;
+      let externalUser = await this.externalUsers.findOne({ where: { email } });
+      if (!externalUser) {
+        externalUser = await this.externalUsers.save(
+          this.externalUsers.create({
+            email,
+            passwordHash: await bcrypt.hash('seller123', 10),
+            displayName: seller.name,
+            phone: `090${String(1000000 + Math.floor(Math.random() * 8999999))}`,
+            status: 'ACTIVE',
+          }),
+        );
+      }
+      seller.userId = externalUser.id;
+      await this.sellers.save(seller);
+    }
+
+    this.logger.log(
+      `Linked ${sellersWithoutUser.length} sellers to external users`,
+    );
   }
 
   private async seedPermissions(): Promise<void> {
@@ -477,6 +513,23 @@ export class SeederService {
         .replace(/[̀-ͯ]/g, '')
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
+
+      const externalUserEmail = `${slug}@example.com`;
+      let externalUser = await this.externalUsers.findOne({
+        where: { email: externalUserEmail },
+      });
+      if (!externalUser) {
+        externalUser = await this.externalUsers.save(
+          this.externalUsers.create({
+            email: externalUserEmail,
+            passwordHash: await bcrypt.hash('seller123', 10),
+            displayName: name,
+            phone: `090${String(1000000 + Math.floor(Math.random() * 8999999))}`,
+            status: 'ACTIVE',
+          }),
+        );
+      }
+
       sellerEntities.push(
         await this.sellers.save(
           this.sellers.create({
@@ -484,6 +537,7 @@ export class SeederService {
             slug,
             status: 'ACTIVE',
             ratingAvg: '0',
+            userId: externalUser.id,
             metadataJson: {},
           }),
         ),

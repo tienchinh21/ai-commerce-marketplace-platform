@@ -314,6 +314,11 @@ export function CategoriesPage() {
         title="Danh Mục Sản Phẩm"
         description="Quản lý cây danh mục và các thuộc tính động dùng cho catalog/filter."
         onRefresh={() => categoriesQuery.refetch()}
+        actions={
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateCategory}>
+            Tạo Danh Mục
+          </Button>
+        }
       />
 
       {categoriesQuery.isError && (
@@ -339,12 +344,9 @@ export function CategoriesPage() {
             allowClear
           />
           <Space>
-            <Tag color="indigo" style={{ padding: '4px 12px', fontSize: 13, borderRadius: 12 }}>
+            <Tag color="purple" style={{ padding: '4px 12px', fontSize: 13, borderRadius: 12 }}>
               Tổng số: {filteredData.length} danh mục
             </Tag>
-            <Button type="primary" icon={<PlusOutlined />} onClick={openCreateCategory}>
-              Tạo danh mục
-            </Button>
           </Space>
         </div>
 
@@ -404,7 +406,7 @@ export function CategoriesPage() {
                     </Button>
                   </Tooltip>
                   <Tooltip title="Xóa">
-                    <Button type="text" danger icon={<DeleteOutlined />} onClick={() => deleteModal.showModal(record)}>
+                    <Button type="text" danger icon={<DeleteOutlined style={{ color: '#ef4444' }} />} onClick={() => deleteModal.showModal(record)}>
                       Xóa
                     </Button>
                   </Tooltip>
@@ -491,10 +493,10 @@ export function CategoriesPage() {
               align: 'right',
               render: (_, record) => (
                 <Space size={4}>
-                  <Button type="text" icon={<EditOutlined />} onClick={() => openEditAttribute(record)}>
+                  <Button type="text" icon={<EditOutlined style={{ color: '#0284c7' }} />} onClick={() => openEditAttribute(record)}>
                     Sửa
                   </Button>
-                  <Button type="text" danger icon={<DeleteOutlined />} onClick={() => deleteAttributeModal.showModal(record)}>
+                  <Button type="text" danger icon={<DeleteOutlined style={{ color: '#ef4444' }} />} onClick={() => deleteAttributeModal.showModal(record)}>
                     Xóa
                   </Button>
                 </Space>
