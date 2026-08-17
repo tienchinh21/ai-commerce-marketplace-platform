@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { productService } from "@/services/product.service";
 import { ProductCard } from "@/components/product/ProductCard";
+import { HomeHero } from "@/components/home/HomeHero";
 import { HomePressTicker } from "@/components/home/HomePressTicker";
 import { HomeBentoGrid } from "@/components/home/HomeBentoGrid";
 import { HomeShopTheLook } from "@/components/home/HomeShopTheLook";
@@ -35,97 +36,8 @@ export default async function HomePage({
 
   return (
     <div className="flex flex-col">
-      {/* 1. CINEMATIC DARK HERO (Canvas Night #000000) */}
-      <section className="relative overflow-hidden bg-black text-white py-16 lg:py-24">
-        {/* Ambient subtle light glow */}
-        <div className="absolute top-0 right-1/4 h-96 w-96 rounded-full bg-surface-elevated-dark/50 blur-[120px] pointer-events-none animate-hero-glow" />
-
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
-            {/* Left: Giant Display Typography */}
-            <div className="lg:col-span-7 space-y-6 animate-fade-in-up">
-              <div className="inline-flex items-center gap-2 rounded-full border border-surface-elevated-dark bg-canvas-night-elevated px-3.5 py-1 text-xs font-semibold tracking-wider text-aloe-10">
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>{t.home.heroTag}</span>
-              </div>
-
-              <h1 className="font-display text-4xl font-light leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">
-                {isVi ? (
-                  <>
-                    Tuyệt tác <span className="font-normal italic text-aloe-10">Công Nghệ</span> &amp; Phong Cách Sống.
-                  </>
-                ) : (
-                  <>
-                    Masterpiece of <span className="font-normal italic text-aloe-10">Tech</span> &amp; Modern Living.
-                  </>
-                )}
-              </h1>
-
-              <p className="max-w-xl text-sm font-normal leading-relaxed text-shade-40 sm:text-base">
-                {t.home.heroSubtitle}
-              </p>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <Link
-                  href={routes.products}
-                  className="btn-aloe-pill text-xs sm:text-sm"
-                >
-                  <span>{t.home.exploreBtn}</span>
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-
-                <Link
-                  href={`${routes.products}?category=tech-audio`}
-                  className="btn-outline-dark text-xs sm:text-sm"
-                >
-                  <span>{t.nav.categories}</span>
-                </Link>
-              </div>
-
-              {/* Specs Micro Badge strip */}
-              <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-surface-elevated-dark text-xs text-shade-40">
-                <div>
-                  <span className="block font-bold text-white text-sm">96 kHz</span>
-                  <span>Lossless Hi-Res</span>
-                </div>
-                <div className="h-6 w-px bg-surface-elevated-dark" />
-                <div>
-                  <span className="block font-bold text-white text-sm">60 Giờ</span>
-                  <span>Thời Lượng Pin</span>
-                </div>
-                <div className="h-6 w-px bg-surface-elevated-dark" />
-                <div>
-                  <span className="block font-bold text-white text-sm">Active ANC</span>
-                  <span>Chống Ồn Thích Ứng</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Featured Hero Visual with sleek caption */}
-            <div className="lg:col-span-5 relative animate-fade-in-up [animation-delay:150ms]">
-              <div className="relative aspect-4/5 w-full overflow-hidden rounded-xl border border-surface-elevated-dark bg-canvas-night-elevated shadow-elevation-4">
-                <img
-                  src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&auto=format&fit=crop&q=90"
-                  alt="OKZ Studio Master One"
-                  className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-103"
-                />
-
-                {/* Minimalist Specs Overlay */}
-                <div className="absolute bottom-3 left-3 right-3 rounded-lg border border-surface-elevated-dark bg-black/85 p-3.5 backdrop-blur-md flex items-center justify-between text-xs">
-                  <div>
-                    <span className="text-[10px] font-bold tracking-wider text-aloe-10 uppercase block">
-                      {t.home.featuredBannerTag}
-                    </span>
-                    <span className="font-medium text-white">OKZ Studio Master One</span>
-                  </div>
-                  <span className="font-semibold text-aloe-10">8.490.000₫</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 1. CINEMATIC FULL-BLEED LUXURY HERO SLIDER */}
+      <HomeHero />
 
       {/* 2. PRESS & VALUE PROPOSITION TICKER */}
       <HomePressTicker />
