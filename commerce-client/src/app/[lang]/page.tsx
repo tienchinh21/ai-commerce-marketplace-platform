@@ -175,23 +175,23 @@ export default async function HomePage({
               <Link
                 key={cat.id}
                 href={`${routes.products}?category=${cat.slug}`}
-                className="group relative flex flex-col overflow-hidden rounded-lg border border-hairline-light bg-white transition-all duration-300 hover:shadow-elevation-3 hover:-translate-y-0.5"
+                className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-hairline-light bg-white transition-all duration-300 hover:shadow-elevation-3 hover:-translate-y-0.5"
               >
-                <div className="relative aspect-4/3 w-full overflow-hidden bg-shade-30/30">
+                <div className="relative h-32 sm:h-36 w-full overflow-hidden bg-shade-30/20">
                   {cat.imageUrl && (
                     <img
                       src={cat.imageUrl}
                       alt={isVi ? cat.name : cat.nameEn}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-108"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
-                  <span className="absolute bottom-2.5 left-2.5 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-bold text-black backdrop-blur-xs">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+                  <span className="absolute bottom-2 left-2 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-bold text-black backdrop-blur-xs">
                     {cat.itemCount} items
                   </span>
                 </div>
                 <div className="p-3">
-                  <h4 className="text-xs font-bold text-ink group-hover:text-shade-60 transition-colors">
+                  <h4 className="text-xs font-bold text-ink line-clamp-1 group-hover:text-shade-60 transition-colors">
                     {isVi ? cat.name : cat.nameEn}
                   </h4>
                 </div>
