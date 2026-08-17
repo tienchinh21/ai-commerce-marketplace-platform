@@ -1,9 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/navigation";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { ShoppingBag, Plus, Minus, Trash2, Tag, ArrowRight, Sparkles } from "lucide-react";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -24,7 +22,6 @@ export function CartDrawer() {
     closeCart,
     updateQuantity,
     removeItem,
-    clearCart,
     voucherCode,
     applyVoucher,
     removeVoucher,
@@ -112,7 +109,8 @@ export function CartDrawer() {
                 key={item.id}
                 className="flex items-start gap-3.5 border-b border-hairline-light pb-4"
               >
-                <div className="relative h-18 w-18 shrink-0 overflow-hidden rounded-md bg-shade-30/30 border border-hairline-light">
+                {/* Fixed Dimension Product Thumbnail */}
+                <div className="relative h-20 w-20 min-w-[5rem] shrink-0 overflow-hidden rounded-md bg-shade-30/20 border border-hairline-light">
                   <img
                     src={item.thumbnail}
                     alt={item.title}
@@ -120,7 +118,7 @@ export function CartDrawer() {
                   />
                 </div>
 
-                <div className="flex flex-1 flex-col justify-between min-h-[5rem]">
+                <div className="flex flex-1 flex-col justify-between min-h-[5rem] min-w-0">
                   <div>
                     <h5 className="text-[13px] font-semibold text-ink line-clamp-2 leading-snug">
                       {isVi ? item.title : item.titleEn}
@@ -137,35 +135,37 @@ export function CartDrawer() {
                       {formatPrice(item.price, lang)}
                     </div>
 
-                    {/* Quantity controls */}
-                    <div className="flex items-center gap-2 rounded-full border border-hairline-light bg-shade-30/20 px-2 py-0.5">
+                    <div className="flex items-center gap-2">
+                      {/* Quantity controls */}
+                      <div className="flex items-center gap-1.5 rounded-full border border-hairline-light bg-shade-30/20 px-2 py-0.5">
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="p-1 text-shade-60 hover:text-black cursor-pointer"
+                        >
+                          <Minus className="h-3 w-3" />
+                        </button>
+                        <span className="text-xs font-semibold text-ink min-w-4 text-center">
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="p-1 text-shade-60 hover:text-black cursor-pointer"
+                        >
+                          <Plus className="h-3 w-3" />
+                        </button>
+                      </div>
+
                       <button
                         type="button"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="p-1 text-shade-60 hover:text-black cursor-pointer"
+                        onClick={() => removeItem(item.id)}
+                        className="text-shade-40 hover:text-red-600 p-1 cursor-pointer transition-colors"
+                        title={t.common.delete}
                       >
-                        <Minus className="h-3 w-3" />
-                      </button>
-                      <span className="text-xs font-semibold text-ink min-w-4 text-center">
-                        {item.quantity}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="p-1 text-shade-60 hover:text-black cursor-pointer"
-                      >
-                        <Plus className="h-3 w-3" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={() => removeItem(item.id)}
-                      className="text-shade-40 hover:text-red-600 p-1 cursor-pointer transition-colors"
-                      title={t.common.delete}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
                   </div>
                 </div>
               </div>
