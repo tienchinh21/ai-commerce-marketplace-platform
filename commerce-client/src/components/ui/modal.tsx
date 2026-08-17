@@ -49,16 +49,16 @@ export function Modal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
+      {/* Backdrop with fade-in */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-fade-in"
         onClick={onClose}
       />
 
-      {/* Dialog container */}
+      {/* Dialog container with smooth scale-up & fade-in */}
       <div
         className={cn(
-          "relative z-50 w-full overflow-hidden rounded-lg border border-hairline-light bg-white p-6 shadow-elevation-4 animate-in fade-in zoom-in-95 duration-200",
+          "relative z-50 w-full overflow-hidden rounded-lg border border-hairline-light bg-white p-6 shadow-elevation-4 animate-scale-up",
           maxWidthClasses[maxWidth],
           className
         )}

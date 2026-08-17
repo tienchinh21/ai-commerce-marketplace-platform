@@ -34,9 +34,9 @@ export function Sheet({
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Backdrop */}
+      {/* Backdrop with fade-in */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-fade-in"
         onClick={onClose}
       />
 
@@ -46,9 +46,11 @@ export function Sheet({
           side === "right" ? "right-0 pl-10" : "left-0 pr-10"
         )}
       >
+        {/* Drawer container with slide-in animation */}
         <div
           className={cn(
-            "w-screen max-w-md bg-white shadow-2xl transition-transform duration-300 ease-in-out flex flex-col",
+            "w-screen max-w-md bg-white shadow-2xl flex flex-col",
+            side === "right" ? "animate-slide-in-right" : "animate-slide-in-left",
             className
           )}
         >

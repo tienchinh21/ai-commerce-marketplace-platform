@@ -38,12 +38,12 @@ export default async function HomePage({
       {/* 1. CINEMATIC DARK HERO (Canvas Night #000000) */}
       <section className="relative overflow-hidden bg-black text-white py-16 lg:py-24">
         {/* Ambient subtle light glow */}
-        <div className="absolute top-0 right-1/4 h-96 w-96 rounded-full bg-surface-elevated-dark/50 blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 right-1/4 h-96 w-96 rounded-full bg-surface-elevated-dark/50 blur-[120px] pointer-events-none animate-hero-glow" />
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
             {/* Left: Giant Display Typography */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-7 space-y-6 animate-fade-in-up">
               <div className="inline-flex items-center gap-2 rounded-full border border-surface-elevated-dark bg-canvas-night-elevated px-3.5 py-1 text-xs font-semibold tracking-wider text-aloe-10">
                 <Sparkles className="h-3.5 w-3.5" />
                 <span>{t.home.heroTag}</span>
@@ -103,7 +103,7 @@ export default async function HomePage({
             </div>
 
             {/* Right: Featured Hero Visual with sleek caption */}
-            <div className="lg:col-span-5 relative">
+            <div className="lg:col-span-5 relative animate-fade-in-up [animation-delay:150ms]">
               <div className="relative aspect-4/5 w-full overflow-hidden rounded-xl border border-surface-elevated-dark bg-canvas-night-elevated shadow-elevation-4">
                 <img
                   src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&auto=format&fit=crop&q=90"
