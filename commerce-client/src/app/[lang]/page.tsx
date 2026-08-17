@@ -2,16 +2,14 @@ import Link from "next/link";
 import {
   ArrowRight,
   Sparkles,
-  ShieldCheck,
   Zap,
-  Truck,
-  RotateCcw,
-  Award,
-  ChevronRight,
-  TrendingUp,
+  Volume2,
 } from "lucide-react";
 import { productService } from "@/services/product.service";
 import { ProductCard } from "@/components/product/ProductCard";
+import { HomePressTicker } from "@/components/home/HomePressTicker";
+import { HomeBentoGrid } from "@/components/home/HomeBentoGrid";
+import { HomeShopTheLook } from "@/components/home/HomeShopTheLook";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { Locale } from "@/types/common";
 import { ROUTES } from "@/lib/constants";
@@ -33,8 +31,6 @@ export default async function HomePage({
   ]);
 
   const featuredProducts = productsData.products.filter((p) => p.isFeatured).slice(0, 4);
-  const spotlightProduct = productsData.products[0];
-  const spotlightProduct2 = productsData.products[1];
   const newArrivals = productsData.products.filter((p) => p.isNew || !p.isFeatured).slice(0, 4);
 
   return (
@@ -46,7 +42,7 @@ export default async function HomePage({
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
-            {/* Left: Giant Display Typography (weight 330) */}
+            {/* Left: Giant Display Typography */}
             <div className="lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-surface-elevated-dark bg-canvas-night-elevated px-3.5 py-1 text-xs font-semibold tracking-wider text-aloe-10">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -69,7 +65,7 @@ export default async function HomePage({
                 {t.home.heroSubtitle}
               </p>
 
-              {/* Action Buttons (Pill vocabulary) */}
+              {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link
                   href={routes.products}
@@ -86,13 +82,31 @@ export default async function HomePage({
                   <span>{t.nav.categories}</span>
                 </Link>
               </div>
+
+              {/* Specs Micro Badge strip */}
+              <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-surface-elevated-dark text-xs text-shade-40">
+                <div>
+                  <span className="block font-bold text-white text-sm">96 kHz</span>
+                  <span>Lossless Hi-Res</span>
+                </div>
+                <div className="h-6 w-px bg-surface-elevated-dark" />
+                <div>
+                  <span className="block font-bold text-white text-sm">60 Giờ</span>
+                  <span>Thời Lượng Pin</span>
+                </div>
+                <div className="h-6 w-px bg-surface-elevated-dark" />
+                <div>
+                  <span className="block font-bold text-white text-sm">Active ANC</span>
+                  <span>Chống Ồn Thích Ứng</span>
+                </div>
+              </div>
             </div>
 
             {/* Right: Featured Hero Visual with sleek caption */}
             <div className="lg:col-span-5 relative">
               <div className="relative aspect-4/5 w-full overflow-hidden rounded-xl border border-surface-elevated-dark bg-canvas-night-elevated shadow-elevation-4">
                 <img
-                  src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1000&auto=format&fit=crop&q=80"
+                  src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&auto=format&fit=crop&q=90"
                   alt="OKZ Studio Master One"
                   className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-103"
                 />
@@ -113,50 +127,17 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 2. VALUE PROPOSITION & TRUST TICKER BAR */}
-      <section className="border-y border-hairline-light bg-shade-30/15 py-4">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="flex items-center gap-3">
-              <Award className="h-5 w-5 text-ink shrink-0" />
-              <div>
-                <h5 className="text-xs font-bold text-ink">100% Chính Hãng</h5>
-                <p className="text-[10px] text-shade-50">Tuyển chọn từ thương hiệu uy tín</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Zap className="h-5 w-5 text-ink shrink-0" />
-              <div>
-                <h5 className="text-xs font-bold text-ink">Giao Siêu Tốc 2H</h5>
-                <p className="text-[10px] text-shade-50">Áp dụng nội thành Hà Nội &amp; HCM</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <RotateCcw className="h-5 w-5 text-ink shrink-0" />
-              <div>
-                <h5 className="text-xs font-bold text-ink">15 Ngày Đổi Trả</h5>
-                <p className="text-[10px] text-shade-50">Thủ tục nhanh gọn, miễn phí</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="h-5 w-5 text-ink shrink-0" />
-              <div>
-                <h5 className="text-xs font-bold text-ink">Bảo Hành Toàn Diện</h5>
-                <p className="text-[10px] text-shade-50">Kích hoạt điện tử thông minh</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 2. PRESS & VALUE PROPOSITION TICKER */}
+      <HomePressTicker />
 
-      <div className="flex flex-col gap-16 md:gap-24 py-16">
+      <div className="flex flex-col gap-20 md:gap-28 py-16">
         {/* 3. VISUAL CATEGORIES SECTION */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
           <div className="mb-6 flex items-end justify-between border-b border-hairline-light pb-4">
             <div>
               <span className="pill-tag-mint mb-1.5">{t.home.categoriesTitle}</span>
-              <h2 className="text-xl font-bold tracking-tight text-ink sm:text-2xl">
-                {isVi ? "Khám Phá Theo Danh Mục" : "Explore by Category"}
+              <h2 className="font-display text-xl font-bold tracking-tight text-ink sm:text-2xl">
+                {isVi ? "Khám Phá Theo Danh Mục Tuyển Chọn" : "Explore Curated Categories"}
               </h2>
             </div>
 
@@ -169,7 +150,7 @@ export default async function HomePage({
             </Link>
           </div>
 
-          {/* Minimalist Visual Tiles */}
+          {/* Clean 5-column Category Grid */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {categories.map((cat) => (
               <Link
@@ -200,53 +181,8 @@ export default async function HomePage({
           </div>
         </section>
 
-        {/* 4. EDITORIAL SPOTLIGHT / LOOKBOOK SHOWCASE (Điểm nhấn phong cách) */}
-        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-center">
-            {/* Left: Atmospheric Lookbook Visual Banner (7 cols) */}
-            <div className="lg:col-span-7 relative overflow-hidden rounded-xl bg-black text-white min-h-[380px] sm:min-h-[460px] flex flex-col justify-end p-8 sm:p-12 border border-surface-elevated-dark shadow-elevation-4 group">
-              <img
-                src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&auto=format&fit=crop&q=80"
-                alt="Editorial Lookbook"
-                className="absolute inset-0 h-full w-full object-cover opacity-60 transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-
-              <div className="relative z-10 space-y-4 max-w-lg">
-                <span className="pill-tag-mint text-[10px]">
-                  EDITORIAL LOOKBOOK 2026
-                </span>
-                <h3 className="font-display text-2xl font-light sm:text-4xl text-white leading-tight">
-                  {isVi ? (
-                    <>Đẳng cấp vượt thời gian cùng <span className="font-semibold text-aloe-10">Minimal Horology</span>.</>
-                  ) : (
-                    <>Timeless craftsmanship with <span className="font-semibold text-aloe-10">Minimal Horology</span>.</>
-                  )}
-                </h3>
-                <p className="text-xs text-shade-30 leading-relaxed sm:text-sm">
-                  {isVi
-                    ? "Sự kết hợp hoàn mỹ giữa thép không gỉ 316L, kính sapphire phủ AR đa lớp và cỗ máy cơ học Thụy Sĩ chuẩn xác."
-                    : "Precision Swiss automatic movement housed in 316L stainless steel with anti-reflective sapphire crystal."}
-                </p>
-                <div className="pt-2">
-                  <Link
-                    href={`${routes.products}?category=horology`}
-                    className="btn-aloe-pill text-xs py-2.5 px-5"
-                  >
-                    <span>{isVi ? "Khám Phá Bộ Sưu Tập" : "Explore Collection"}</span>
-                    <ArrowRight className="ml-2 h-3.5 w-3.5" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: 2 Spotlight Product Cards (5 cols) */}
-            <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {spotlightProduct && <ProductCard product={spotlightProduct} />}
-              {spotlightProduct2 && <ProductCard product={spotlightProduct2} />}
-            </div>
-          </div>
-        </section>
+        {/* 4. LUXURY BENTO GRID SHOWCASE */}
+        <HomeBentoGrid />
 
         {/* 5. CURATED SELECTION / FEATURED PRODUCTS */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
@@ -255,7 +191,7 @@ export default async function HomePage({
               <span className="text-[11px] font-bold uppercase tracking-widest text-shade-50">
                 CURATED SELECTION
               </span>
-              <h2 className="text-xl font-bold tracking-tight text-ink sm:text-2xl">
+              <h2 className="font-display text-xl font-bold tracking-tight text-ink sm:text-2xl">
                 {isVi ? "Sản Phẩm Nổi Bật Trong Tuần" : "Weekly Featured Picks"}
               </h2>
             </div>
@@ -269,7 +205,7 @@ export default async function HomePage({
             </Link>
           </div>
 
-          {/* 4-col Responsive Product Grid with Card Containers */}
+          {/* 4-col Responsive Product Grid */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -277,7 +213,10 @@ export default async function HomePage({
           </div>
         </section>
 
-        {/* 6. PROMOTIONAL FEATURE STRIP (Pistachio & Aloe Accent) */}
+        {/* 6. INTERACTIVE ROOM / SHOP THE LOOK HOTSPOTS */}
+        <HomeShopTheLook products={productsData.products} />
+
+        {/* 7. PROMOTIONAL FEATURE STRIP (Pistachio & Aloe Accent) */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
           <div className="rounded-xl bg-pistachio-10 p-8 lg:p-12 border border-aloe-10 shadow-elevation-3 relative overflow-hidden">
             <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
@@ -323,15 +262,15 @@ export default async function HomePage({
           </div>
         </section>
 
-        {/* 7. NEW ARRIVALS GRID */}
+        {/* 8. NEW ARRIVALS GRID */}
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
           <div className="mb-6 flex items-end justify-between border-b border-hairline-light pb-4">
             <div>
               <span className="text-[11px] font-bold uppercase tracking-widest text-shade-50">
                 NEW DROPS
               </span>
-              <h2 className="text-xl font-bold tracking-tight text-ink sm:text-2xl">
-                {isVi ? "Hàng Mới Lên Kệ" : "New Arrivals"}
+              <h2 className="font-display text-xl font-bold tracking-tight text-ink sm:text-2xl">
+                {isVi ? "Hàng Mới Vừa Lên Kệ" : "Fresh Off the Runway"}
               </h2>
             </div>
 
