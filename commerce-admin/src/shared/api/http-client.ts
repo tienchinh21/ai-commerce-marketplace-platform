@@ -34,3 +34,6 @@ export function setAuthToken(token: string | null) {
 
 export const cmsPath = (path: string) =>
   path.startsWith('/') ? `/cms${path}` : `/cms/${path}`;
+
+export const aiPath = (path: string) =>
+  path.startsWith('/') ? `/ai${path}` : `/ai/${path}`;

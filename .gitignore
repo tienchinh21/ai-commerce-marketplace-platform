@@ -10,5 +10,8 @@ coverage/
 .worktrees/
 worktrees/
 *.log
+*.tsbuildinfo
+FULL_REPORT_AI_COMMERCE_PLATFORM.md
+**/FULL_REPORT_AI_COMMERCE_PLATFORM.md
 
 .worktrees/
